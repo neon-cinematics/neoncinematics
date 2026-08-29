@@ -1,9 +1,14 @@
 #section2_main_div {
-    min-height: 100vh;
+    height: 100vh;
+    width: 100%;
     background: #000000;
     color: #ffffff;
-    position: relative;
+    position: fixed;
     z-index: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transform-origin: center center;
 }
 
 /* Glow Keyframes */

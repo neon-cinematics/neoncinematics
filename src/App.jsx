@@ -5,6 +5,7 @@ import Section1 from "./Home/Section1";
 import Section2 from "./SelectedWork/Section2";
 import { Routes, Route, useLocation } from "react-router-dom";
 
+
 const ScrollToTop = () => {
   const location = useLocation();
 
