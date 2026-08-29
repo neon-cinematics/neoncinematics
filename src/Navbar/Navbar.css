@@ -1,0 +1,122 @@
+#nav{
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    max-width: 100vw;
+    height: 10vh;
+    margin: 0;
+    pointer-events: none; 
+    user-select: none;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+
+#logo{
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 5px;
+    padding-left: 66px;
+    scale: 2.8;
+}
+
+#neon_text{
+    font-size: 32px;
+    font-style: italic;
+    filter: drop-shadow(0 0 5px rgb(255, 255, 255));
+    pointer-events: auto; 
+    cursor: pointer;
+    transition-timing-function: ease-in-out;
+    transition-duration: 100ms;
+}
+
+#neon_text:hover{
+    text-shadow: 0px 0px 10px rgb(255, 255, 255);
+    filter: drop-shadow(0 0 10px rgb(255, 255, 255, 0.8));
+    transition-duration: 200ms;
+    
+}
+
+#logo img{
+    height: 62px;
+    width: auto;
+    object-fit: contain;
+}
+#logo img:hover{ /*some issue here with hover -> not responding*/
+    cursor: pointer;
+    filter: drop-shadow(0 0 5px rgb(159, 107, 107));
+    transition-timing-function: ease-in-out;
+    transition-duration: 200ms;
+}
+
+#nav_links{
+    display: flex;
+    justify-content: center;
+    
+    
+}
+#nav_links ul{
+    color: rgb(236, 220, 220);
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    display: flex;
+    justify-content: center;
+    padding-top: 5px;
+    list-style: none;   
+    pointer-events: auto; 
+    user-select: auto;
+    gap: 40px;
+    padding-inline: 10px;    
+}
+
+#nav_links ul li:hover{
+    cursor: pointer;
+    filter: drop-shadow(0 0 5px rgb(159, 107, 107));
+    text-shadow: 0px 0px 20px rgb(255, 255, 255),
+    0px 1px rgba(255,120,0, 0.75),
+    0px -1px rgba(0,180,255, 0.75);
+}
+
+#nav_links ul li {
+    
+    letter-spacing: -1;
+    font-weight: 500;
+    filter: blur(0.25px);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-shadow: 
+    0px 1px rgba(255,120,0, 0.5),
+    0px -1px rgba(0,180,255, 0.5);
+    
+}
+
+#nav_links ul li a{
+    text-decoration: none;
+    color: rgb(236, 220, 220);
+    font-family: "DM Sans", serif;
+    transition: 0.3s ease;
+    
+}
+
+#line{
+    border: none;
+    height: 0.8px;
+
+    background:
+        linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,0.18),
+        rgba(255,255,255,0.35),
+        rgba(255,255,255,0.18),
+        transparent
+        );
+
+    box-shadow:
+    0 0 8px rgba(255,255,255,0.08);
+
+    opacity: 0.8;
+}
