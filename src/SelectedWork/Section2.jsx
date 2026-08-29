@@ -50,7 +50,7 @@ const Section2 = () => {
     return (
         <div id="section2_main_div">
             <Navbar />
-            
+            <PhotoGallery/>
         </div>
     );
 };

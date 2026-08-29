@@ -1,0 +1,869 @@
+/* =========================================================
+   NEON CINEMATICS — CRT LOADING SCREEN
+   ========================================================= */
+
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #000;
+
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   CRT DISPLAY
+   ========================================================= */
+
+.loading-tv {
+  position: relative;
+
+  width: calc(100vw - 70px);
+  height: calc(100vh - 60px);
+
+  max-width: none;
+
+  padding: 0;
+
+  background: transparent;
+
+  border-radius: 5% / 8%;
+
+  transform: perspective(1400px) rotateX(0.3deg);
+
+  overflow: hidden;
+
+  box-shadow:
+    0 0 0 2px #111,
+    0 0 25px rgba(30, 30, 255, 0.08);
+}
+
+
+/* =========================================================
+   BLUE CRT SCREEN
+   ========================================================= */
+
+.tv-screen {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+
+  border-radius: 5% / 8%;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      #39358f 0%,
+      #2d2b82 45%,
+      #15125e 100%
+    );
+
+  color: #eee9d5;
+
+  box-shadow:
+
+    inset 0 0 80px rgba(0, 0, 0, 0.35),
+
+    inset 0 0 180px rgba(0, 0, 0, 0.22),
+
+    0 0 0 2px rgba(10, 18, 80, 0.9);
+}
+
+
+/* =========================================================
+   CRT EDGE / CURVATURE
+   ========================================================= */
+
+.tv-screen::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 10;
+
+  pointer-events: none;
+
+  border-radius: inherit;
+
+  box-shadow:
+
+    inset 0 0 45px rgba(0, 0, 0, 0.65),
+
+    inset 0 0 120px rgba(0, 0, 0, 0.28);
+}
+
+
+/* subtle CRT glass reflection */
+
+.tv-screen::after {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 11;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      110deg,
+      rgba(255, 255, 255, 0.025),
+      transparent 30%,
+      transparent 70%,
+      rgba(0, 0, 0, 0.08)
+    );
+
+  border-radius: inherit;
+}
+
+
+/* =========================================================
+   SCANLINES
+   ========================================================= */
+
+.tv-scanlines {
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 8;
+
+  pointer-events: none;
+
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.025) 0px,
+      rgba(255, 255, 255, 0.025) 1px,
+      rgba(0, 0, 0, 0.035) 2px,
+      rgba(0, 0, 0, 0.035) 4px
+    );
+
+  mix-blend-mode: overlay;
+
+  opacity: 0.7;
+}
+
+
+/* =========================================================
+   CONTENT
+   ========================================================= */
+
+.loading-content {
+  position: relative;
+
+  z-index: 5;
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  box-sizing: border-box;
+
+  padding:
+    clamp(45px, 7vh, 90px)
+    clamp(30px, 7vw, 130px)
+    clamp(25px, 4vh, 45px);
+
+  text-align: center;
+
+  font-family:
+    "Courier New",
+    "Lucida Console",
+    monospace;
+
+  text-shadow:
+    2px 0 rgba(255, 40, 80, 0.35),
+    -2px 0 rgba(0, 255, 220, 0.25);
+}
+
+
+.loading-brand {
+  margin-top: 15px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:
+    clamp(85px, 12vw, 145px);
+
+  line-height: 0.85;
+
+  font-weight: 900;
+
+  letter-spacing:
+    clamp(0.02em, 0.08vw, 0.08em);
+
+  color: #e9e5d4;
+
+  text-transform: uppercase;
+
+  filter:
+    drop-shadow(2px 0 rgba(255, 40, 70, 0.35))
+    drop-shadow(-2px 0 rgba(0, 255, 220, 0.25));
+}
+
+
+
+.loading-divider {
+  display: none;
+}
+
+
+/* =========================================================
+   SYSTEM TEXT
+   ========================================================= */
+
+.loading-system {
+  margin-top: -4px;
+
+  font-size:
+    clamp(14px, 1.55vw, 27px);
+
+  line-height: 1.35;
+
+  letter-spacing:
+    clamp(0.08em, 0.18vw, 0.2em);
+
+  font-weight: 700;
+
+  color: #e8e3d3;
+
+  opacity: 0.95;
+
+  max-width: 700px;
+}
+
+
+/* =========================================================
+   PROGRESS AREA
+   ========================================================= */
+
+.loading-progress-wrapper {
+  width: min(650px, 58vw);
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 20px;
+
+  margin-top: auto;
+
+  margin-bottom: auto;
+}
+
+
+/* =========================================================
+   BLOCK LOADING BAR
+   ========================================================= */
+
+.loading-blocks {
+  width: 100%;
+
+  height: 60px;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(32, minmax(0, 1fr));
+
+  gap: 4px;
+
+  padding: 5px;
+
+  box-sizing: border-box;
+
+  border: 3px solid #e8e3d3;
+
+  background: rgba(10, 10, 45, 0.15);
+
+  box-shadow:
+
+    2px 0 rgba(255, 30, 90, 0.6),
+
+    -2px 0 rgba(0, 255, 220, 0.45);
+}
+
+
+/* empty blocks */
+
+.loading-block {
+  height: 100%;
+
+  background: rgba(20, 20, 65, 0.35);
+
+  border-right: 1px solid rgba(230, 225, 210, 0.12);
+
+  box-sizing: border-box;
+}
+
+
+/* filled blocks */
+
+.loading-block.active {
+  background: #e9e4d2;
+
+  border-color: #e9e4d2;
+
+  box-shadow:
+    0 0 3px rgba(255, 255, 255, 0.3);
+
+  transition:
+    background 0.06s linear;
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.loading-status {
+  font-size:
+    clamp(10px, 1vw, 16px);
+
+  letter-spacing:
+    clamp(0.08em, 0.16vw, 0.2em);
+
+  color: #e5e0ce;
+
+  opacity: 0.78;
+
+  min-height: 20px;
+}
+
+
+/* =========================================================
+   CURSOR
+   ========================================================= */
+
+.loading-cursor {
+  display: none;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.loading-content::after {
+  content:
+    "© 2026 NEON CINEMATICS. ALL RIGHTS RESERVED.";
+
+  display: block;
+
+  width: 100%;
+
+  margin-top: auto;
+
+  font-family:
+    "Courier New",
+    "Lucida Console",
+    monospace;
+
+  font-size:
+    clamp(9px, 1vw, 17px);
+
+  font-weight: 700;
+
+  letter-spacing:
+    clamp(0.04em, 0.12vw, 0.15em);
+
+  line-height: 1.4;
+
+  color: #e5e0ce;
+
+  opacity: 0.88;
+
+  text-shadow:
+    2px 0 rgba(255, 30, 80, 0.5),
+    -2px 0 rgba(0, 255, 220, 0.35);
+}
+
+
+/* =========================================================
+   REMOVE OLD TV BOTTOM
+   ========================================================= */
+
+.tv-bottom {
+  display: none;
+}
+
+
+/* =========================================================
+   CRT FLICKER
+   ========================================================= */
+
+@keyframes crtFlicker {
+
+  0% {
+    opacity: 1;
+  }
+
+  3% {
+    opacity: 0.96;
+  }
+
+  6% {
+    opacity: 1;
+  }
+
+  20% {
+    opacity: 0.98;
+  }
+
+  21% {
+    opacity: 0.94;
+  }
+
+  22% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.tv-screen {
+  animation: crtFlicker 5s infinite;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .loading-tv {
+    width: calc(100vw - 24px);
+
+    height: calc(100vh - 24px);
+
+    border-radius: 7% / 5%;
+  }
+
+
+  .tv-screen {
+    border-radius: 7% / 5%;
+  }
+
+
+  .loading-content {
+
+    padding:
+      45px 22px 22px;
+  }
+
+
+  .loading-brand {
+
+    font-size:
+      clamp(40px, 12vw, 75px);
+
+    letter-spacing: 0;
+  }
+
+
+  .loading-system {
+
+    font-size: 11px;
+
+    max-width: 280px;
+  }
+
+
+  .loading-progress-wrapper {
+
+    width: 85vw;
+
+    max-width: 500px;
+  }
+
+
+  .loading-blocks {
+
+    height: 38px;
+
+    gap: 2px;
+
+    padding: 3px;
+
+    border-width: 2px;
+  }
+
+
+  .loading-percentage {
+
+    font-size: 28px;
+  }
+
+
+  .loading-status {
+
+    font-size: 9px;
+
+    letter-spacing: 0.08em;
+  }
+
+
+  .loading-content::after {
+
+    font-size: 7px;
+
+    letter-spacing: 0.05em;
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .tv-screen {
+    animation: none;
+  }
+
+  .loading-block {
+    transition: none;
+  }
+}
+
+/* =========================================================
+   CRT / FISHEYE DISPLAY
+   ========================================================= */
+
+/* Hide the SVG filter definition */
+.crt-filter-definition {
+  position: absolute;
+
+  width: 0;
+  height: 0;
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   SCREEN WARP
+   ========================================================= */
+
+.tv-screen {
+  /*
+    Subtle barrel-style visual distortion.
+    SVG displacement handles the micro-warp.
+  */
+  filter: url("#crt-warp");
+
+  transform:
+    perspective(1200px)
+    scale(1.015);
+
+  transform-origin: center center;
+}
+
+
+/* =========================================================
+   CRT CURVED GLASS
+   ========================================================= */
+
+.tv-screen {
+  border-radius: 6% / 9%;
+
+  overflow: hidden;
+
+  /*
+    Stronger darkness toward the edges gives
+    the impression that the glass curves away.
+  */
+  box-shadow:
+
+    inset 0 0 35px rgba(0, 0, 0, 0.55),
+
+    inset 0 0 90px rgba(0, 0, 0, 0.45),
+
+    inset 0 0 180px rgba(0, 0, 0, 0.28),
+
+    0 0 0 2px rgba(0, 0, 0, 0.8);
+}
+
+
+/* =========================================================
+   FISHEYE VIGNETTE
+   ========================================================= */
+
+.tv-screen::before {
+  content: "";
+
+  position: absolute;
+
+  inset: -5%;
+
+  z-index: 20;
+
+  pointer-events: none;
+
+  border-radius: 7% / 10%;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      transparent 48%,
+      rgba(0, 0, 0, 0.08) 65%,
+      rgba(0, 0, 0, 0.28) 82%,
+      rgba(0, 0, 0, 0.65) 100%
+    );
+
+  box-shadow:
+    inset 0 0 100px rgba(0, 0, 0, 0.45);
+}
+
+
+/* =========================================================
+   CRT SCANLINES
+   ========================================================= */
+
+.tv-scanlines {
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 30;
+
+  pointer-events: none;
+
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.045) 0px,
+      rgba(255, 255, 255, 0.045) 1px,
+      rgba(0, 0, 0, 0.055) 2px,
+      rgba(0, 0, 0, 0.055) 4px
+    );
+
+  opacity: 0.7;
+
+  mix-blend-mode: overlay;
+}
+
+
+/* =========================================================
+   CRT HORIZONTAL BANDING
+   ========================================================= */
+
+.tv-screen .loading-content::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 70px,
+      rgba(255, 255, 255, 0.018) 71px,
+      transparent 73px
+    );
+
+  opacity: 0.7;
+}
+
+
+/* =========================================================
+   RGB CHROMATIC ABERRATION
+   ========================================================= */
+
+.loading-content {
+  text-shadow:
+    2px 0 rgba(255, 0, 60, 0.35),
+    -2px 0 rgba(0, 255, 220, 0.28);
+}
+
+
+/* Large title gets stronger RGB separation */
+
+.loading-brand {
+  text-shadow:
+    3px 0 rgba(255, 20, 60, 0.45),
+    -3px 0 rgba(0, 255, 220, 0.35);
+
+  filter:
+    blur(0.15px);
+}
+
+
+/* Percentage */
+
+.loading-percentage {
+  text-shadow:
+    2px 0 rgba(255, 20, 60, 0.38),
+    -2px 0 rgba(0, 255, 220, 0.3);
+}
+
+
+/* =========================================================
+   CRT GLASS REFLECTION
+   ========================================================= */
+
+.tv-screen::after {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 40;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      105deg,
+      rgba(255, 255, 255, 0.035) 0%,
+      transparent 18%,
+      transparent 72%,
+      rgba(255, 255, 255, 0.012) 100%
+    );
+
+  border-radius: inherit;
+
+  mix-blend-mode: screen;
+}
+
+
+/* =========================================================
+   CRT FLICKER
+   ========================================================= */
+
+@keyframes crtFlicker {
+
+  0% {
+    opacity: 1;
+  }
+
+  3% {
+    opacity: 0.96;
+  }
+
+  5% {
+    opacity: 1;
+  }
+
+  18% {
+    opacity: 0.985;
+  }
+
+  19% {
+    opacity: 0.94;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  48% {
+    opacity: 0.99;
+  }
+
+  49% {
+    opacity: 0.95;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+
+.tv-screen {
+  animation:
+    crtFlicker 4s infinite;
+}
+
+
+/* =========================================================
+   VERY SUBTLE SCREEN JITTER
+   ========================================================= */
+
+@keyframes crtJitter {
+
+  0%,
+  100% {
+    transform:
+      perspective(1200px)
+      scale(1.015)
+      translate(0, 0);
+  }
+
+  48% {
+    transform:
+      perspective(1200px)
+      scale(1.015)
+      translate(0, 0);
+  }
+
+  49% {
+    transform:
+      perspective(1200px)
+      scale(1.015)
+      translate(-0.5px, 0.2px);
+  }
+
+  50% {
+    transform:
+      perspective(1200px)
+      scale(1.015)
+      translate(0.5px, -0.2px);
+  }
+
+  51% {
+    transform:
+      perspective(1200px)
+      scale(1.015)
+      translate(0, 0);
+  }
+}
+
+
+.tv-screen {
+  animation:
+    crtFlicker 4s infinite,
+    crtJitter 6s infinite;
+}

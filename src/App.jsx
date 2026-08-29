@@ -1,3 +1,5 @@
+import { useState } from "react";
+import LoadingScreen from "./LoadingScreen/LoadingScreen";
 import { useEffect } from "react";
 import Section1 from "./Home/Section1";
 import Section2 from "./SelectedWork/Section2";
@@ -17,15 +19,19 @@ const ScrollToTop = () => {
 };
 
 const App = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  
   return (
     <>
+      {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
+
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Section1 />} />
         <Route path="/work" element={<Section2 />} />
       </Routes>
     </>
-  )
-}
+  );
+};
 
 export default App;
