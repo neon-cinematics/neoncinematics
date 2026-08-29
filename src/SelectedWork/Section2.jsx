@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
+import CinematicReel from "../CinematicReel/CinematicReel";
 import "./Section2.css";
 
 const Section2 = () => {
@@ -47,10 +48,11 @@ const Section2 = () => {
         };
     }, [navigate]);
 
+
     return (
         <div id="section2_main_div">
             <Navbar />
-            <PhotoGallery/>
+            <CinematicReel />
         </div>
     );
 };
