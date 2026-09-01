@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Section1 from "./Home/Section1";
 import Section2 from "./SelectedWork/Section2";
 import GalleryAdmin from "./GalleryAdmin/GalleryAdmin";
+import Section3 from "./Section3";
 import { Routes, Route, useLocation } from "react-router-dom";
 
 
@@ -31,6 +32,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Section1 />} />
         <Route path="/work" element={<Section2 />} />
+        <Route path="/aboutUs" element={<Section3 />} />
         <Route path="/gallery-admin" element={<GalleryAdmin />} />
       </Routes>
     </>

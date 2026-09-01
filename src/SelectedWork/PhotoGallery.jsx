@@ -16,12 +16,22 @@ const PhotoGallery = () => {
             try {
                 const result = await sanityClient.fetch(galleryPhotosQuery);
                 if (isMounted) {
-                    setPhotos(result.map((photo) => ({
+                    const mappedPhotos = result.map((photo) => ({
+                        _id: photo._id,
+                        isCenter: photo.isCenter,
                         image: sanityImageUrl(photo.image, 2400),
                         title: photo.title,
                         href: photo.href,
                         aspectRatio: photo.width && photo.height ? photo.width / photo.height : 1.5,
-                    })).filter((photo) => photo.image));
+                    })).filter((photo) => photo.image);
+
+                    mappedPhotos.sort((a, b) => {
+                        if (a.isCenter && !b.isCenter) return -1;
+                        if (!a.isCenter && b.isCenter) return 1;
+                        return 0;
+                    });
+
+                    setPhotos(mappedPhotos);
                 }
             } catch (error) {
                 console.error("Unable to load gallery photos from Sanity", error);

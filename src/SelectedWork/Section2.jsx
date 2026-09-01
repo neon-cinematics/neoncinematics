@@ -44,7 +44,19 @@ const Section2 = () => {
         const goToAbout = () => {
             if (isSnapping) return;
             isSnapping = true;
-            gsap.to(containerRef.current, { opacity: 0, duration: 0.35, ease: "power2.out", onComplete: () => navigate("/aboutUs") });
+            const wall = document.querySelector('.parallax-cards');
+            if (wall) {
+                const currentZ = parseFloat(getComputedStyle(wall).getPropertyValue('--camera-z')) || 0;
+                gsap.to(wall, {
+                    '--camera-z': `${currentZ + 3500}px`,
+                    opacity: 0,
+                    duration: 1.5,
+                    ease: "power2.in",
+                    onComplete: () => navigate("/aboutUs")
+                });
+            } else {
+                gsap.to(containerRef.current, { opacity: 0, duration: 0.35, ease: "power2.out", onComplete: () => navigate("/aboutUs") });
+            }
         };
 
         const handleScroll = (e) => {

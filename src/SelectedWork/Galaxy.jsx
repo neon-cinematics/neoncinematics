@@ -25,13 +25,13 @@ const Galaxy = ({ density = 1.35, speed = 0.12, glowIntensity = 0.8, saturation 
             canvas.style.width = `${width}px`;
             canvas.style.height = `${height}px`;
             context.setTransform(ratio, 0, 0, ratio, 0, 0);
-            const count = Math.max(90, Math.floor(width * height / 8500 * density));
+            const count = Math.max(120, Math.floor(width * height / 5000 * density));
             stars = Array.from({ length: count }, (_, index) => ({
                 angle: (index * 2.39996) % (Math.PI * 2),
-                radius: Math.pow((index + 1) / count, 0.72) * Math.max(width, height) * 0.72,
-                depth: 0.25 + ((index * 0.618) % 1) * 0.75,
-                size: 0.45 + ((index * 0.173) % 1) * 1.45,
-                hue: 165 + ((index * 47) % 100),
+                radius: Math.pow((index + 1) / count, 0.6) * Math.max(width, height) * 0.8,
+                depth: 0.1 + ((index * 0.618) % 1) * 0.9,
+                size: 0.5 + ((index * 0.173) % 1) * 2.2,
+                hue: 180 + ((index * 47) % 140),
                 phase: (index * 1.73) % (Math.PI * 2),
             }));
         };
@@ -46,14 +46,14 @@ const Galaxy = ({ density = 1.35, speed = 0.12, glowIntensity = 0.8, saturation 
                 const x = centerX + Math.cos(angle) * star.radius;
                 const y = centerY + Math.sin(angle) * star.radius * 0.46;
                 if (x < -8 || x > width + 8 || y < -8 || y > height + 8) return;
-                const twinkle = 0.7 + Math.sin(elapsed * 1.8 + star.phase) * 0.3;
-                const alpha = (0.18 + star.depth * 0.7) * twinkle;
+                const twinkle = 0.5 + Math.sin(elapsed * 1.5 + star.phase) * 0.5;
+                const alpha = (0.2 + star.depth * 0.8) * twinkle;
                 const color = `hsla(${star.hue}, ${saturation * 100}%, 78%, ${alpha})`;
-                context.shadowBlur = star.size * 8 * glowIntensity;
+                context.shadowBlur = star.size * 10 * glowIntensity;
                 context.shadowColor = color;
                 context.fillStyle = color;
                 context.beginPath();
-                context.arc(x, y, star.size * (0.7 + star.depth * 0.55), 0, Math.PI * 2);
+                context.arc(x, y, star.size * (0.8 + star.depth * 0.6), 0, Math.PI * 2);
                 context.fill();
             });
             context.shadowBlur = 0;

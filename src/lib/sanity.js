@@ -19,6 +19,7 @@ export const galleryPhotosQuery = `*[_type == "galleryPhoto"] | order(_createdAt
     _id,
     title,
     href,
+    isCenter,
     image,
     "width": image.asset->metadata.dimensions.width,
     "height": image.asset->metadata.dimensions.height,
