@@ -25,3 +25,11 @@ export const galleryPhotosQuery = `*[_type == "galleryPhoto"] | order(_createdAt
     "height": image.asset->metadata.dimensions.height,
     "assetId": image.asset._ref
 }`;
+
+export const videoThumbnailsQuery = `*[_type == "videoThumbnail"] | order(_createdAt desc) {
+    _id,
+    videoLink,
+    caption,
+    image,
+    "assetId": image.asset._ref
+}`;

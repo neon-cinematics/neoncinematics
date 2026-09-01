@@ -1,0 +1,19 @@
+.video-showcase-container {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.video-showcase-wrapper {
+    width: 90%;
+    height: 75vh;
+    max-height: 800px;
+    position: relative;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}

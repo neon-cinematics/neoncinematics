@@ -4,6 +4,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Navbar from "../Navbar/Navbar";
 import PhotoGallery from "./PhotoGallery";
+import VideoShowcase from "./VideoShowcase";
 import "./Section2.css";
 
 const Section2 = () => {
@@ -100,8 +101,8 @@ const Section2 = () => {
         <div ref={containerRef} id="section2_main_div">
             <Navbar />
             <main className="selected-work-content">
-                <section ref={videoSectionRef} className="video-showcase-placeholder" aria-label="Video showcase coming soon">
-                    <div className="placeholder-line" aria-hidden="true" />
+                <section ref={videoSectionRef} className="video-showcase-placeholder" aria-label="Video showcase">
+                    <VideoShowcase />
                 </section>
                 <section ref={gallerySectionRef} className="selected-work-gallery-section"><PhotoGallery /></section>
             </main>

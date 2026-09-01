@@ -1,0 +1,154 @@
+.video-admin-container {
+    padding: 40px;
+    color: white;
+    background: #080a0d;
+    min-height: 100vh;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 20px;
+}
+
+.token-form {
+    display: flex;
+    gap: 10px;
+}
+
+.token-form input {
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid #333;
+    background: #1a1a1a;
+    color: white;
+    width: 250px;
+}
+
+.token-form button, .upload-btn, .delete-btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: none;
+    background: #e63946;
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.token-form button:hover, .upload-btn:hover {
+    background: #f1faee;
+    color: #e63946;
+}
+
+.admin-main {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.upload-section, .manage-section {
+    background: #111418;
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.upload-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 600px;
+    margin-top: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 14px;
+    color: #aaa;
+}
+
+.form-group input[type="text"], .form-group input[type="url"] {
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #333;
+    background: #1a1a1a;
+    color: white;
+}
+
+.crop-container {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    background: #000;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.video-card {
+    background: #1a1a1a;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.video-card-image {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background-size: cover;
+    background-position: center;
+}
+
+.video-card-details {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.video-caption {
+    margin: 0;
+    font-size: 14px;
+    color: #ddd;
+}
+
+.video-link {
+    color: #e63946;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.video-link:hover {
+    text-decoration: underline;
+}
+
+.delete-btn {
+    background: #333;
+    margin-top: auto;
+}
+
+.delete-btn:hover {
+    background: #ff4d4f;
+    color: white;
+}
+
+.status-message {
+    margin-top: 10px;
+    color: #4ade80;
+}
