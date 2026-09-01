@@ -11,6 +11,10 @@ body {
     position: fixed;
 }
 
+.section1-text-layer {
+    will-change: transform;
+}
+
 #section1_main_text {
     font-family: "Cormorant Garamond", serif;
     font-size: 96px;
@@ -57,7 +61,7 @@ body {
 }
 
 #section1_video_div video {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -67,4 +71,24 @@ body {
     pointer-events: none;
     user-select: none;
     -webkit-user-select: none;
+}
+
+.section1-video-layer {
+    position: fixed;
+    inset: -2%;
+    z-index: -1;
+    will-change: transform;
+}
+
+.section1-video-layer video {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .section1-text-layer,
+    .section1-video-layer {
+        will-change: auto;
+    }
 }

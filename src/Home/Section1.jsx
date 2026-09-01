@@ -3,15 +3,16 @@ import Navbar from "../Navbar/Navbar.jsx";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Section1 = () => {
     const navigate = useNavigate();
-    const location = useLocation();
     const container = useRef();
     const videoRef = useRef();
+    const videoLayerRef = useRef();
+    const textLayerRef = useRef();
 
     useGSAP(() => {
         const video = videoRef.current;
@@ -32,6 +33,26 @@ const Section1 = () => {
         let snapTween = null;
         let scrollTimeout = null;
 
+        const handlePointerMove = (event) => {
+            const x = event.clientX / window.innerWidth - 0.5;
+            const y = event.clientY / window.innerHeight - 0.5;
+
+            gsap.to(videoLayerRef.current, {
+                x: x * -32,
+                y: y * -22,
+                duration: 1.2,
+                ease: "power3.out",
+                overwrite: "auto",
+            });
+            gsap.to(textLayerRef.current, {
+                x: x * 24,
+                y: y * 16,
+                duration: 1.2,
+                ease: "power3.out",
+                overwrite: "auto",
+            });
+        };
+
         // Kill active auto-scrolling on user interaction
         const killSnap = () => {
             if (isTransitioning) return;
@@ -45,6 +66,7 @@ const Section1 = () => {
         window.addEventListener("wheel", killSnap);
         window.addEventListener("touchmove", killSnap);
         window.addEventListener("pointerdown", killSnap);
+        window.addEventListener("pointermove", handlePointerMove);
 
         ScrollTrigger.create({
             trigger: "#section1_video_div",
@@ -199,6 +221,7 @@ const Section1 = () => {
             window.removeEventListener("wheel", killSnap);
             window.removeEventListener("touchmove", killSnap);
             window.removeEventListener("pointerdown", killSnap);
+            window.removeEventListener("pointermove", handlePointerMove);
         };
 
     }, { scope: container });
@@ -208,12 +231,16 @@ const Section1 = () => {
             <Navbar />
             <div id="div_section1_wrapper">
                 <div id="div1">
-                    <h1 id="section1_main_text">A Cinematography and Filmmaking Club,<br />Unleashing the Creativity</h1>
-                    <p id="scroll_text">Scroll to Explore More</p>
+                    <div ref={textLayerRef} className="section1-text-layer">
+                        <h1 id="section1_main_text">A Cinematography and Filmmaking Club,<br />Unleashing the Creativity</h1>
+                        <p id="scroll_text">Scroll to Explore More</p>
+                    </div>
                 </div>
 
                 <div id="section1_video_div" style={{ minHeight: "150vh" }}>
-                    <video ref={videoRef} src="/page1animationv2.mp4" autoPlay loop muted></video>
+                    <div ref={videoLayerRef} className="section1-video-layer">
+                        <video ref={videoRef} src="/page1animationv2.mp4" autoPlay loop muted></video>
+                    </div>
                 </div>
             </div>
         </div>
