@@ -5,5 +5,5 @@ const builder = sanityClient ? imageUrlBuilder(sanityClient) : null;
 
 export const sanityImageUrl = (source, width = 700) => {
     if (!builder || !source) return null;
-    return builder.image(source).width(width).auto("format").url();
+    return builder.image(source).width(width).fit("max").auto("format").url();
 };

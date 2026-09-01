@@ -11,12 +11,18 @@
     transform-origin: center center;
 }
 
-.selected-work-content { width: min(1400px, 100%); margin: 0 auto; padding: 16vh 5vw 8vh; }
-.video-showcase-placeholder { min-height: 520px; display: flex; flex-direction: column; justify-content: center; padding: 8vh 0 12vh; }
+#section2_main_div > #nav { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; }
+
+.selected-work-content { width: min(1400px, 100%); margin: 0 auto; padding: 0 5vw; scroll-snap-type: y mandatory; }
+.video-showcase-placeholder, .selected-work-gallery-section { min-height: 100vh; scroll-snap-align: start; scroll-snap-stop: always; }
+.video-showcase-placeholder { position: relative; display: flex; flex-direction: column; justify-content: center; padding: 8vh 0 12vh; overflow: hidden; }
+.selected-work-gallery-section { display: flex; align-items: center; }
 .section-kicker { color: #7de5d2; font: 600 12px/1.2 "DM Sans", sans-serif; letter-spacing: 2px; text-transform: uppercase; }
 .video-showcase-placeholder h1 { max-width: 780px; margin: 24px 0; color: #f2f1eb; font: 400 clamp(48px, 7vw, 108px)/.94 "Cormorant Garamond", Georgia, serif; letter-spacing: 0; }
 .video-showcase-placeholder p { max-width: 380px; margin: 0; color: #9ba4a7; font: 400 16px/1.6 "DM Sans", sans-serif; }
-.placeholder-line { width: min(420px, 70%); height: 1px; margin-top: 72px; background: linear-gradient(90deg, #7de5d2, transparent); }
+.placeholder-line { position: relative; z-index: 1; width: min(420px, 70%); height: 1px; margin-top: 72px; background: linear-gradient(90deg, #7de5d2, transparent); }
+.video-showcase-placeholder::before { content: ""; position: absolute; inset: 7% 0 13%; border: 1px solid rgba(125, 229, 210, .2); background: linear-gradient(115deg, transparent 0 48%, rgba(125, 229, 210, .08) 48.2% 48.4%, transparent 48.6%), repeating-linear-gradient(0deg, transparent 0 42px, rgba(242, 241, 235, .035) 43px 44px); clip-path: polygon(0 7%, 74% 0, 100% 19%, 100% 92%, 18% 100%, 0 78%); }
+.video-showcase-placeholder::after { content: ""; position: absolute; right: 8%; bottom: 18%; width: 22%; height: 28%; border-left: 1px solid rgba(125, 229, 210, .4); border-bottom: 1px solid rgba(125, 229, 210, .4); transform: skew(-18deg); opacity: .7; }
 .photo_gallery { width: 100%; }
 
 /* Glow Keyframes */
@@ -39,9 +45,11 @@
 @media (max-width: 1024px) {
     .selected-work-content { padding-top: 12vh; }
     .video-showcase-placeholder { min-height: 460px; }
+    .drift-wall { height: 650px; }
 }
 
 @media (max-width: 600px) {
     .selected-work-content { padding-inline: 20px; }
     .video-showcase-placeholder h1 { font-size: 58px; }
+    .video-showcase-placeholder { min-height: 360px; padding-bottom: 8vh; }
 }

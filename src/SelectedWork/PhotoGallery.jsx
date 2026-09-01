@@ -17,9 +17,10 @@ const PhotoGallery = () => {
                 const result = await sanityClient.fetch(galleryPhotosQuery);
                 if (isMounted) {
                     setPhotos(result.map((photo) => ({
-                        image: sanityImageUrl(photo.image),
+                        image: sanityImageUrl(photo.image, 2400),
                         title: photo.title,
                         href: photo.href,
+                        aspectRatio: photo.width && photo.height ? photo.width / photo.height : 1.5,
                     })).filter((photo) => photo.image));
                 }
             } catch (error) {
@@ -37,7 +38,18 @@ const PhotoGallery = () => {
 
     return (
         <section className="photo_gallery" aria-label="Selected work gallery">
-            <DriftWall items={displayPhotos} />
+            <DriftWall
+                images={displayPhotos.map((photo) => photo.image)}
+                items={displayPhotos}
+                cardWidth={360}
+                perspective={2600}
+                mouseSensitivity={6.5}
+                animationDuration={0.8}
+                enableDepthFog
+                fogIntensity={0.3}
+                enableMagneticAttraction
+                magneticStrength={20}
+            />
         </section>
     );
 };

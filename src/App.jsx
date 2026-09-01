@@ -3,6 +3,7 @@ import LoadingScreen from "./LoadingScreen/LoadingScreen";
 import { useEffect } from "react";
 import Section1 from "./Home/Section1";
 import Section2 from "./SelectedWork/Section2";
+import GalleryAdmin from "./GalleryAdmin/GalleryAdmin";
 import { Routes, Route, useLocation } from "react-router-dom";
 
 
@@ -30,6 +31,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Section1 />} />
         <Route path="/work" element={<Section2 />} />
+        <Route path="/gallery-admin" element={<GalleryAdmin />} />
       </Routes>
     </>
   );

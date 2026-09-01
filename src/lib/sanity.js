@@ -2,7 +2,6 @@ import { createClient } from "@sanity/client";
 
 const projectId = import.meta.env.VITE_SANITY_PROJECT_ID;
 const dataset = import.meta.env.VITE_SANITY_DATASET;
-
 export const sanityClient = projectId && dataset
     ? createClient({
         projectId,
@@ -12,9 +11,16 @@ export const sanityClient = projectId && dataset
     })
     : null;
 
+export const createSanityWriteClient = (token) => projectId && dataset && token
+    ? createClient({ projectId, dataset, apiVersion: "2025-01-01", useCdn: false, token })
+    : null;
+
 export const galleryPhotosQuery = `*[_type == "galleryPhoto"] | order(_createdAt desc) {
     _id,
     title,
     href,
-    image
+    image,
+    "width": image.asset->metadata.dimensions.width,
+    "height": image.asset->metadata.dimensions.height,
+    "assetId": image.asset._ref
 }`;

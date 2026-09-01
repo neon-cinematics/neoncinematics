@@ -1,0 +1,34 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap");
+
+.gallery-admin { min-height: 100vh; display: grid; grid-template-columns: minmax(260px, .7fr) minmax(360px, 620px); align-content: start; gap: 32px 7vw; padding: 7vw; color: #f2f1eb; background: #080a0d; font-family: "DM Sans", sans-serif; }
+.gallery-admin__intro span { color: #7de5d2; font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; }
+.gallery-admin__intro h1 { max-width: 620px; margin: 22px 0; font: 500 clamp(48px, 7vw, 96px)/.92 "Cormorant Garamond", Georgia, serif; }
+.gallery-admin__intro p { max-width: 360px; color: #9ba4a7; line-height: 1.6; }
+.gallery-admin__header, .gallery-admin__access, .gallery-admin__items, .gallery-admin__status { grid-column: 1 / -1; }
+.gallery-admin__access { max-width: 760px; padding: 20px; border: 1px solid rgba(125, 229, 210, .35); }
+.gallery-admin__access form { display: flex; gap: 14px; align-items: end; }
+.gallery-admin__access label { display: grid; flex: 1; gap: 8px; color: #f2f1eb; font-size: 13px; font-weight: 600; }
+.gallery-admin input { box-sizing: border-box; min-width: 0; padding: 13px; border: 1px solid #39434a; color: #f2f1eb; background: #080a0d; font: inherit; }
+.gallery-admin input:focus { outline: 2px solid #7de5d2; outline-offset: 2px; }
+.gallery-admin button { padding: 14px 18px; border: 0; color: #080a0d; background: #7de5d2; cursor: pointer; font: 600 12px "DM Sans", sans-serif; letter-spacing: 1px; text-transform: uppercase; }
+.gallery-admin button:disabled { cursor: not-allowed; opacity: .4; }
+.gallery-admin__security, .gallery-admin__empty { margin: 12px 0 0; color: #889396; font-size: 12px; }
+.gallery-admin__form { display: grid; gap: 22px; padding: 30px; border: 1px solid rgba(242, 241, 235, .2); background: #10151b; }
+.gallery-admin__form h2, .gallery-admin__items h2 { margin: 0; font: 500 30px "Cormorant Garamond", Georgia, serif; }
+.gallery-admin__dropzone { display: grid; place-items: center; gap: 12px; min-height: 190px; border: 1px dashed #526168; color: #9ba4a7; text-align: center; cursor: pointer; }
+.gallery-admin__dropzone input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.gallery-admin__dropzone strong { color: #7de5d2; font-size: 13px; font-weight: 600; letter-spacing: .8px; text-transform: uppercase; }
+.gallery-admin__items { border-top: 1px solid rgba(242, 241, 235, .2); padding-top: 22px; }
+.gallery-admin__items-heading { display: flex; justify-content: space-between; gap: 18px; align-items: center; }
+.gallery-admin__items-heading h2 small { color: #7de5d2; font: 400 14px "DM Sans", sans-serif; }
+.gallery-admin__items-heading > div { display: flex; flex-wrap: wrap; gap: 8px; justify-content: end; }
+.gallery-admin__items-heading > div button:first-child { color: #f2f1eb; background: #293238; }
+.gallery-admin__delete { color: #f0b8bc !important; border: 1px solid #9d5c63 !important; background: transparent !important; }
+.gallery-admin__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; margin-top: 22px; }
+.gallery-admin__item { position: relative; display: block; aspect-ratio: 1.35; overflow: hidden; border: 1px solid rgba(242, 241, 235, .14); background: #10151b; cursor: pointer; }
+.gallery-admin__item input { position: absolute; top: 10px; left: 10px; z-index: 1; width: 18px; height: 18px; accent-color: #7de5d2; cursor: pointer; }
+.gallery-admin__item img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .3s ease, opacity .3s ease; }
+.gallery-admin__item.is-selected { border: 2px solid #7de5d2; }
+.gallery-admin__item.is-selected img { opacity: .65; transform: scale(1.05); }
+.gallery-admin__status { min-height: 20px; margin: 0; color: #9ba4a7; font-size: 13px; }
+@media (max-width: 760px) { .gallery-admin { grid-template-columns: 1fr; gap: 28px; padding: 32px 20px; } .gallery-admin__access form { display: grid; } .gallery-admin__form { padding: 22px; } .gallery-admin__items-heading { align-items: start; flex-direction: column; } .gallery-admin__items-heading > div { justify-content: start; } }
