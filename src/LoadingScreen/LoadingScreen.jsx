@@ -1,73 +1,62 @@
 import { useEffect, useState } from "react";
 import "./LoadingScreen.css";
 
-function LoadingScreen({ onComplete }) {
+function LoadingScreen({ onComplete, assetsLoaded = true }) {
 const [progress, setProgress] = useState(0);
 const [isExiting, setIsExiting] = useState(false);
 
+  const [phase, setPhase] = useState(1);
+
   useEffect(() => {
     let animationFrame;
-    let pauseTimer;
-
     const firstPhaseDuration = 200;
-    const secondPhaseDuration = 600;
-
     const startTime = performance.now();
 
     const animateTo90 = (currentTime) => {
       const elapsed = currentTime - startTime;
-
-      const percentage = Math.min(
-        85,
-        Math.floor((elapsed / firstPhaseDuration) * 90)
-      );
-
+      const percentage = Math.min(85, Math.floor((elapsed / firstPhaseDuration) * 90));
       setProgress(percentage);
 
       if (percentage < 85) {
         animationFrame = requestAnimationFrame(animateTo90);
       } else {
-        // Stay at 85% for exactly 1 second
-        pauseTimer = setTimeout(() => {
-          const secondStart = performance.now();
-
-          const animateTo100 = (time) => {
-            const elapsed = time - secondStart;
-
-            const percentage = Math.min(
-              100,
-              85 + Math.floor(
-                (elapsed / secondPhaseDuration) * 15
-              )
-            );
-
-            setProgress(percentage);
-
-            if (percentage < 100) {
-              animationFrame = requestAnimationFrame(animateTo100);
-            } else {
-              setTimeout(() => {
-  setIsExiting(true);
-
-  setTimeout(() => {
-    onComplete();
-  }, 900);
-}, 400);
-            }
-          };
-
-          animationFrame = requestAnimationFrame(animateTo100);
-        }, 1000);
+        setPhase(2);
       }
     };
 
     animationFrame = requestAnimationFrame(animateTo90);
 
-    return () => {
-      cancelAnimationFrame(animationFrame);
-      clearTimeout(pauseTimer);
-    };
-  }, [onComplete]);
+    return () => cancelAnimationFrame(animationFrame);
+  }, []);
+
+  useEffect(() => {
+    if (phase === 2 && assetsLoaded) {
+      let animationFrame;
+      const secondPhaseDuration = 600;
+      const secondStart = performance.now();
+
+      const animateTo100 = (time) => {
+        const elapsed = time - secondStart;
+        const percentage = Math.min(100, 85 + Math.floor((elapsed / secondPhaseDuration) * 15));
+        setProgress(percentage);
+
+        if (percentage < 100) {
+          animationFrame = requestAnimationFrame(animateTo100);
+        } else {
+          setTimeout(() => {
+            setIsExiting(true);
+            setTimeout(() => {
+              onComplete();
+            }, 900);
+          }, 400);
+        }
+      };
+
+      animationFrame = requestAnimationFrame(animateTo100);
+
+      return () => cancelAnimationFrame(animationFrame);
+    }
+  }, [phase, assetsLoaded, onComplete]);
 
   const totalBlocks = 32;
 
