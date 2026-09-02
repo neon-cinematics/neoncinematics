@@ -44,3 +44,8 @@ export const teamMembersQuery = `*[_type == "teamMember"] | order(_createdAt asc
     "height": image.asset->metadata.dimensions.height,
     "assetId": image.asset._ref
 }`;
+
+export const aboutUsVideoQuery = `*[_type == "aboutUsVideo"] | order(_updatedAt desc)[0] {
+    _id,
+    "videoUrl": video.asset->url
+}`;

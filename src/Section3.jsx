@@ -3,7 +3,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar/Navbar";
-import { sanityClient, teamMembersQuery } from "./lib/sanity";
+import { sanityClient, teamMembersQuery, aboutUsVideoQuery } from "./lib/sanity";
 import { sanityImageUrl } from "./lib/sanityImage";
 import WarpText from "./components/ReactBits/WarpText";
 import FoldText from "./components/ReactBits/FoldText";
@@ -21,6 +21,8 @@ const Section3 = () => {
         secondYear: [],
         firstYear: []
     });
+    const magneticRef = useRef();
+    const [bgVideo, setBgVideo] = useState(null);
 
     useEffect(() => {
         const fetchTeam = async () => {
@@ -34,8 +36,13 @@ const Section3 = () => {
                     firstYear: data.filter(m => m.category === "1st Year")
                 };
                 setMembers(grouped);
+
+                const videoData = await sanityClient.fetch(aboutUsVideoQuery);
+                if (videoData?.videoUrl) {
+                    setBgVideo(videoData.videoUrl);
+                }
             } catch (err) {
-                console.error("Failed to fetch team members", err);
+                console.error("Failed to fetch data", err);
             }
         };
         fetchTeam();
@@ -114,6 +121,34 @@ const Section3 = () => {
         window.addEventListener("wheel", handleScroll, { passive: false });
         window.addEventListener("touchstart", handleTouchStart, { passive: true });
         window.addEventListener("touchmove", handleTouchMove, { passive: false });
+
+        // Magnetic effect
+        const magneticEl = magneticRef.current;
+        const handleMouseMoveMag = (e) => {
+            if (!magneticEl) return;
+            const rect = magneticEl.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            gsap.to(magneticEl, {
+                x: x * 0.1,
+                y: y * 0.1,
+                duration: 1,
+                ease: "power3.out"
+            });
+        };
+        const handleMouseLeaveMag = () => {
+            if (!magneticEl) return;
+            gsap.to(magneticEl, {
+                x: 0,
+                y: 0,
+                duration: 1.5,
+                ease: "elastic.out(1, 0.3)"
+            });
+        };
+        if (magneticEl) {
+            magneticEl.addEventListener("mousemove", handleMouseMoveMag);
+            magneticEl.addEventListener("mouseleave", handleMouseLeaveMag);
+        }
 
         const cardListeners = [];
         const cardWrappers = gsap.utils.toArray(".team-member-card-wrapper");
@@ -194,6 +229,10 @@ const Section3 = () => {
             window.removeEventListener("wheel", handleScroll);
             window.removeEventListener("touchstart", handleTouchStart);
             window.removeEventListener("touchmove", handleTouchMove);
+            if (magneticEl) {
+                magneticEl.removeEventListener("mousemove", handleMouseMoveMag);
+                magneticEl.removeEventListener("mouseleave", handleMouseLeaveMag);
+            }
             cardListeners.forEach(({ wrapper, handleMouseMove, handleMouseLeave }) => {
                 wrapper.removeEventListener("mousemove", handleMouseMove);
                 wrapper.removeEventListener("mouseleave", handleMouseLeave);
@@ -247,36 +286,48 @@ const Section3 = () => {
             <Navbar />
 
             <section className="about-intro">
-                <div className="about-title-wrapper" style={{ width: '100%', maxWidth: '800px', marginBottom: '1rem' }}>
-                    <WarpText
-                        text="About Us"
-                        color="rgb(236, 220, 220)"
-                        warpStrength={0.08}
-                        warpScale={1.7}
-                        speed={0.55}
-                        pointerInfluence={0.42}
-                        pointerStrength={0.38}
-                        refraction={0.018}
-                        ripple={true}
-                        fontSize="clamp(4rem, 10vw, 7rem)"
-                        fontWeight={800}
-                        fontFamily="'Inter', system-ui, -apple-system, sans-serif"
-                        letterSpacing="4px"
-                        style={{ height: '120px' }}
+                {bgVideo && (
+                    <video 
+                        autoPlay 
+                        loop 
+                        muted 
+                        playsInline 
+                        className="about-bg-video"
+                        src={bgVideo}
                     />
+                )}
+                <div ref={magneticRef} className="about-text-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'default' }}>
+                    <div className="about-title-wrapper" style={{ width: '100%', maxWidth: '800px', marginBottom: '1rem' }}>
+                        <WarpText
+                            text="About Us"
+                            color="rgb(236, 220, 220)"
+                            warpStrength={0.08}
+                            warpScale={1.7}
+                            speed={0.55}
+                            pointerInfluence={0.42}
+                            pointerStrength={0.38}
+                            refraction={0.018}
+                            ripple={true}
+                            fontSize="clamp(4rem, 10vw, 7rem)"
+                            fontWeight={800}
+                            fontFamily="'Inter', system-ui, -apple-system, sans-serif"
+                            letterSpacing="4px"
+                            style={{ height: '120px' }}
+                        />
+                    </div>
+                    <ScrambledText
+                        className="scrambled-text-demo"
+                        radius={90}
+                        duration={1}
+                        speed={0.3}
+                        scrambleChars=".:;*^%"
+                    >
+                        Neon Cinematics is the creative heartbeat of visual storytelling. We are a passionate collective 
+                        of filmmakers, cinematographers, and visionaries dedicated to capturing the unseen and the unforgettable. 
+                        From conceptualizing groundbreaking ideas to executing them with precision, we turn ordinary moments 
+                        into cinematic masterpieces. Dive into our world, where every frame tells a story.
+                    </ScrambledText>
                 </div>
-                <ScrambledText
-                    className="scrambled-text-demo"
-                    radius={90}
-                    duration={1}
-                    speed={0.3}
-                    scrambleChars=".:;*^%"
-                >
-                    Neon Cinematics is the creative heartbeat of visual storytelling. We are a passionate collective 
-                    of filmmakers, cinematographers, and visionaries dedicated to capturing the unseen and the unforgettable. 
-                    From conceptualizing groundbreaking ideas to executing them with precision, we turn ordinary moments 
-                    into cinematic masterpieces. Dive into our world, where every frame tells a story.
-                </ScrambledText>
             </section>
 
             <div style={{ width: '100vw', marginLeft: 'calc(-50vw + 50%)', marginTop: '2rem', marginBottom: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem', overflow: 'hidden' }}>

@@ -1,13 +1,29 @@
 .about-section {
     min-height: 100vh;
-    background: #040508;
+    background: transparent;
     color: white;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    overflow-x: hidden;
+    overflow-x: clip;
+    position: relative;
+}
+
+.about-bg-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+    opacity: 0.8;
+    pointer-events: none;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
 }
 
 /* About Us Intro */
 .about-intro {
+    min-height: 100vh;
     padding-top: 15vh;
     padding-bottom: 2rem;
     display: flex;
@@ -19,6 +35,14 @@
     text-align: center;
     position: relative;
     background: radial-gradient(circle at center, rgba(0, 180, 255, 0.05) 0%, transparent 70%);
+}
+
+.about-text-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    filter: drop-shadow(0 4px 15px rgba(0,0,0,0.8));
+    z-index: 2;
 }
 
 .about-intro h1 {
@@ -92,7 +116,9 @@
 
 /* Base Team Member Card */
 .team-member-card {
-    background: #06080d;
+    background: rgba(6, 8, 13, 0.7);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 8px;
     overflow: hidden;
@@ -130,13 +156,13 @@
     left: 0;
     width: 100%;
     height: 50px;
-    background: linear-gradient(to bottom, transparent, #06080d);
+    background: linear-gradient(to bottom, transparent, rgba(6, 8, 13, 0.7));
     pointer-events: none;
     transition: background 0.3s ease;
 }
 
 .team-member-card:hover .team-member-info::before {
-    background: linear-gradient(to bottom, transparent, #080b12);
+    background: linear-gradient(to bottom, transparent, rgba(8, 11, 18, 0.8));
 }
 
 .show-on-hover .position-wrapper {

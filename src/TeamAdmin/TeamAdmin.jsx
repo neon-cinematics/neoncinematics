@@ -17,10 +17,10 @@ const TeamAdmin = () => {
     const [category, setCategory] = useState(CATEGORIES[0]);
     const [file, setFile] = useState(null);
     
-    // Cropping states
     const [imageSrc, setImageSrc] = useState(null);
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
+    const [rotation, setRotation] = useState(0);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
     
     const [status, setStatus] = useState("");
@@ -60,6 +60,7 @@ const TeamAdmin = () => {
                 // reset crop defaults
                 setCrop({ x: 0, y: 0 });
                 setZoom(1);
+                setRotation(0);
             });
             reader.readAsDataURL(selected);
         }
@@ -72,7 +73,7 @@ const TeamAdmin = () => {
     const handleSaveCrop = async (e) => {
         e.preventDefault();
         try {
-            const croppedFile = await getCroppedImg(imageSrc, croppedAreaPixels, "cropped-team-member.jpg");
+            const croppedFile = await getCroppedImg(imageSrc, croppedAreaPixels, rotation, "cropped-team-member.jpg");
             setFile(croppedFile);
             setImageSrc(null);
             setStatus("Image cropped and ready to save.");
@@ -210,23 +211,40 @@ const TeamAdmin = () => {
                                     image={imageSrc}
                                     crop={crop}
                                     zoom={zoom}
+                                    rotation={rotation}
                                     aspect={1 / 1.25}
                                     onCropChange={setCrop}
                                     onCropComplete={onCropComplete}
                                     onZoomChange={setZoom}
+                                    onRotationChange={setRotation}
                                 />
                             </div>
+                            <p className="crop-hint">Images are cropped to a strict 1:1.25 portrait aspect ratio.</p>
                             <div className="crop-controls">
-                                <label>Zoom</label>
-                                <input
-                                    type="range"
-                                    value={zoom}
-                                    min={1}
-                                    max={3}
-                                    step={0.1}
-                                    onChange={(e) => setZoom(e.target.value)}
-                                    className="zoom-range"
-                                />
+                                <div className="crop-control-group">
+                                    <label>Zoom</label>
+                                    <input
+                                        type="range"
+                                        value={zoom}
+                                        min={1}
+                                        max={3}
+                                        step={0.1}
+                                        onChange={(e) => setZoom(e.target.value)}
+                                        className="styled-range"
+                                    />
+                                </div>
+                                <div className="crop-control-group">
+                                    <label>Rotate</label>
+                                    <input
+                                        type="range"
+                                        value={rotation}
+                                        min={-180}
+                                        max={180}
+                                        step={1}
+                                        onChange={(e) => setRotation(e.target.value)}
+                                        className="styled-range"
+                                    />
+                                </div>
                             </div>
                             <div className="crop-modal-actions">
                                 <button type="button" onClick={handleCancelCrop} className="cancel-btn">Cancel</button>
