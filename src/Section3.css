@@ -43,6 +43,7 @@
     align-items: center;
     filter: drop-shadow(0 4px 15px rgba(0,0,0,0.8));
     z-index: 2;
+    margin-top: -40vh;
 }
 
 .about-intro h1 {
