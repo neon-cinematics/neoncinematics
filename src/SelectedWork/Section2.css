@@ -21,8 +21,6 @@
 .video-showcase-placeholder h1 { max-width: 780px; margin: 24px 0; color: #f2f1eb; font: 400 clamp(48px, 7vw, 108px)/.94 "Cormorant Garamond", Georgia, serif; letter-spacing: 0; }
 .video-showcase-placeholder p { max-width: 380px; margin: 0; color: #9ba4a7; font: 400 16px/1.6 "DM Sans", sans-serif; }
 .placeholder-line { position: relative; z-index: 1; width: min(420px, 70%); height: 1px; margin-top: 72px; background: linear-gradient(90deg, #7de5d2, transparent); }
-.video-showcase-placeholder::before { content: ""; position: absolute; inset: 7% 0 13%; border: 1px solid rgba(125, 229, 210, .2); background: linear-gradient(115deg, transparent 0 48%, rgba(125, 229, 210, .08) 48.2% 48.4%, transparent 48.6%), repeating-linear-gradient(0deg, transparent 0 42px, rgba(242, 241, 235, .035) 43px 44px); clip-path: polygon(0 7%, 74% 0, 100% 19%, 100% 92%, 18% 100%, 0 78%); }
-.video-showcase-placeholder::after { content: ""; position: absolute; right: 8%; bottom: 18%; width: 22%; height: 28%; border-left: 1px solid rgba(125, 229, 210, .4); border-bottom: 1px solid rgba(125, 229, 210, .4); transform: skew(-18deg); opacity: .7; }
 .photo_gallery { width: 100%; }
 
 /* Glow Keyframes */

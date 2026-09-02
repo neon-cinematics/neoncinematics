@@ -29,11 +29,7 @@ const VideoShowcase = () => {
     }, []);
 
     if (loading) {
-        return (
-            <div className="video-showcase-container">
-                <div className="placeholder-line" aria-hidden="true" />
-            </div>
-        );
+        return <div className="video-showcase-container"></div>;
     }
 
     if (items.length === 0) {
@@ -54,6 +50,16 @@ const VideoShowcase = () => {
                     autoplayDelay={3.5}
                 />
             </div>
+            
+            <button 
+                className="scroll-indicator" 
+                onClick={() => window.dispatchEvent(new CustomEvent('scrollDownToGallery'))}
+                aria-label="Scroll down to gallery"
+            >
+                <div className="scroll-arrow"></div>
+                <div className="scroll-arrow"></div>
+                <div className="scroll-arrow"></div>
+            </button>
         </div>
     );
 };

@@ -487,8 +487,13 @@ export default function MorphSlider({
 }) {
   const containerRef = useRef(null);
   const engineRef = useRef(null);
+  const indexRef = useRef(startIndex);
+  const itemsRef = useRef(items);
   const [index, setIndex] = useState(startIndex);
   const [hovering, setHovering] = useState(false);
+
+  indexRef.current = index;
+  itemsRef.current = items;
 
   const optsRef = useRef();
   optsRef.current = { transition, duration, ease, intensity, scale, aberration, drift, overlayColor, loop };
@@ -529,13 +534,23 @@ export default function MorphSlider({
     const el = containerRef.current;
     if (!el) return undefined;
     let startX = 0;
+    let startY = 0;
     let width = 1;
     let active = false;
+    let dragged = false;
+
+    const openCurrentVideo = () => {
+      const link = itemsRef.current?.[indexRef.current]?.videoLink;
+      if (!link) return;
+      window.open(link, '_blank', 'noopener,noreferrer');
+    };
 
     const onDown = e => {
       const rect = el.getBoundingClientRect();
       width = rect.width || 1;
       startX = e.clientX;
+      startY = e.clientY;
+      dragged = false;
       const px = (e.clientX - rect.left) / rect.width;
       const py = (e.clientY - rect.top) / rect.height;
       engineRef.current?.setPointer(px, 1 - py);
@@ -547,25 +562,41 @@ export default function MorphSlider({
       }
     };
     const onMove = e => {
+      if (Math.abs(e.clientX - startX) > 8 || Math.abs(e.clientY - startY) > 8) {
+        dragged = true;
+      }
       if (!active) return;
       const ndx = (e.clientX - startX) / width;
       engineRef.current?.drag(ndx);
     };
-    const onUp = () => {
+    const onUp = (e) => {
       if (!active) return;
       active = false;
+      const ndx = (e.clientX - startX) / width;
+      if (Math.abs(ndx) < 0.05) {
+          // If the user didn't drag much, treat it as a click
+          const currentItem = items[index];
+          if (currentItem && currentItem.videoLink) {
+              window.open(currentItem.videoLink, '_blank');
+          }
+      }
       engineRef.current?.endDrag();
+    };
+    const onPointerUp = () => {
+      const wasDragged = dragged;
+      onUp();
+      if (!wasDragged) openCurrentVideo();
     };
 
     el.addEventListener('pointerdown', onDown);
     el.addEventListener('pointermove', onMove);
-    el.addEventListener('pointerup', onUp);
+    el.addEventListener('pointerup', onPointerUp);
     el.addEventListener('pointercancel', onUp);
 
     return () => {
       el.removeEventListener('pointerdown', onDown);
       el.removeEventListener('pointermove', onMove);
-      el.removeEventListener('pointerup', onUp);
+      el.removeEventListener('pointerup', onPointerUp);
       el.removeEventListener('pointercancel', onUp);
     };
   }, []);
@@ -624,16 +655,6 @@ export default function MorphSlider({
         </div>
       )}
 
-      {/* Hover "Watch This" button */}
-      <a 
-        href={currentItem?.videoLink || '#'} 
-        target="_blank" 
-        rel="noopener noreferrer"
-        className={`morph-slider-watch-btn ${hovering ? 'visible' : ''}`}
-        aria-label="Watch video"
-      >
-        Watch This
-      </a>
 
       {showControls && (
         <div className="morph-slider-controls">
