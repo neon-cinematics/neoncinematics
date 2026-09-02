@@ -21,7 +21,6 @@
     -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
 }
 
-/* About Us Intro */
 .about-intro {
     min-height: 100vh;
     padding-top: 15vh;
@@ -149,7 +148,7 @@
     position: relative;
 }
 
-/* Subtle gradient fade to smoothly merge image into text area */
+
 .team-member-info::before {
     content: '';
     position: absolute;
