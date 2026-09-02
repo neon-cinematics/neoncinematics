@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
 import "./DriftWall.css";
-import Galaxy from "./Galaxy";
+import AuroraBackground from "./AuroraBackground";
 
 const getCardPosition = (index) => {
     if (index === 0) return [0, 0, 0, 0];
@@ -66,6 +66,8 @@ const DriftWall = ({
         };
     }, [cardPositions]);
 
+    const transitionThreshold = depthBounds.min + (depthBounds.max - depthBounds.min) * 0.8;
+
     useEffect(() => {
         if (!initialDepthSetRef.current && depthBounds.startDepth !== undefined) {
             cameraDepthRef.current = depthBounds.startDepth;
@@ -98,7 +100,7 @@ const DriftWall = ({
             const depthRange = Math.max(Math.abs(depthBounds.min), Math.abs(depthBounds.max));
             const depthProgress = Math.min(1, Math.abs(cameraDepthRef.current) / depthRange);
             const depthSensitivity = 1 + Math.pow(depthProgress, 0.82) * 2.2;
-            const isParallaxActive = parallaxEnabled && selected < 0;
+            const isParallaxActive = parallaxEnabled;
             const targetX = (isParallaxActive ? pointerRef.current.x : 0) * depthSensitivity;
             const targetY = (isParallaxActive ? pointerRef.current.y : 0) * depthSensitivity;
             currentRef.current.x += (targetX - currentRef.current.x) * 0.08;
@@ -174,9 +176,10 @@ const DriftWall = ({
 
         const x = event.clientX / bounds.width - (bounds.left / bounds.width) - 0.5;
         const y = event.clientY / bounds.height - (bounds.top / bounds.height) - 0.5;
+        const sensitivity = selected >= 0 ? mouseSensitivity * 0.4 : mouseSensitivity;
         pointerRef.current = {
-            x: y * -mouseSensitivity * 0.8,
-            y: x * mouseSensitivity,
+            x: y * -sensitivity * 0.8,
+            y: x * sensitivity,
             viewX: x * 3.6,
             viewY: y * 2.8,
             zoomZ: Math.sqrt((x * x) + (y * y)) * 22,
@@ -186,7 +189,7 @@ const DriftWall = ({
             const [cardX, cardY] = getCardPosition(index);
             const distance = Math.min(1, Math.hypot(cardX / 65 - x, cardY / 65 - y));
             const layerDistance = Math.min(1, Math.abs(index - Math.round((x + 0.5) * Math.max(cards.length - 1, 1))) / 10);
-            const focusDistance = Math.min(1, distance * 0.42 + layerDistance * 0.18);
+            const focusDistance = selected === index ? 0 : Math.min(1, distance * 0.42 + layerDistance * 0.18);
             card.style.setProperty("--viewer-blur", `${focusDistance * 1.8}px`);
             card.style.setProperty("--viewer-opacity", "1");
         });
@@ -219,7 +222,7 @@ const DriftWall = ({
     const handleWheel = (event) => {
         event.preventDefault();
         event.stopPropagation();
-        if (Math.abs(event.deltaY) < 8 || isTransitioning) return;
+        if (Math.abs(event.deltaY) < 8 || isTransitioning || selected >= 0) return;
 
         // If deltaY is positive, we zoom OUT (nextDepth decreases).
         // To zoom IN, user scrolls UP (deltaY is negative, nextDepth increases).
@@ -227,7 +230,12 @@ const DriftWall = ({
         // Actually, let's reverse the wheel direction so scrolling DOWN zooms IN (more intuitive).
         const nextDepth = cameraDepthRef.current + event.deltaY * 1.5;
 
-        if (cameraDepthRef.current >= depthBounds.max && event.deltaY > 0) {
+        if (cameraDepthRef.current <= depthBounds.min && event.deltaY < 0) {
+            window.dispatchEvent(new CustomEvent("galleryScrollUp"));
+            return;
+        }
+
+        if (cameraDepthRef.current >= transitionThreshold && event.deltaY > 0) {
             setIsTransitioning(true);
             gsap.to(wallRef.current, {
                 opacity: 0,
@@ -267,7 +275,7 @@ const DriftWall = ({
     };
 
     return <div className="parallax-cards-shell"><div ref={wallRef} className={`parallax-cards${visible ? " is-visible" : ""}${selected >= 0 ? " has-selection" : ""} ${className}`} style={{ "--perspective": `${perspective}px`, "--camera-z": "0px", "--cursor-z": "0px", "--view-x": "0px", "--view-y": "0px", "--card-width": cardWidth ? `${cardWidth}px` : undefined, "--card-height": cardHeight ? `${cardHeight}px` : undefined, "--duration": `${animationDuration}s`, "--fog": enableDepthFog ? fogIntensity : 0 }} onPointerDown={handlePointerDown} onPointerUp={handlePointerUp} onPointerMove={handlePointerMove} onWheelCapture={handleWheel} onTouchMove={(event) => event.preventDefault()} onPointerLeave={() => { pointerRef.current = { x: 0, y: 0, zoomZ: 0 }; isDraggingRef.current = false; if (!parallaxEnabled) { wallRef.current?.style.setProperty("cursor", "grab"); } else { wallRef.current?.style.setProperty("--magnetic-x", "0px"); wallRef.current?.style.setProperty("--magnetic-y", "0px"); wallRef.current?.style.setProperty("--cursor-z", "0px"); } }} role="group" aria-label="Selected work gallery">
-        <Galaxy density={1.35} speed={0.12} glowIntensity={0.8} saturation={0.75} />
+        <AuroraBackground />
         <div className="parallax-cards__stage">
             {cards.map((item, index) => {
                 const [x, y, z, rotate] = cardPositions[index];
@@ -279,7 +287,7 @@ const DriftWall = ({
                 return item.href ? <a {...props} href={item.href} target="_blank" rel="noreferrer noopener" key={`${item.image}-${index}`}>{card}</a> : <button {...props} type="button" aria-label={item.title || "Open gallery image"} key={`${item.image}-${index}`}>{card}</button>;
             })}
         </div>
-    </div><button className="parallax-close-button" style={{ opacity: selected >= 0 ? 1 : 0, pointerEvents: selected >= 0 ? "auto" : "none", transition: "opacity 0.3s ease" }} type="button" onClick={() => setSelected(-1)} aria-label="Close image">Esc</button><div className="parallax-controls" style={{ opacity: selected >= 0 ? 0 : 1, pointerEvents: "none", transition: "opacity 0.3s ease" }}><button className={`parallax-toggle${parallaxEnabled ? " is-on" : ""}`} type="button" style={{ pointerEvents: selected >= 0 ? "none" : "auto" }} onClick={handleParallaxToggle} aria-pressed={parallaxEnabled}>{parallaxEnabled ? "Parallax on" : "Parallax off"}</button><label className="parallax-depth-control" style={{ pointerEvents: selected >= 0 ? "none" : "auto" }}><input type="range" min={depthBounds.min} max={depthBounds.max} value={cameraDepth} onChange={handleDepthChange} aria-label="Move through image depth" /></label></div></div>;
+    </div><button className="parallax-close-button" style={{ opacity: selected >= 0 ? 1 : 0, pointerEvents: selected >= 0 ? "auto" : "none", transition: "opacity 0.3s ease" }} type="button" onClick={() => setSelected(-1)} aria-label="Close image">Esc</button><div className="parallax-controls" style={{ opacity: selected >= 0 ? 0 : 1, pointerEvents: "none", transition: "opacity 0.3s ease" }}><button className={`parallax-toggle${parallaxEnabled ? " is-on" : ""}`} type="button" style={{ pointerEvents: selected >= 0 ? "none" : "auto" }} onClick={handleParallaxToggle} aria-pressed={parallaxEnabled}>{parallaxEnabled ? "Parallax on" : "Parallax off"}</button><label className="parallax-depth-control" style={{ pointerEvents: selected >= 0 ? "none" : "auto" }}><input type="range" min={depthBounds.min} max={transitionThreshold} value={cameraDepth} onChange={handleDepthChange} aria-label="Move through image depth" /></label></div></div>;
 };
 
 export default DriftWall;

@@ -1,0 +1,73 @@
+.aurora-container {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #040508;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.aurora-blob {
+    position: absolute;
+    filter: blur(100px);
+    opacity: 0.7;
+    border-radius: 50%;
+    animation: aurora-move 15s infinite alternate ease-in-out;
+}
+
+.aurora-blob-1 {
+    top: -20%;
+    left: -10%;
+    width: 60vw;
+    height: 60vh;
+    background: radial-gradient(circle, rgba(125,229,210,0.3) 0%, rgba(125,229,210,0) 70%);
+    animation-delay: 0s;
+}
+
+.aurora-blob-2 {
+    bottom: -20%;
+    right: -10%;
+    width: 70vw;
+    height: 70vh;
+    background: radial-gradient(circle, rgba(0,180,255,0.25) 0%, rgba(0,180,255,0) 70%);
+    animation-delay: -5s;
+    animation-duration: 20s;
+}
+
+.aurora-blob-3 {
+    top: 30%;
+    left: 40%;
+    width: 50vw;
+    height: 50vh;
+    background: radial-gradient(circle, rgba(255,120,0,0.1) 0%, rgba(255,120,0,0) 70%);
+    animation-delay: -10s;
+    animation-duration: 18s;
+}
+
+.aurora-blob-4 {
+    top: 50%;
+    left: -20%;
+    width: 80vw;
+    height: 60vh;
+    background: radial-gradient(circle, rgba(125,229,210,0.15) 0%, rgba(125,229,210,0) 70%);
+    animation-delay: -12s;
+    animation-duration: 25s;
+}
+
+.aurora-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.12;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+}
+
+@keyframes aurora-move {
+    0% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(8vw, -12vh) scale(1.1); }
+    66% { transform: translate(-10vw, 8vh) scale(0.9); }
+    100% { transform: translate(5vw, 5vh) scale(1.05); }
+}
