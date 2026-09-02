@@ -330,8 +330,9 @@ const Section3 = () => {
                 </div>
             </section>
 
-            <div style={{ width: '100vw', marginLeft: 'calc(-50vw + 50%)', marginTop: '2rem', marginBottom: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem', overflow: 'hidden' }}>
-                <CurvedLoop 
+            <div style={{ marginTop: '-40vh', position: 'relative', zIndex: 1 }}>
+                <div style={{ width: '100vw', marginLeft: 'calc(-50vw + 50%)', marginTop: '2rem', marginBottom: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem', overflow: 'hidden' }}>
+                    <CurvedLoop 
                     marqueeText="Make ✦ Something ✦ Worth ✦ Remembering ✦ "
                     speed={3}
                     curveAmount={160}
@@ -384,6 +385,7 @@ const Section3 = () => {
                 </h2>
                 {renderTeamGrid(members.firstYear, 'team-grid--1st-year show-on-hover')}
             </section>
+            </div>
         </div>
     );
 };
