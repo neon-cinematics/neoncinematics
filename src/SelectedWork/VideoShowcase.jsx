@@ -73,7 +73,7 @@ const VideoShowcase = () => {
                     drift={0.4}
                     autoplay={true}
                     scale={0.8}
-                    autoplayDelay={3.5}
+                    autoplayDelay={2}
                 />
             </div>
         </div>
