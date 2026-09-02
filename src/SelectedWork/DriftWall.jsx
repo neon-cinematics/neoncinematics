@@ -62,7 +62,7 @@ const DriftWall = ({
         return {
             min: -maxZ - padding,
             max: -minZ + padding + 720,
-            startDepth: -maxZ - 400
+            startDepth: -maxZ - 1400
         };
     }, [cardPositions]);
 
