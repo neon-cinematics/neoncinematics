@@ -7,6 +7,7 @@ import GalleryAdmin from "./GalleryAdmin/GalleryAdmin";
 import VideoAdmin from "./VideoAdmin/VideoAdmin";
 import TeamAdmin from "./TeamAdmin/TeamAdmin";
 import Section3 from "./Section3";
+import CrtTVDisplay from "./components/CrtTVDisplay/CrtTVDisplay";
 import { Routes, Route, useLocation } from "react-router-dom";
 
 
@@ -46,7 +47,6 @@ const App = () => {
       }
     };
 
-    // Failsafe: max 10 seconds loading time
     timeoutId = setTimeout(() => {
       setAssetsLoaded(true);
     }, 10000);
@@ -56,7 +56,7 @@ const App = () => {
         const img = new Image();
         img.src = asset.url;
         img.onload = checkComplete;
-        img.onerror = checkComplete; // proceed even if error to avoid infinite loading
+        img.onerror = checkComplete; 
       } else if (asset.type === 'video') {
         const video = document.createElement('video');
         video.src = asset.url;
@@ -72,15 +72,18 @@ const App = () => {
     <>
       {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} assetsLoaded={assetsLoaded} />}
 
+      <CrtTVDisplay />
       <ScrollToTop />
-      <Routes>
-        <Route path="/" element={<Section1 />} />
-        <Route path="/work" element={<Section2 />} />
-        <Route path="/aboutUs" element={<Section3 />} />
-        <Route path="/gallery-admin" element={<GalleryAdmin />} />
-        <Route path="/video-admin" element={<VideoAdmin />} />
-        <Route path="/team-admin" element={<TeamAdmin />} />
-      </Routes>
+      <div className="crt-screen-wrapper">
+        <Routes>
+          <Route path="/" element={<Section1 />} />
+          <Route path="/work" element={<Section2 />} />
+          <Route path="/aboutUs" element={<Section3 />} />
+          <Route path="/gallery-admin" element={<GalleryAdmin />} />
+          <Route path="/video-admin" element={<VideoAdmin />} />
+          <Route path="/team-admin" element={<TeamAdmin />} />
+        </Routes>
+      </div>
     </>
   );
 };
