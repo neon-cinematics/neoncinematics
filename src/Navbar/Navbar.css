@@ -13,13 +13,18 @@
 }
 
 
+#nav_logo {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    pointer-events: auto;
+}
+
 #logo{
     display: flex;
     align-items: center;
     height: 100%;
-    padding: 5px;
-    padding-left: 66px;
-    scale: 2.8;
+    padding: 0 0 0 28px;
 }
 
 #neon_text{
@@ -40,9 +45,13 @@
 }
 
 #logo img{
-    height: 62px;
+    display: block;
+    height: 42px;
     width: auto;
+    max-height: 70%;
     object-fit: contain;
+    object-position: left center;
+    image-rendering: pixelated;
 }
 #logo img:hover{ /*some issue here with hover -> not responding*/
     cursor: pointer;
