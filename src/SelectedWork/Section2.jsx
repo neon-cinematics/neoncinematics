@@ -28,11 +28,25 @@ const Section2 = () => {
             // Jump instantly to gallery
             const targetElement = gallerySectionRef.current;
             if (targetElement) {
-                window.scrollTo(0, targetElement.offsetTop);
+                // Small timeout ensures it happens after browser layout
+                setTimeout(() => {
+                    window.scrollTo(0, targetElement.offsetTop);
+                    // Silently clear the state in the browser history 
+                    // so a hard reload later brings us to the top, without causing a React re-render right now.
+                    if (window.history.state && window.history.state.usr) {
+                        const newState = { ...window.history.state, usr: null };
+                        window.history.replaceState(newState, '');
+                    }
+                }, 50);
             }
         } else {
-            window.scrollTo(0, 0);
+            setTimeout(() => window.scrollTo(0, 0), 50);
         }
+
+        const onBeforeUnload = () => {
+            window.scrollTo(0, 0);
+        };
+        window.addEventListener("beforeunload", onBeforeUnload);
 
         const snapTo = (section, leavingRoute = false) => {
             if (isSnapping) return;
@@ -115,6 +129,7 @@ const Section2 = () => {
             window.removeEventListener("touchmove", handleTouchMove);
             window.removeEventListener("galleryScrollUp", handleGalleryScrollUp);
             window.removeEventListener("scrollDownToGallery", handleScrollDownToGallery);
+            window.removeEventListener("beforeunload", onBeforeUnload);
         };
     }, { scope: containerRef });
 

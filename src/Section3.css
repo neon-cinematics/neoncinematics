@@ -1,0 +1,241 @@
+.about-section {
+    min-height: 100vh;
+    background: #040508;
+    color: white;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+}
+
+/* About Us Intro */
+.about-intro {
+    padding-top: 15vh;
+    padding-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-left: 10%;
+    padding-right: 10%;
+    text-align: center;
+    position: relative;
+    background: radial-gradient(circle at center, rgba(0, 180, 255, 0.05) 0%, transparent 70%);
+}
+
+.about-intro h1 {
+    font-size: 4rem;
+    margin-bottom: 2rem;
+    background: linear-gradient(135deg, #7de5d2, #68b8e3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+}
+
+.about-intro p {
+    font-size: 1.3rem;
+    line-height: 1.8;
+    max-width: 800px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.scroll-indicator {
+    position: absolute;
+    bottom: 5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+    transition: color 0.3s ease;
+}
+
+.scroll-indicator:hover {
+    color: #ffffff;
+}
+
+.scroll-indicator-text {
+    font-size: 0.8rem;
+    font-family: 'DM Sans', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    font-weight: 500;
+}
+
+.scroll-indicator-line {
+    width: 2px;
+    height: 60px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.4), transparent);
+    border-radius: 2px;
+}
+
+/* Team Hierarchy Sections */
+.team-hierarchy-section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem 5%;
+    position: relative;
+}
+
+.team-hierarchy-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: white;
+    text-align: center;
+    letter-spacing: 2px;
+    font-weight: 300;
+}
+
+/* Base Team Member Card */
+.team-member-card {
+    background: #06080d;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.team-member-card:hover {
+    transform: translateY(-8px);
+    background: #080b12;
+    border-color: #00b4ff;
+    box-shadow: 0 0 20px rgba(0, 180, 255, 0.15);
+}
+
+.team-member-card img {
+    width: 100%;
+    aspect-ratio: 1 / 1.15;
+    object-fit: cover;
+}
+
+.team-member-info {
+    padding: 2rem 1.5rem;
+    text-align: center;
+    width: 100%;
+    position: relative;
+}
+
+/* Subtle gradient fade to smoothly merge image into text area */
+.team-member-info::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background: linear-gradient(to bottom, transparent, #06080d);
+    pointer-events: none;
+    transition: background 0.3s ease;
+}
+
+.team-member-card:hover .team-member-info::before {
+    background: linear-gradient(to bottom, transparent, #080b12);
+}
+
+.show-on-hover .position-wrapper {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.team-member-card:hover .position-wrapper {
+    opacity: 1;
+}
+
+.team-member-info h3 {
+    margin: 0 0 0.8rem 0;
+    font-size: 1.4rem;
+    font-family: "DM Sans", sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
+    color: white;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.team-member-info p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #7de5d2;
+}
+
+/* Coordinators Level (Massive Cards) */
+.team-grid--coordinators {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4rem;
+    max-width: 1000px;
+    width: 100%;
+}
+.team-grid--coordinators .team-member-card:hover {
+    border-color: #ff7800;
+    box-shadow: 0 0 30px rgba(255, 120, 0, 0.2);
+}
+.team-grid--coordinators img {
+    aspect-ratio: 1 / 1.25;
+}
+.team-grid--coordinators .team-member-info h3 { font-size: 2.2rem; letter-spacing: 3px; }
+.team-grid--coordinators .team-member-info p { font-size: 1.1rem; color: #ff7800; }
+
+/* 3rd Year Level (Medium Grid) */
+.team-grid--3rd-year {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 2.5rem;
+    width: 100%;
+    max-width: 1200px;
+}
+.team-grid--3rd-year .team-member-info h3 { font-size: 1.6rem; }
+.team-grid--3rd-year .team-member-card:hover {
+    border-color: #00b4ff;
+    box-shadow: 0 0 25px rgba(0, 180, 255, 0.15);
+}
+.team-grid--3rd-year .team-member-info p { color: #00b4ff; }
+
+/* 2nd Year Level (Smaller Grid) */
+.team-grid--2nd-year {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    width: 100%;
+    max-width: 1400px;
+}
+.team-grid--2nd-year .team-member-info h3 { font-size: 1.3rem; }
+.team-grid--2nd-year .team-member-info p { font-size: 0.8rem; color: #ff7800; }
+.team-grid--2nd-year .team-member-card:hover {
+    border-color: #ff7800;
+    box-shadow: 0 0 20px rgba(255, 120, 0, 0.15);
+}
+
+/* 1st Year Level (Dense Grid) */
+.team-grid--1st-year {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 1600px;
+}
+.team-grid--1st-year .team-member-info { padding: 1.5rem 1rem; }
+.team-grid--1st-year .team-member-info h3 { font-size: 1.1rem; letter-spacing: 1px; }
+.team-grid--1st-year .team-member-info p { font-size: 0.75rem; color: #00b4ff; }
+.team-grid--1st-year .team-member-card:hover {
+    border-color: #00b4ff;
+    box-shadow: 0 0 15px rgba(0, 180, 255, 0.15);
+}
+
+/* Responsive Overrides */
+@media (max-width: 768px) {
+    .team-grid--coordinators {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+    }
+    .about-intro h1 {
+        font-size: 2.5rem;
+    }
+}

@@ -33,3 +33,14 @@ export const videoThumbnailsQuery = `*[_type == "videoThumbnail"] | order(_creat
     image,
     "assetId": image.asset._ref
 }`;
+
+export const teamMembersQuery = `*[_type == "teamMember"] | order(_createdAt asc) {
+    _id,
+    name,
+    position,
+    category,
+    image,
+    "width": image.asset->metadata.dimensions.width,
+    "height": image.asset->metadata.dimensions.height,
+    "assetId": image.asset._ref
+}`;

@@ -1,4 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import MorphSlider from "./MorphSlider";
 import { sanityClient, videoThumbnailsQuery } from "../lib/sanity";
 import { sanityImageUrl } from "../lib/sanityImage";
@@ -7,6 +10,29 @@ import "./VideoShowcase.css";
 const VideoShowcase = () => {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
+    const containerRef = useRef();
+
+    useGSAP(() => {
+        gsap.registerPlugin(ScrollTrigger);
+        
+        if (items.length > 0) {
+            const timeoutId = setTimeout(() => {
+                gsap.to(".video-showcase-wrapper", {
+                    yPercent: 40,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: containerRef.current,
+                        start: "top top",
+                        end: "bottom top",
+                        scrub: true,
+                        invalidateOnRefresh: true
+                    }
+                });
+                ScrollTrigger.refresh();
+            }, 100);
+            return () => clearTimeout(timeoutId);
+        }
+    }, { scope: containerRef, dependencies: [items] });
 
     useEffect(() => {
         const fetchVideos = async () => {
@@ -37,7 +63,7 @@ const VideoShowcase = () => {
     }
 
     return (
-        <div className="video-showcase-container">
+        <div className="video-showcase-container" ref={containerRef}>
             <div className="video-showcase-wrapper">
                 <MorphSlider 
                     items={items} 
@@ -50,16 +76,6 @@ const VideoShowcase = () => {
                     autoplayDelay={3.5}
                 />
             </div>
-            
-            <button 
-                className="scroll-indicator" 
-                onClick={() => window.dispatchEvent(new CustomEvent('scrollDownToGallery'))}
-                aria-label="Scroll down to gallery"
-            >
-                <div className="scroll-arrow"></div>
-                <div className="scroll-arrow"></div>
-                <div className="scroll-arrow"></div>
-            </button>
         </div>
     );
 };

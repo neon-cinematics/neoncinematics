@@ -5,6 +5,7 @@ import Section1 from "./Home/Section1";
 import Section2 from "./SelectedWork/Section2";
 import GalleryAdmin from "./GalleryAdmin/GalleryAdmin";
 import VideoAdmin from "./VideoAdmin/VideoAdmin";
+import TeamAdmin from "./TeamAdmin/TeamAdmin";
 import Section3 from "./Section3";
 import { Routes, Route, useLocation } from "react-router-dom";
 
@@ -78,6 +79,7 @@ const App = () => {
         <Route path="/aboutUs" element={<Section3 />} />
         <Route path="/gallery-admin" element={<GalleryAdmin />} />
         <Route path="/video-admin" element={<VideoAdmin />} />
+        <Route path="/team-admin" element={<TeamAdmin />} />
       </Routes>
     </>
   );

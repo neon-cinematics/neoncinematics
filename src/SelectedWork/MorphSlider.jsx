@@ -572,19 +572,11 @@ export default function MorphSlider({
     const onUp = (e) => {
       if (!active) return;
       active = false;
-      const ndx = (e.clientX - startX) / width;
-      if (Math.abs(ndx) < 0.05) {
-          // If the user didn't drag much, treat it as a click
-          const currentItem = items[index];
-          if (currentItem && currentItem.videoLink) {
-              window.open(currentItem.videoLink, '_blank');
-          }
-      }
       engineRef.current?.endDrag();
     };
-    const onPointerUp = () => {
+    const onPointerUp = (e) => {
       const wasDragged = dragged;
-      onUp();
+      onUp(e);
       if (!wasDragged) openCurrentVideo();
     };
 
