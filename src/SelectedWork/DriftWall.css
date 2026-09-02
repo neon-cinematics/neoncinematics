@@ -2,7 +2,7 @@
 .parallax-cards-shell { width: 100%; position: relative; }
 .parallax-cards__stage { position: absolute; inset: 0; z-index: 1; transform-style: preserve-3d; transform: translate3d(calc(var(--magnetic-x) + var(--view-x)), calc(var(--magnetic-y) + var(--view-y)), calc(var(--camera-z) + var(--cursor-z))) rotateX(var(--mouse-x)) rotateY(var(--mouse-y)); transition: transform .25s ease-out; }
 .parallax-cards.has-selection { background: transparent; }
-.parallax-cards.has-selection .parallax-cards__stage::before { content: ""; position: absolute; z-index: 15; inset: 0; background: rgba(5, 8, 10, .14); backdrop-filter: blur(14px) brightness(.78); pointer-events: none; }
+.parallax-cards.has-selection .parallax-cards__stage::before { content: ""; position: absolute; z-index: 15; inset: 0; pointer-events: none; }
 .parallax-card { position: absolute; left: calc(50% + var(--x)); top: calc(50% + var(--y)); width: calc(clamp(180px, min(24vw, var(--card-width, 360px)), 360px) * var(--width-multiplier, 1)); aspect-ratio: var(--ratio, 1.5); padding: 0; border: 0; color: inherit; background: transparent; cursor: pointer; opacity: 0; transform-style: preserve-3d; transform: translate(-50%, -50%) translateZ(var(--z)) rotate(var(--rotate)); filter: blur(var(--viewer-blur, 0px)); transition: opacity .24s ease, transform var(--duration) cubic-bezier(.22,1,.36,1) calc(var(--index) * 65ms), filter .1s ease; }
 .parallax-cards.is-visible .parallax-card { opacity: calc(var(--viewer-opacity, 1) * var(--overlap-opacity, 1)); }
 .parallax-card.is-selected { opacity: 1 !important; z-index: 100; }
@@ -12,8 +12,9 @@
 .parallax-card__highlight { position: absolute; inset: -40%; background: linear-gradient(112deg, transparent 38%, rgba(255,255,255,.28) 50%, transparent 62%); opacity: 0; transform: translateX(-45%); transition: opacity .5s ease, transform .8s ease; pointer-events: none; }
 .parallax-card:hover, .parallax-card:focus-visible, .parallax-card.is-selected { z-index: 20; }
 .parallax-card:hover .parallax-card__surface, .parallax-card:focus-visible .parallax-card__surface { transform: translateZ(45px) scale(1.03) rotateX(-2deg) rotateY(2deg); border-color: rgba(125,229,210,.85); box-shadow: 0 35px 70px rgba(0,0,0,.58), 0 0 0 1px rgba(125,229,210,.35); }
-.parallax-card.is-selected { left: 50%; top: 50%; z-index: 30; width: var(--focus-width, 40vw); height: var(--focus-height, 60vh); max-width: calc(100% - 48px); max-height: calc(100% - 48px); transform: translate(calc(-50% - var(--magnetic-x) - var(--view-x)), calc(-50% - var(--magnetic-y) - var(--view-y))) translateZ(var(--focus-z, 720px)) rotate(0deg); }
-.parallax-card.is-selected .parallax-card__surface { transform: none; border: 1px solid rgba(255,255,255,.82); border-radius: 16px; background: rgba(18, 24, 28, .92); box-shadow: 0 35px 90px rgba(0,0,0,.78), 0 0 0 8px rgba(255,255,255,.05), 0 0 0 1px rgba(125,229,210,.45); }
+.parallax-card.is-selected { left: 50%; top: 50%; z-index: 30; width: var(--focus-width, 40vw); height: var(--focus-height, 60vh); max-width: calc(100% - 48px); max-height: calc(100% - 48px); transform: translate(calc(-50% - var(--magnetic-x) - var(--view-x)), calc(-50% - var(--magnetic-y) - var(--view-y))) translateZ(var(--focus-z, 720px)) rotate(0deg); transition: opacity .24s ease, transform 0.5s cubic-bezier(.22,1,.36,1), filter .1s ease; }
+.parallax-card.is-selected .parallax-card__surface { transform: none; border: none; border-radius: 16px; background: transparent; box-shadow: none; }
+.parallax-card.is-selected .parallax-card__surface::after { display: none; }
 .parallax-card.is-selected img { object-fit: contain; image-rendering: auto; }
 .parallax-cards.has-selection .parallax-card:not(.is-selected) { filter: blur(10px); opacity: 0 !important; visibility: hidden; pointer-events: none; }
 .parallax-card:hover .parallax-card__highlight, .parallax-card:focus-visible .parallax-card__highlight, .parallax-card.is-selected .parallax-card__highlight { opacity: 1; transform: translateX(45%); }
