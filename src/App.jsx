@@ -16,8 +16,10 @@ const ScrollToTop = () => {
     if ("scrollRestoration" in window.history) {
       window.history.scrollRestoration = "manual";
     }
-    window.scrollTo(0, 0);
-  }, [location.pathname]);
+    if (!location.state?.scrollToGallery) {
+        window.scrollTo(0, 0);
+    }
+  }, [location.pathname, location.state]);
 
   return null;
 };

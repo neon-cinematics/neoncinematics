@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Navbar from "../Navbar/Navbar";
@@ -9,6 +9,7 @@ import "./Section2.css";
 
 const Section2 = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const containerRef = useRef();
     const videoSectionRef = useRef();
     const gallerySectionRef = useRef();
@@ -18,11 +19,20 @@ const Section2 = () => {
             window.history.scrollRestoration = "manual";
         }
         gsap.set(containerRef.current, { opacity: 1, scale: 1, skewY: 0 });
-        window.scrollTo(0, 0);
-
+        
         let startY = 0;
-        let activeSection = 0;
+        let activeSection = location.state?.scrollToGallery ? 1 : 0;
         let isSnapping = false;
+
+        if (activeSection === 1) {
+            // Jump instantly to gallery
+            const targetElement = gallerySectionRef.current;
+            if (targetElement) {
+                window.scrollTo(0, targetElement.offsetTop);
+            }
+        } else {
+            window.scrollTo(0, 0);
+        }
 
         const snapTo = (section, leavingRoute = false) => {
             if (isSnapping) return;
@@ -35,7 +45,7 @@ const Section2 = () => {
             const scrollState = { y: start };
             gsap.to(scrollState, {
                 y: destination,
-                duration: 0.72,
+                duration: 0.6, // video to gallery container scroll duration ;)
                 ease: "power3.inOut",
                 onUpdate: () => window.scrollTo(0, scrollState.y),
                 onComplete: () => { isSnapping = false; activeSection = target; if (leavingRoute) navigate("/"); }
@@ -51,7 +61,7 @@ const Section2 = () => {
                 gsap.to(wall, {
                     '--camera-z': `${currentZ + 3500}px`,
                     opacity: 0,
-                    duration: 1.5,
+                    duration: 0.5,
                     ease: "power2.in",
                     onComplete: () => navigate("/aboutUs")
                 });
@@ -88,12 +98,23 @@ const Section2 = () => {
 
         containerRef.current.addEventListener("wheel", handleScroll, { passive: false, capture: true });
         window.addEventListener("touchstart", handleTouchStart, { passive: true });
-        window.addEventListener("touchmove", handleTouchMove, { passive: true });
+        window.addEventListener("touchmove", handleTouchMove, { passive: false });
+        
+        const handleGalleryScrollUp = () => {
+            if (activeSection === 1) snapTo(0);
+        };
+        const handleScrollDownToGallery = () => {
+            if (activeSection === 0) snapTo(1);
+        };
+        window.addEventListener("galleryScrollUp", handleGalleryScrollUp);
+        window.addEventListener("scrollDownToGallery", handleScrollDownToGallery);
 
         return () => {
             containerRef.current?.removeEventListener("wheel", handleScroll, { capture: true });
             window.removeEventListener("touchstart", handleTouchStart);
             window.removeEventListener("touchmove", handleTouchMove);
+            window.removeEventListener("galleryScrollUp", handleGalleryScrollUp);
+            window.removeEventListener("scrollDownToGallery", handleScrollDownToGallery);
         };
     }, { scope: containerRef });
 

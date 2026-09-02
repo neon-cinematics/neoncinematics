@@ -28,7 +28,7 @@ const Section3 = () => {
                 opacity: 0,
                 duration: 0.5,
                 ease: "power2.inOut",
-                onComplete: () => navigate("/work")
+                onComplete: () => navigate("/work", { state: { scrollToGallery: true } })
             });
         };
 
