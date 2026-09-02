@@ -61,18 +61,19 @@
 
 #logo img{
     display: block;
-    height: 42px;
+    padding-top: 15px;
+    height: 61px;
     width: auto;
-    max-height: 70%;
+    max-height: none;
     object-fit: contain;
     object-position: left center;
-    image-rendering: pixelated;
+    pointer-events: auto;
+    transition: transform 0.2s ease, filter 0.2s ease;
 }
-#logo img:hover{ /*some issue here with hover -> not responding*/
+#logo img:hover{
     cursor: pointer;
-    filter: drop-shadow(0 0 5px rgb(159, 107, 107));
-    transition-timing-function: ease-in-out;
-    transition-duration: 200ms;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+    transform: scale(1.05);
 }
 
 #nav_links{
