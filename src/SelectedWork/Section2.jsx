@@ -19,7 +19,7 @@ const Section2 = () => {
             window.history.scrollRestoration = "manual";
         }
         gsap.set(containerRef.current, { opacity: 1, scale: 1, skewY: 0 });
-        
+
         let startY = 0;
         let activeSection = location.state?.scrollToGallery ? 1 : 0;
         let isSnapping = false;
@@ -113,7 +113,7 @@ const Section2 = () => {
         containerRef.current.addEventListener("wheel", handleScroll, { passive: false, capture: true });
         window.addEventListener("touchstart", handleTouchStart, { passive: true });
         window.addEventListener("touchmove", handleTouchMove, { passive: false });
-        
+
         const handleGalleryScrollUp = () => {
             if (activeSection === 1) snapTo(0);
         };

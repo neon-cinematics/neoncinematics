@@ -54,7 +54,7 @@ const Section3 = () => {
         }
         window.scrollTo(0, 0);
 
-        gsap.fromTo(container.current, 
+        gsap.fromTo(container.current,
             { opacity: 0 },
             {
                 opacity: 1,
@@ -64,7 +64,7 @@ const Section3 = () => {
         );
 
         // Intro Text Animation
-        gsap.fromTo(".about-intro h1", 
+        gsap.fromTo(".about-intro h1",
             { y: 50, opacity: 0 },
             {
                 y: 0,
@@ -74,8 +74,8 @@ const Section3 = () => {
                 ease: "power3.out"
             }
         );
-        
-        gsap.fromTo(".about-intro p", 
+
+        gsap.fromTo(".about-intro p",
             { y: 30, opacity: 0 },
             {
                 y: 0,
@@ -152,7 +152,7 @@ const Section3 = () => {
 
         const cardListeners = [];
         const cardWrappers = gsap.utils.toArray(".team-member-card-wrapper");
-        
+
         // Make the info pop out in 3D
         gsap.set(".team-member-info", { transformStyle: "preserve-3d", transformOrigin: "center center", z: 30 });
         gsap.set(".team-member-card", { transformStyle: "preserve-3d", transformPerspective: 1000 });
@@ -182,16 +182,16 @@ const Section3 = () => {
                 const rect = wrapper.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
-                
+
                 const centerX = rect.width / 2;
                 const centerY = rect.height / 2;
-                
+
                 const rotateX = ((y - centerY) / centerY) * -15; // Max 15deg tilt
                 const rotateY = ((x - centerX) / centerX) * 15;
-                
+
                 const moveX = ((x - centerX) / centerX) * 15; // Magnetic drag 15px
                 const moveY = ((y - centerY) / centerY) * 15;
-                
+
                 gsap.to(card, {
                     x: moveX,
                     y: moveY,
@@ -200,7 +200,7 @@ const Section3 = () => {
                     duration: 0.5,
                     ease: "power2.out"
                 });
-                
+
                 // Extra pop for the info on hover
                 const info = card.querySelector(".team-member-info");
                 if (info) gsap.to(info, { z: 50, duration: 0.5, ease: "power2.out" });
@@ -221,7 +221,7 @@ const Section3 = () => {
 
             wrapper.addEventListener("mousemove", handleMouseMove);
             wrapper.addEventListener("mouseleave", handleMouseLeave);
-            
+
             cardListeners.push({ wrapper, handleMouseMove, handleMouseLeave });
         });
 
@@ -242,7 +242,7 @@ const Section3 = () => {
 
     const renderTeamGrid = (teamList, modifierClass) => {
         if (!teamList || teamList.length === 0) return null;
-        
+
         // Define sizes based on hierarchy to optimize Sanity Image loading
         let size = 300;
         if (modifierClass.includes('coordinators')) size = 600;
@@ -255,10 +255,10 @@ const Section3 = () => {
                 {teamList.map(member => (
                     <div key={member._id} className="team-member-card-wrapper">
                         <div className="team-member-card">
-                            <img 
-                                src={sanityImageUrl(member.image, size)} 
-                                alt={member.name} 
-                                loading="lazy" 
+                            <img
+                                src={sanityImageUrl(member.image, size)}
+                                alt={member.name}
+                                loading="lazy"
                             />
                             <div className="team-member-info">
                                 <h3>{member.name}</h3>
@@ -287,11 +287,11 @@ const Section3 = () => {
 
             <section className="about-intro">
                 {bgVideo && (
-                    <video 
-                        autoPlay 
-                        loop 
-                        muted 
-                        playsInline 
+                    <video
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
                         className="about-bg-video"
                         src={bgVideo}
                     />
@@ -322,9 +322,9 @@ const Section3 = () => {
                         speed={0.3}
                         scrambleChars=".:;*^%"
                     >
-                        Neon Cinematics is the creative heartbeat of visual storytelling. We are a passionate collective 
-                        of filmmakers, cinematographers, and visionaries dedicated to capturing the unseen and the unforgettable. 
-                        From conceptualizing groundbreaking ideas to executing them with precision, we turn ordinary moments 
+                        Neon Cinematics is the creative heartbeat of visual storytelling. We are a passionate collective
+                        of filmmakers, cinematographers, and visionaries dedicated to capturing the unseen and the unforgettable.
+                        From conceptualizing groundbreaking ideas to executing them with precision, we turn ordinary moments
                         into cinematic masterpieces. Dive into our world, where every frame tells a story.
                     </ScrambledText>
                 </div>
@@ -332,59 +332,59 @@ const Section3 = () => {
 
             <div style={{ marginTop: '-40vh', position: 'relative', zIndex: 1 }}>
                 <div style={{ width: '100vw', marginLeft: 'calc(-50vw + 50%)', marginTop: '2rem', marginBottom: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem', overflow: 'hidden' }}>
-                    <CurvedLoop 
-                    marqueeText="Make ✦ Something ✦ Worth ✦ Remembering ✦ "
-                    speed={3}
-                    curveAmount={160}
-                    direction="right"
-                    interactive={true}
-                    className="custom-text-style"
-                />
+                    <CurvedLoop
+                        marqueeText="Make ✦ Something ✦ Worth ✦ Remembering ✦ "
+                        speed={3}
+                        curveAmount={160}
+                        direction="right"
+                        interactive={true}
+                        className="custom-text-style"
+                    />
 
-            </div>
+                </div>
 
-            <div style={{ position: 'relative', height: '80px', width: '60%', margin: '12rem auto 4rem', padding: '0 5%' }}>
-                <TextPressure
-                    text="MEET OUR TEAM"
-                    flex={true}
-                    alpha={false}
-                    stroke={false}
-                    width={true}
-                    weight={true}
-                    italic={true}
-                    textColor="#ffffff"
-                    strokeColor="#ff7800"
-                    minFontSize={24}
-                />
-            </div>
+                <div style={{ position: 'relative', height: '80px', width: '60%', margin: '12rem auto 4rem', padding: '0 5%' }}>
+                    <TextPressure
+                        text="MEET OUR TEAM"
+                        flex={true}
+                        alpha={false}
+                        stroke={false}
+                        width={true}
+                        weight={true}
+                        italic={true}
+                        textColor="#ffffff"
+                        strokeColor="#ff7800"
+                        minFontSize={24}
+                    />
+                </div>
 
-            <section className="team-hierarchy-section">
-                <h2>
-                    <FoldText text="The Visionaries" trigger="scroll" fontSize="2.5rem" color="rgb(236, 220, 220)" />
-                </h2>
-                {renderTeamGrid(members.coordinators, 'team-grid--coordinators')}
-            </section>
+                <section className="team-hierarchy-section">
+                    <h2>
+                        <FoldText text="The Visionaries" trigger="scroll" fontSize="2.5rem" color="rgb(236, 220, 220)" />
+                    </h2>
+                    {renderTeamGrid(members.coordinators, 'team-grid--coordinators')}
+                </section>
 
-            <section className="team-hierarchy-section">
-                <h2>
-                    <FoldText text="3rd Year Leads" trigger="scroll" fontSize="2.5rem" color="rgb(236, 220, 220)" />
-                </h2>
-                {renderTeamGrid(members.thirdYear, 'team-grid--3rd-year')}
-            </section>
+                <section className="team-hierarchy-section">
+                    <h2>
+                        <FoldText text="3rd Year Leads" trigger="scroll" fontSize="2.5rem" color="rgb(236, 220, 220)" />
+                    </h2>
+                    {renderTeamGrid(members.thirdYear, 'team-grid--3rd-year')}
+                </section>
 
-            <section className="team-hierarchy-section">
-                <h2>
-                    <FoldText text="2nd Year Core" trigger="scroll" fontSize="2.5rem" color="rgb(236, 220, 220)" />
-                </h2>
-                {renderTeamGrid(members.secondYear, 'team-grid--2nd-year show-on-hover')}
-            </section>
+                <section className="team-hierarchy-section">
+                    <h2>
+                        <FoldText text="2nd Year Core" trigger="scroll" fontSize="2.5rem" color="rgb(236, 220, 220)" />
+                    </h2>
+                    {renderTeamGrid(members.secondYear, 'team-grid--2nd-year show-on-hover')}
+                </section>
 
-            <section className="team-hierarchy-section">
-                <h2>
-                    <FoldText text="1st Year Talent" trigger="scroll" fontSize="2.5rem" color="rgb(236, 220, 220)" />
-                </h2>
-                {renderTeamGrid(members.firstYear, 'team-grid--1st-year show-on-hover')}
-            </section>
+                <section className="team-hierarchy-section">
+                    <h2>
+                        <FoldText text="1st Year Talent" trigger="scroll" fontSize="2.5rem" color="rgb(236, 220, 220)" />
+                    </h2>
+                    {renderTeamGrid(members.firstYear, 'team-grid--1st-year show-on-hover')}
+                </section>
             </div>
         </div>
     );
