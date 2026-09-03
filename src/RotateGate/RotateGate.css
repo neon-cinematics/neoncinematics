@@ -1,0 +1,42 @@
+.rotate-gate-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  background-color: #000000;
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  user-select: none;
+  touch-action: none;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.rotate-gate-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.rotate-glitch-text {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-size: clamp(1.2rem, 5.5vw, 3.5rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: clamp(1px, 0.5vw, 3px) !important;
+  color: #ffffff;
+  text-transform: uppercase;
+  text-align: center;
+  max-width: 90vw;
+}

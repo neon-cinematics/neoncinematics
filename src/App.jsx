@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LoadingScreen from "./LoadingScreen/LoadingScreen";
-import { useEffect } from "react";
+import RotateGate from "./RotateGate/RotateGate";
 import Section1 from "./Home/Section1";
 import Section2 from "./SelectedWork/Section2";
 import GalleryAdmin from "./GalleryAdmin/GalleryAdmin";
@@ -70,6 +70,7 @@ const App = () => {
   
   return (
     <>
+      <RotateGate />
       {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} assetsLoaded={assetsLoaded} />}
 
       <ScrollToTop />
