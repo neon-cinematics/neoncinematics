@@ -6,7 +6,7 @@ body {
 
 #div1 {
     max-width: 60vw;
-    padding: 10px;
+    padding: 0.52vw;
     padding-top: 0;
     position: fixed;
 }
@@ -17,40 +17,38 @@ body {
 
 #section1_main_text {
     font-family: "Cormorant Garamond", serif;
-    font-size: 96px;
+    font-size: 6.4vw;
     color: white;
     font-weight: 700;
-    padding-left: 120px;
+    padding-left: 6.25vw;
     margin: 0;
-    margin-bottom: 32px;
-    margin-top: 40px;
+    margin-bottom: 1.667vw;
+    margin-top: 2.083vw;
     line-height: 1.15;
-    letter-spacing: -2px;
+    letter-spacing: -0.104vw;
     mix-blend-mode: lighten;
-    filter: blur(0.25px);
-    filter: drop-shadow(0 0 15px rgba(255, 221, 182, 0.2));
+    filter: drop-shadow(0 0 0.781vw rgba(255, 221, 182, 0.2));
     text-shadow:
-        0px 1.75px rgba(255, 120, 0, 0.75),
-        0px -1.75px rgba(0, 180, 255, 0.75),
-        0px 0px 20px rgba(252, 237, 182, 0.7);
+        0px 0.091vw rgba(255, 120, 0, 0.75),
+        0px -0.091vw rgba(0, 180, 255, 0.75),
+        0px 0px 1.042vw rgba(252, 237, 182, 0.7);
     pointer-events: none;
     user-select: none;
 }
 
-
 #scroll_text {
-    font-size: 28px;
+    font-size: 1.458vw;
     color: white;
     font-weight: 300;
-    padding-left: 120px;
+    padding-left: 6.25vw;
     margin-top: 0;
     line-height: 1.15;
-    letter-spacing: 0px;
+    letter-spacing: 0;
     mix-blend-mode: lighten;
     text-shadow:
-        0px 1.65px rgba(255, 120, 0, 0.75),
-        0px -1.65px rgba(0, 180, 255, 0.75),
-        0px 0px 20px rgba(252, 237, 182, 0.7);
+        0px 0.086vw rgba(255, 120, 0, 0.75),
+        0px -0.086vw rgba(0, 180, 255, 0.75),
+        0px 0px 1.042vw rgba(252, 237, 182, 0.7);
     pointer-events: none;
     user-select: none;
 }

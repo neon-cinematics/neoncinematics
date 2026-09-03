@@ -18,7 +18,6 @@ const Section1 = () => {
         const video = videoRef.current;
         if (!video) return;
 
-        // Always reset scroll to the top of the page on mount and disable automatic browser scroll restoration
         if ('scrollRestoration' in window.history) {
             window.history.scrollRestoration = 'manual';
         }
@@ -53,7 +52,6 @@ const Section1 = () => {
             });
         };
 
-        // Kill active auto-scrolling on user interaction
         const killSnap = () => {
             if (isTransitioning) return;
             if (snapTween) {
