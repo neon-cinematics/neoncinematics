@@ -1,0 +1,224 @@
+/* ─── Admin Dashboard specific styles ──────────────────────────────────────── */
+
+/* Login page */
+.admin-login-page {
+    min-height: 100vh;
+    background: #080a0d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.admin-login-card {
+    background: #0a0d12;
+    border: 1px solid rgba(242, 241, 235, 0.1);
+    padding: 3rem;
+    width: 100%;
+    max-width: 440px;
+}
+
+.admin-login-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(242, 241, 235, 0.08);
+}
+
+.admin-login-brand span:first-child {
+    font-size: 1.6rem;
+    font-style: italic;
+    font-weight: 700;
+    color: #f2f1eb;
+    letter-spacing: 2px;
+}
+
+.admin-login-sub {
+    font-size: 9px !important;
+    letter-spacing: 2.5px !important;
+    text-transform: uppercase;
+    color: #ff7800 !important;
+    font-style: normal !important;
+}
+
+.admin-login-card h1 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 2rem;
+    font-weight: 500;
+    color: #f2f1eb;
+    margin: 0 0 0.5rem;
+}
+
+.admin-login-card > p {
+    font-size: 13px;
+    color: #9ba4a7;
+    margin: 0 0 1.5rem;
+    line-height: 1.5;
+}
+
+.admin-login-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.admin-login-card label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #9ba4a7;
+}
+
+.admin-login-error {
+    padding: 10px 14px;
+    background: rgba(224, 92, 106, 0.08);
+    border: 1px solid rgba(224, 92, 106, 0.3);
+    color: #e05c6a;
+    font-size: 13px;
+}
+
+.admin-login-submit {
+    padding: 14px;
+    background: #ff7800;
+    border: none;
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 0.5rem;
+}
+.admin-login-submit:hover:not(:disabled) { background: #ff8f27; }
+.admin-login-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.admin-login-help {
+    font-size: 11px !important;
+    color: #526168 !important;
+    text-align: center;
+    margin: 1rem 0 0 !important;
+    line-height: 1.5;
+}
+
+/* ─── Stats Grid ─────────────────────────────────────────────────────────────── */
+
+.admin-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1px;
+    background: rgba(242, 241, 235, 0.06);
+    border: 1px solid rgba(242, 241, 235, 0.06);
+    margin-bottom: 3rem;
+}
+
+.admin-stat-card {
+    background: #0a0d12;
+    padding: 1.25rem 1rem;
+    text-align: center;
+}
+
+.admin-stat-value {
+    display: block;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 2.5rem;
+    font-weight: 500;
+    line-height: 1;
+    margin-bottom: 0.4rem;
+}
+
+.admin-stat-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #526168;
+}
+
+/* ─── Sections ──────────────────────────────────────────────────────────────── */
+
+.admin-section {
+    margin-bottom: 3rem;
+}
+
+.admin-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    gap: 1rem;
+}
+
+.admin-section-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #9ba4a7;
+    margin: 0;
+}
+
+/* ─── Quick Links ────────────────────────────────────────────────────────────── */
+
+.admin-quick-links {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: rgba(242, 241, 235, 0.06);
+    border: 1px solid rgba(242, 241, 235, 0.06);
+}
+
+.admin-quick-link {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: #0a0d12;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.admin-quick-link:hover { background: #0d1118; }
+
+.admin-quick-link > span {
+    font-size: 1.2rem;
+    color: #ff7800;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.admin-quick-link > div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.admin-quick-link strong {
+    font-size: 14px;
+    font-weight: 600;
+    color: #f2f1eb;
+}
+
+.admin-quick-link span:last-child {
+    font-size: 12px;
+    color: #9ba4a7;
+    line-height: 1.4;
+}
+
+/* ─── Responsive ────────────────────────────────────────────────────────────── */
+
+@media (max-width: 1100px) {
+    .admin-stats-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 700px) {
+    .admin-stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .admin-quick-links { grid-template-columns: 1fr; }
+}
