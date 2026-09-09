@@ -3,82 +3,10 @@ import { useNavigate, Link } from "react-router-dom";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Navbar from "../Navbar/Navbar";
+import EchoText from "./components/EchoText";
+import FlowingMenu from "./components/FlowingMenu";
 import { blogReadClient, publishedBlogsQuery } from "./lib/blogSanity";
-import { formatDate } from "./lib/blogHelpers";
 import "./BlogPage.css";
-
-const BlogCard = ({ blog, index }) => {
-    const navigate = useNavigate();
-    const cardRef = useRef();
-
-    const handleCardClick = () => {
-        const slug = blog.slug?.current || blog.slug;
-        navigate(`/blog/${slug}`);
-    };
-
-    return (
-        <article
-            ref={cardRef}
-            className={`blog-card blog-card--${index % 3 === 0 ? "featured" : "regular"}`}
-            onClick={handleCardClick}
-            role="link"
-            tabIndex={0}
-            onKeyDown={(e) => e.key === "Enter" && handleCardClick()}
-            aria-label={`Read blog: ${blog.title}`}
-        >
-            {blog.coverImageUrl && (
-                <div className="blog-card__cover">
-                    <img
-                        src={blog.coverImageUrl}
-                        alt={blog.title}
-                        loading="lazy"
-                    />
-                    <div className="blog-card__cover-overlay" />
-                </div>
-            )}
-            {!blog.coverImageUrl && (
-                <div className="blog-card__cover blog-card__cover--placeholder">
-                    <div className="blog-card__cover-abstract" />
-                </div>
-            )}
-
-            <div className="blog-card__body">
-                <header className="blog-card__header">
-                    <span className="blog-card__kicker">Article</span>
-                    <h2 className="blog-card__title">{blog.title}</h2>
-                </header>
-
-                {blog.description && (
-                    <p className="blog-card__description">{blog.description}</p>
-                )}
-
-                <footer className="blog-card__footer">
-                    <div className="blog-card__author">
-                        {blog.author?.profileImageUrl ? (
-                            <img
-                                src={blog.author.profileImageUrl}
-                                alt={blog.author.name}
-                                className="blog-card__author-avatar"
-                            />
-                        ) : (
-                            <div className="blog-card__author-avatar blog-card__author-avatar--initials">
-                                {blog.author?.name?.[0] || "N"}
-                            </div>
-                        )}
-                        <div>
-                            <span className="blog-card__author-name">{blog.author?.name || "Neon Cinematics"}</span>
-                            <time className="blog-card__date">{formatDate(blog.publishedAt || blog.createdAt)}</time>
-                        </div>
-                    </div>
-                    <div className="blog-card__cta">
-                        <span className="blog-card__cta-text">Read</span>
-                        <span className="blog-card__cta-arrow">→</span>
-                    </div>
-                </footer>
-            </div>
-        </article>
-    );
-};
 
 const BlogPage = () => {
     const navigate = useNavigate();
@@ -113,23 +41,18 @@ const BlogPage = () => {
         }
         window.scrollTo(0, 0);
 
-        // Fade in — same pattern as Section3
+        // Fade in — consistent transition
         gsap.fromTo(containerRef.current,
             { opacity: 0 },
-            { opacity: 1, duration: 1.5, ease: "power2.out" }
+            { opacity: 1, duration: 1.2, ease: "power2.out" }
         );
 
-        gsap.fromTo(".blog-page__hero h1",
-            { y: 50, opacity: 0 },
-            { y: 0, opacity: 1, duration: 1, delay: 0.4, ease: "power3.out" }
+        gsap.fromTo(".blog-page__hero-content",
+            { y: 40, opacity: 0 },
+            { y: 0, opacity: 1, duration: 1, delay: 0.3, ease: "power3.out" }
         );
 
-        gsap.fromTo(".blog-page__hero p",
-            { y: 30, opacity: 0 },
-            { y: 0, opacity: 1, duration: 1, delay: 0.7, ease: "power3.out" }
-        );
-
-        // Scroll up → navigate back to About Us (consistent with existing pattern)
+        // Scroll up → navigate back to About Us
         let isSnapping = false;
         const handleScroll = (e) => {
             if (isSnapping) return;
@@ -170,52 +93,50 @@ const BlogPage = () => {
         };
     }, { scope: containerRef, dependencies: [] });
 
-    // Staggered card animations after load
-    useEffect(() => {
-        if (!isLoading && blogs.length > 0) {
-            gsap.fromTo(".blog-card",
-                { y: 40, opacity: 0 },
-                {
-                    y: 0,
-                    opacity: 1,
-                    duration: 0.7,
-                    stagger: 0.12,
-                    ease: "power3.out",
-                    delay: 0.3,
-                }
-            );
-        }
-    }, [isLoading, blogs]);
+    // Format menu items for FlowingMenu
+    const flowingItems = blogs.map((blog) => ({
+        link: `/blog/${blog.slug?.current || blog.slug}`,
+        text: blog.title,
+        image: blog.coverImageUrl || "https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=800&fit=crop&sat=-100&auto=format"
+    }));
 
     return (
         <div ref={containerRef} className="blog-page">
             <Navbar />
 
-            {/* Hero */}
+            {/* Hero Section with EchoText */}
             <section className="blog-page__hero">
-                <div className="blog-page__hero-bg" aria-hidden="true" />
                 <div className="blog-page__hero-content">
-                    <h1>The Neon Journal</h1>
-                    <p>Stories from behind the lens — filmmaking insights, project breakdowns, and creative perspectives from the Neon Cinematics collective.</p>
+                    <EchoText
+                        text="Our Blogs"
+                        echoes={12}
+                        lag={0.24}
+                        offset={36}
+                        direction="right"
+                        fade={0.62}
+                        blur={3}
+                        tint="#FCEDB6"
+                        mode="pointer"
+                        cursorRadius={320}
+                        duration={900}
+                        ease="ease-in-out"
+                        fontSize="clamp(3rem, 9vw, 7rem)"
+                        fontWeight={700}
+                        color="#f8fafc"
+                    />
+                    <p className="blog-page__hero-sub">
+                        Stories from behind the lens — filmmaking insights, project breakdowns, and creative perspectives.
+                    </p>
                 </div>
-                <div className="blog-page__hero-line" aria-hidden="true" />
             </section>
 
-            {/* Blog Grid */}
-            <main className="blog-page__main" id="blog-grid">
+            {/* Main Menu Area with FlowingMenu */}
+            <main className="blog-page__main">
                 {isLoading && (
-                    <div className="blog-page__skeleton-grid">
-                        {[1, 2, 3, 4, 5, 6].map(i => (
-                            <div key={i} className="blog-skeleton">
-                                <div className="blog-skeleton__cover" />
-                                <div className="blog-skeleton__body">
-                                    <div className="blog-skeleton__kicker" />
-                                    <div className="blog-skeleton__title" />
-                                    <div className="blog-skeleton__title blog-skeleton__title--short" />
-                                    <div className="blog-skeleton__desc" />
-                                    <div className="blog-skeleton__desc blog-skeleton__desc--short" />
-                                    <div className="blog-skeleton__footer" />
-                                </div>
+                    <div className="blog-page__skeleton-menu">
+                        {[1, 2, 3, 4].map(i => (
+                            <div key={i} className="blog-skeleton-item">
+                                <div className="blog-skeleton-line" />
                             </div>
                         ))}
                     </div>
@@ -223,7 +144,7 @@ const BlogPage = () => {
 
                 {error && !isLoading && (
                     <div className="blog-page__error">
-                        <span className="blog-page__error-icon">⚠</span>
+                        <span className="blog-page__error-icon">✦</span>
                         <p>{error}</p>
                         <button onClick={() => window.location.reload()}>Try again</button>
                     </div>
@@ -238,17 +159,22 @@ const BlogPage = () => {
                 )}
 
                 {!isLoading && !error && blogs.length > 0 && (
-                    <div className="blog-page__grid">
-                        {blogs.map((blog, index) => (
-                            <BlogCard key={blog._id} blog={blog} index={index} />
-                        ))}
+                    <div className="blog-page__flowing-container">
+                        <FlowingMenu
+                            items={flowingItems}
+                            speed={15}
+                            textColor="#ffffff"
+                            bgColor="transparent"
+                            marqueeBgColor="#FCEDB6"
+                            marqueeTextColor="#0d0d0d"
+                            borderColor="rgba(255, 255, 255, 0.15)"
+                        />
                     </div>
                 )}
             </main>
 
-            {/* Footer line */}
+            {/* Footer */}
             <footer className="blog-page__footer">
-                <hr className="blog-page__footer-line" />
                 <p className="blog-page__footer-text">
                     Neon Cinematics · <Link to="/contact" className="blog-page__footer-link">Contact Us</Link>
                 </p>

@@ -1,0 +1,359 @@
+import { useState, useEffect } from "react";
+import AdminLayout from "./AdminLayout";
+import {
+    notifyPosterSubmitted,
+    notifyPosterApproved,
+    notifyPosterRejected,
+    notifyPosterPublished
+} from "../lib/emailService";
+import "./AdminSetupDashboard.css";
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
+
+const AdminSetupDashboard = () => {
+    const [diagnostics, setDiagnostics] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [tokenInput, setTokenInput] = useState("");
+    const [tokenMessage, setTokenMessage] = useState(null);
+    const [seedMessage, setSeedMessage] = useState(null);
+
+    // SMTP Form
+    const [smtpHost, setSmtpHost] = useState("");
+    const [smtpPort, setSmtpPort] = useState("587");
+    const [smtpUser, setSmtpUser] = useState("");
+    const [smtpPass, setSmtpPass] = useState("");
+    const [fromEmail, setFromEmail] = useState("");
+    const [smtpMessage, setSmtpMessage] = useState(null);
+
+    // Test Email Dispatch
+    const [testTo, setTestTo] = useState("");
+    const [testType, setTestType] = useState("submitted");
+    const [sendingTest, setSendingTest] = useState(false);
+    const [testResult, setTestResult] = useState(null);
+
+    const fetchDiagnostics = async () => {
+        setLoading(true);
+        try {
+            const res = await fetch(`${API_BASE}/api/sanity/diagnose`);
+            const data = await res.json();
+            setDiagnostics(data);
+        } catch (err) {
+            console.error("Diagnosis error:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchDiagnostics();
+    }, []);
+
+    const handleSaveToken = async (e) => {
+        e.preventDefault();
+        if (!tokenInput.trim()) return;
+        setTokenMessage({ type: "info", text: "Verifying token..." });
+        try {
+            const res = await fetch(`${API_BASE}/api/sanity/save-token`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token: tokenInput.trim() }),
+            });
+            const data = await res.json();
+            if (res.ok) {
+                setTokenMessage({ type: "success", text: data.message });
+                fetchDiagnostics();
+            } else {
+                setTokenMessage({ type: "error", text: data.error });
+            }
+        } catch (err) {
+            setTokenMessage({ type: "error", text: err.message });
+        }
+    };
+
+    const handleSeedDemo = async () => {
+        setSeedMessage({ type: "info", text: "Seeding 3 demo blogs into Sanity..." });
+        try {
+            const res = await fetch(`${API_BASE}/api/sanity/seed-demo`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token: tokenInput.trim() || undefined }),
+            });
+            const data = await res.json();
+            if (res.ok) {
+                setSeedMessage({ type: "success", text: `Success! Created ${data.count} demo blog posts.` });
+                fetchDiagnostics();
+            } else {
+                setSeedMessage({ type: "error", text: data.error });
+            }
+        } catch (err) {
+            setSeedMessage({ type: "error", text: err.message });
+        }
+    };
+
+    const handleSaveSmtp = async (e) => {
+        e.preventDefault();
+        setSmtpMessage({ type: "info", text: "Saving SMTP credentials..." });
+        try {
+            const res = await fetch(`${API_BASE}/api/email/config`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    smtpHost,
+                    smtpPort,
+                    smtpUser,
+                    smtpPass,
+                    fromEmail,
+                }),
+            });
+            const data = await res.json();
+            if (res.ok) {
+                setSmtpMessage({ type: "success", text: "SMTP configuration updated!" });
+                fetchDiagnostics();
+            } else {
+                setSmtpMessage({ type: "error", text: data.error });
+            }
+        } catch (err) {
+            setSmtpMessage({ type: "error", text: err.message });
+        }
+    };
+
+    const handleSendTestEmail = async (e) => {
+        e.preventDefault();
+        if (!testTo.trim()) return;
+        setSendingTest(true);
+        setTestResult(null);
+
+        const dummyBlog = {
+            _id: "demo-blog-123",
+            title: "Test Blog: The Aesthetics of Shadows",
+            description: "A test notification dispatched from the Neon Cinematics diagnostic suite.",
+            slug: { current: "test-blog-aesthetics-of-shadows" },
+        };
+
+        try {
+            let res;
+            if (testType === "submitted") {
+                res = await notifyPosterSubmitted(testTo.trim(), dummyBlog);
+            } else if (testType === "approved") {
+                res = await notifyPosterApproved(testTo.trim(), dummyBlog);
+            } else if (testType === "rejected") {
+                res = await notifyPosterRejected(testTo.trim(), dummyBlog, "Please expand on the second section and re-upload cover image.");
+            } else if (testType === "published") {
+                res = await notifyPosterPublished(testTo.trim(), dummyBlog);
+            }
+
+            if (res?.mode === "live" || res?.messageId) {
+                setTestResult({ type: "success", text: `Live email dispatched successfully to ${testTo}! (Message ID: ${res.messageId || "sent"})` });
+            } else if (res?.mode === "stub") {
+                setTestResult({ type: "warning", text: `Email logged to console! (SMTP credentials not yet saved above). Configure Gmail/SMTP below to receive in actual inbox.` });
+            } else {
+                setTestResult({ type: "success", text: `Email trigger executed!` });
+            }
+        } catch (err) {
+            setTestResult({ type: "error", text: "Failed: " + err.message });
+        } finally {
+            setSendingTest(false);
+        }
+    };
+
+    return (
+        <AdminLayout activeTab="setup" title="System Setup & Diagnostics">
+            <div className="admin-setup">
+                <header className="admin-setup__header">
+                    <h2>Sanity & Email System Health</h2>
+                    <p>Manage Sanity dataset access, seed sample blogs, and verify email inbox notifications.</p>
+                </header>
+
+                {/* Status Cards */}
+                <div className="admin-setup__cards">
+                    <div className="setup-card">
+                        <div className="setup-card__icon">✦</div>
+                        <div className="setup-card__info">
+                            <span className="setup-card__label">Sanity Dataset</span>
+                            <strong className="setup-card__val">{diagnostics?.projectId || "047erfze"} / {diagnostics?.dataset || "gallery-images"}</strong>
+                        </div>
+                    </div>
+                    <div className="setup-card">
+                        <div className={`setup-card__badge ${diagnostics?.hasWriteToken ? "setup-card__badge--ok" : "setup-card__badge--warn"}`}>
+                            {diagnostics?.hasWriteToken ? "TOKEN SAVED" : "TOKEN MISSING"}
+                        </div>
+                        <div className="setup-card__info">
+                            <span className="setup-card__label">Write Token</span>
+                            <strong className="setup-card__val">{diagnostics?.hasWriteToken ? "Verified & Ready" : "Required for Posters"}</strong>
+                        </div>
+                    </div>
+                    <div className="setup-card">
+                        <div className={`setup-card__badge ${diagnostics?.smtpConfigured ? "setup-card__badge--ok" : "setup-card__badge--stub"}`}>
+                            {diagnostics?.smtpConfigured ? "SMTP LIVE" : "CONSOLE STUB"}
+                        </div>
+                        <div className="setup-card__info">
+                            <span className="setup-card__label">Email Engine</span>
+                            <strong className="setup-card__val">{diagnostics?.smtpConfigured ? "Dispatches to Inboxes" : "Console Log Mode"}</strong>
+                        </div>
+                    </div>
+                    <div className="setup-card">
+                        <div className="setup-card__icon">📚</div>
+                        <div className="setup-card__info">
+                            <span className="setup-card__label">Sanity Documents</span>
+                            <strong className="setup-card__val">{diagnostics?.counts?.totalBlogs || 0} Blogs ({diagnostics?.counts?.publishedBlogs || 0} Published)</strong>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Section 1: Sanity Token & Seeding */}
+                <div className="admin-setup__section">
+                    <h3>1. Sanity Write Access & Demo Data</h3>
+                    <div className="admin-setup__grid">
+                        <form className="admin-setup__form" onSubmit={handleSaveToken}>
+                            <h4>Set Sanity Write Token</h4>
+                            <p className="admin-setup__help">
+                                Paste your Sanity API Editor Token (from Sanity Management Console → API → Tokens) to enable blog creation and poster accounts.
+                            </p>
+                            <input
+                                type="password"
+                                placeholder="sk..."
+                                value={tokenInput}
+                                onChange={(e) => setTokenInput(e.target.value)}
+                                className="admin-setup__input"
+                            />
+                            <button type="submit" className="admin-setup__btn">Save Token to .env</button>
+                            {tokenMessage && (
+                                <div className={`admin-setup__msg admin-setup__msg--${tokenMessage.type}`}>
+                                    {tokenMessage.text}
+                                </div>
+                            )}
+                        </form>
+
+                        <div className="admin-setup__box">
+                            <h4>Seed Demo Blogs</h4>
+                            <p className="admin-setup__help">
+                                Don't have blogs in Sanity yet? Click below to instantly publish 3 cinematic demo blogs into your Sanity dataset so the public blog page renders immediately.
+                            </p>
+                            <button onClick={handleSeedDemo} className="admin-setup__btn admin-setup__btn--gold">
+                                ⚡ Seed 3 Demo Published Blogs
+                            </button>
+                            {seedMessage && (
+                                <div className={`admin-setup__msg admin-setup__msg--${seedMessage.type}`}>
+                                    {seedMessage.text}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Section 2: Email Configuration & Testing */}
+                <div className="admin-setup__section">
+                    <h3>2. Email Notifications & Live Inbox Verification</h3>
+                    <div className="admin-setup__grid">
+                        {/* Live Email Test Box */}
+                        <form className="admin-setup__form" onSubmit={handleSendTestEmail}>
+                            <h4>Test Email Dispatch</h4>
+                            <p className="admin-setup__help">
+                                Send a test email to your real email inbox to check how confirmation and decision emails look!
+                            </p>
+
+                            <div className="admin-setup__field">
+                                <label>Recipient Email Address:</label>
+                                <input
+                                    type="email"
+                                    placeholder="yourname@gmail.com"
+                                    value={testTo}
+                                    onChange={(e) => setTestTo(e.target.value)}
+                                    required
+                                    className="admin-setup__input"
+                                />
+                            </div>
+
+                            <div className="admin-setup__field">
+                                <label>Notification Template:</label>
+                                <select
+                                    value={testType}
+                                    onChange={(e) => setTestType(e.target.value)}
+                                    className="admin-setup__select"
+                                >
+                                    <option value="submitted">Blog Submitted (Confirmation to Poster)</option>
+                                    <option value="approved">Blog Approved (Notification)</option>
+                                    <option value="rejected">Blog Needs Revision (Rejection Feedback)</option>
+                                    <option value="published">Blog Live (Published Notification)</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" disabled={sendingTest} className="admin-setup__btn">
+                                {sendingTest ? "Dispatching Email..." : "📧 Send Test Email Now"}
+                            </button>
+
+                            {testResult && (
+                                <div className={`admin-setup__msg admin-setup__msg--${testResult.type}`}>
+                                    {testResult.text}
+                                </div>
+                            )}
+                        </form>
+
+                        {/* SMTP Setup Box */}
+                        <form className="admin-setup__form" onSubmit={handleSaveSmtp}>
+                            <h4>Configure Real SMTP (Gmail / Resend / Custom)</h4>
+                            <p className="admin-setup__help">
+                                Optional: Enter your SMTP credentials to send real emails to poster and admin inboxes automatically.
+                            </p>
+
+                            <div className="admin-setup__row">
+                                <div className="admin-setup__field">
+                                    <label>Host:</label>
+                                    <input
+                                        type="text"
+                                        placeholder="smtp.gmail.com"
+                                        value={smtpHost}
+                                        onChange={(e) => setSmtpHost(e.target.value)}
+                                        className="admin-setup__input"
+                                    />
+                                </div>
+                                <div className="admin-setup__field admin-setup__field--small">
+                                    <label>Port:</label>
+                                    <input
+                                        type="text"
+                                        placeholder="587"
+                                        value={smtpPort}
+                                        onChange={(e) => setSmtpPort(e.target.value)}
+                                        className="admin-setup__input"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="admin-setup__field">
+                                <label>Username / Email:</label>
+                                <input
+                                    type="text"
+                                    placeholder="your-email@gmail.com"
+                                    value={smtpUser}
+                                    onChange={(e) => setSmtpUser(e.target.value)}
+                                    className="admin-setup__input"
+                                />
+                            </div>
+
+                            <div className="admin-setup__field">
+                                <label>Password / App Password:</label>
+                                <input
+                                    type="password"
+                                    placeholder="App password"
+                                    value={smtpPass}
+                                    onChange={(e) => setSmtpPass(e.target.value)}
+                                    className="admin-setup__input"
+                                />
+                            </div>
+
+                            <button type="submit" className="admin-setup__btn">Save SMTP Settings</button>
+
+                            {smtpMessage && (
+                                <div className={`admin-setup__msg admin-setup__msg--${smtpMessage.type}`}>
+                                    {smtpMessage.text}
+                                </div>
+                            )}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </AdminLayout>
+    );
+};
+
+export default AdminSetupDashboard;

@@ -16,6 +16,7 @@ const AdminLayout = ({ children }) => {
         { to: "/admin/blogs/list", label: "All Blogs", icon: "≡" },
         { to: "/admin/blog-posters", label: "Blog Posters", icon: "◉" },
         { to: "/admin/blog-managers", label: "Blog Managers", icon: "✉" },
+        { to: "/admin/setup", label: "Setup & Health", icon: "⚙" },
     ];
 
     return (

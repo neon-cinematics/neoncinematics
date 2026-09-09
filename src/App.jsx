@@ -22,6 +22,7 @@ const AdminBlogList = lazy(() => import("./Blog/Admin/AdminBlogList"));
 const AdminBlogReview = lazy(() => import("./Blog/Admin/AdminBlogReview"));
 const AdminPosterManagement = lazy(() => import("./Blog/Admin/AdminPosterManagement"));
 const AdminManagerConfig = lazy(() => import("./Blog/Admin/AdminManagerConfig"));
+const AdminSetupDashboard = lazy(() => import("./Blog/Admin/AdminSetupDashboard"));
 
 // Minimal loading fallback (matches dark bg — no flash)
 const PageFallback = () => (
@@ -122,6 +123,7 @@ const App = () => {
           <Route path="/admin/blogs/:id/review" element={<AdminBlogReview />} />
           <Route path="/admin/blog-posters" element={<AdminPosterManagement />} />
           <Route path="/admin/blog-managers" element={<AdminManagerConfig />} />
+          <Route path="/admin/setup" element={<AdminSetupDashboard />} />
         </Routes>
       </Suspense>
     </>
