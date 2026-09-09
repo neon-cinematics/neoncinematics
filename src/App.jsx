@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import LoadingScreen from "./LoadingScreen/LoadingScreen";
 import RotateGate from "./RotateGate/RotateGate";
 import Section1 from "./Home/Section1";
@@ -9,6 +9,27 @@ import TeamAdmin from "./TeamAdmin/TeamAdmin";
 import Section3 from "./Section3";
 import { Routes, Route, useLocation } from "react-router-dom";
 
+// ─── Blog System (lazy-loaded so it doesn't affect initial bundle) ─────────────
+const BlogPage = lazy(() => import("./Blog/BlogPage"));
+const BlogDetail = lazy(() => import("./Blog/BlogDetail"));
+const BlogLogin = lazy(() => import("./Blog/Portal/BlogLogin"));
+const BlogDashboard = lazy(() => import("./Blog/Portal/BlogDashboard"));
+const BlogEditor = lazy(() => import("./Blog/Portal/BlogEditor"));
+
+// Admin pages
+const AdminDashboard = lazy(() => import("./Blog/Admin/AdminDashboard"));
+const AdminBlogList = lazy(() => import("./Blog/Admin/AdminBlogList"));
+const AdminBlogReview = lazy(() => import("./Blog/Admin/AdminBlogReview"));
+const AdminPosterManagement = lazy(() => import("./Blog/Admin/AdminPosterManagement"));
+const AdminManagerConfig = lazy(() => import("./Blog/Admin/AdminManagerConfig"));
+
+// Minimal loading fallback (matches dark bg — no flash)
+const PageFallback = () => (
+  <div style={{ minHeight: "100vh", background: "#080a0d", display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <div style={{ width: 20, height: 20, border: "2px solid rgba(242,241,235,0.08)", borderTopColor: "rgba(125,229,210,0.5)", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+    <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+  </div>
+);
 
 const ScrollToTop = () => {
   const location = useLocation();
@@ -56,7 +77,7 @@ const App = () => {
         const img = new Image();
         img.src = asset.url;
         img.onload = checkComplete;
-        img.onerror = checkComplete; // proceed even if error to avoid infinite loading
+        img.onerror = checkComplete;
       } else if (asset.type === 'video') {
         const video = document.createElement('video');
         video.src = asset.url;
@@ -74,14 +95,35 @@ const App = () => {
       {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} assetsLoaded={assetsLoaded} />}
 
       <ScrollToTop />
-      <Routes>
-        <Route path="/" element={<Section1 />} />
-        <Route path="/work" element={<Section2 />} />
-        <Route path="/aboutUs" element={<Section3 />} />
-        <Route path="/gallery-admin" element={<GalleryAdmin />} />
-        <Route path="/video-admin" element={<VideoAdmin />} />
-        <Route path="/team-admin" element={<TeamAdmin />} />
-      </Routes>
+      <Suspense fallback={<PageFallback />}>
+        <Routes>
+          {/* ─── Existing Routes (unchanged) ─────────────────────────── */}
+          <Route path="/" element={<Section1 />} />
+          <Route path="/work" element={<Section2 />} />
+          <Route path="/aboutUs" element={<Section3 />} />
+          <Route path="/gallery-admin" element={<GalleryAdmin />} />
+          <Route path="/video-admin" element={<VideoAdmin />} />
+          <Route path="/team-admin" element={<TeamAdmin />} />
+
+          {/* ─── Public Blog Routes ───────────────────────────────────── */}
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/blog/:slug" element={<BlogDetail />} />
+
+          {/* ─── Poster Portal Routes ─────────────────────────────────── */}
+          <Route path="/blog/login" element={<BlogLogin />} />
+          <Route path="/blog/dashboard" element={<BlogDashboard />} />
+          <Route path="/blog/create" element={<BlogEditor />} />
+          <Route path="/blog/edit/:id" element={<BlogEditor />} />
+          <Route path="/blog/preview/:id" element={<BlogDetail />} />
+
+          {/* ─── Admin Routes ─────────────────────────────────────────── */}
+          <Route path="/admin/blogs" element={<AdminDashboard />} />
+          <Route path="/admin/blogs/list" element={<AdminBlogList />} />
+          <Route path="/admin/blogs/:id/review" element={<AdminBlogReview />} />
+          <Route path="/admin/blog-posters" element={<AdminPosterManagement />} />
+          <Route path="/admin/blog-managers" element={<AdminManagerConfig />} />
+        </Routes>
+      </Suspense>
     </>
   );
 };
