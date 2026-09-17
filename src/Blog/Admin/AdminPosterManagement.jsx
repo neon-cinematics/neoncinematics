@@ -169,7 +169,7 @@ const AdminPosterManagement = () => {
             {modal && (
                 <div style={{ position: "fixed", inset: 0, background: "rgba(8,10,13,0.9)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
                     <div style={{ background: "#0a0d12", border: "1px solid rgba(242,241,235,0.15)", padding: "2rem 2.5rem", maxWidth: "480px", width: "90%", maxHeight: "90vh", overflowY: "auto" }}>
-                        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.8rem", fontWeight: 500, color: "#f2f1eb", margin: "0 0 1.5rem" }}>
+                        <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: "1.8rem", fontWeight: 800, letterSpacing: "-0.02em", color: "#f2f1eb", margin: "0 0 1.5rem" }}>
                             {modal.type === "create" ? "Add Poster" : modal.type === "edit" ? "Edit Poster" : "Reset Password"}
                         </h2>
 

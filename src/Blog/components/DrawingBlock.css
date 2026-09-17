@@ -1,0 +1,324 @@
+/* ─── Drawing Block Styles ─────────────────────────────────────────────────── */
+
+.drawing-block {
+    margin: 2rem 0;
+    width: 100%;
+}
+
+.drawing-block__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.drawing-block__preview-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #0d0c11;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.drawing-block__img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+}
+
+.drawing-block__overlay-actions {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.drawing-block__preview-wrapper:hover .drawing-block__overlay-actions {
+    opacity: 1;
+}
+
+.drawing-block__btn {
+    padding: 6px 12px;
+    background: rgba(13, 12, 17, 0.85);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.drawing-block__btn:hover {
+    background: #FCEDB6;
+    color: #0d0c11;
+    border-color: #FCEDB6;
+}
+
+.drawing-block__btn--danger:hover {
+    background: #ef4444;
+    color: #ffffff;
+    border-color: #ef4444;
+}
+
+.drawing-block__caption-input {
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem;
+    padding: 4px 8px;
+    outline: none;
+}
+
+.drawing-block__caption-input:focus {
+    border-color: #FCEDB6;
+    color: #ffffff;
+}
+
+.drawing-block__caption {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-style: italic;
+    text-align: center;
+    margin: 0;
+}
+
+.drawing-block__empty {
+    width: 100%;
+    max-width: 800px;
+    height: 180px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 2px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    margin: 0 auto;
+}
+
+.drawing-block__empty:hover {
+    border-color: #FCEDB6;
+    background: rgba(252, 237, 182, 0.04);
+}
+
+.drawing-block__empty-icon {
+    font-size: 2rem;
+}
+
+.drawing-block__empty-text {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+}
+
+/* ─── Modal Studio ─────────────────────────────────────────────────────────── */
+
+.drawing-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: rgba(8, 7, 11, 0.88);
+    backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+}
+
+.drawing-modal {
+    width: 100%;
+    max-width: 980px;
+    background: #14131a;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+}
+
+.drawing-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    background: #0d0c11;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.drawing-modal__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.drawing-modal__header-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.drawing-btn {
+    padding: 7px 14px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: transparent;
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.drawing-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.drawing-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.drawing-btn--primary {
+    background: #FCEDB6;
+    color: #0d0c11;
+    border-color: #FCEDB6;
+}
+
+.drawing-btn--primary:hover {
+    opacity: 0.9;
+}
+
+.drawing-btn--danger:hover:not(:disabled) {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border-color: #ef4444;
+}
+
+.drawing-modal__toolbar {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    background: #111016;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    gap: 1rem;
+    overflow-x: auto;
+}
+
+.drawing-tool-group {
+    display: flex;
+    gap: 4px;
+}
+
+.tool-btn {
+    padding: 6px 10px;
+    border-radius: 4px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+}
+
+.tool-btn:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.tool-btn.active {
+    background: rgba(252, 237, 182, 0.15);
+    color: #FCEDB6;
+    border-color: rgba(252, 237, 182, 0.3);
+}
+
+.drawing-toolbar__divider {
+    width: 1px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.drawing-color-palette {
+    display: flex;
+    gap: 6px;
+}
+
+.color-swatch {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.color-swatch:hover {
+    transform: scale(1.15);
+}
+
+.color-swatch.active {
+    border-color: #ffffff;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+}
+
+.drawing-stroke-sizes {
+    display: flex;
+    gap: 4px;
+}
+
+.stroke-btn {
+    padding: 4px 8px;
+    font-size: 11px;
+    border-radius: 3px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+}
+
+.stroke-btn.active {
+    border-color: #FCEDB6;
+    color: #FCEDB6;
+    background: rgba(252, 237, 182, 0.1);
+}
+
+.drawing-modal__canvas-wrapper {
+    position: relative;
+    width: 100%;
+    height: 520px;
+    background: #0d0c11;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.drawing-modal__canvas {
+    width: 100%;
+    height: 100%;
+    max-width: 900px;
+    max-height: 500px;
+    background: #0d0c11;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    cursor: crosshair;
+    touch-action: none;
+}

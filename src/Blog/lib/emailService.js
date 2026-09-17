@@ -19,19 +19,10 @@ export const sendEmail = async ({ to, subject, htmlBody, textBody }) => {
         });
 
         const data = await response.json();
-        if (data.mode === "stub") {
-            console.group(`📧 [Email Notification Logged] ${subject}`);
-            console.log("To:", to);
-            console.log("Status:", data.message);
-            console.groupEnd();
-        } else if (data.success) {
-            console.log(`✅ [Email Live Delivered] To: ${to} | Subject: ${subject}`);
-        }
         return data;
     } catch (err) {
         console.warn("Email service dispatch error:", err.message);
-        // Fallback return so application flow is never blocked
-        return { success: true, fallback: true, error: err.message };
+        return { success: false, error: err.message };
     }
 };
 
@@ -69,7 +60,7 @@ const baseTemplate = (content) => `
     <div style="padding-top:24px;border-top:1px solid ${neonBrand.border};text-align:center;">
       <p style="margin:0;font-size:11px;color:${neonBrand.muted};letter-spacing:1px;">
         NEON CINEMATICS · A Cinematography & Filmmaking Collective<br>
-        This is an automated notification.
+        This is an automated workflow notification.
       </p>
     </div>
   </div>
@@ -97,32 +88,44 @@ const ctaButton = (label, url, color = neonBrand.gold) => `
 const SITE_URL = import.meta.env.VITE_SITE_URL || "http://localhost:5174";
 const ADMIN_URL = `${SITE_URL}/admin/blogs`;
 
-/** Notify all blog managers when a poster submits a blog */
+/** Notify Neon team & all blog managers when a poster submits a blog for review */
 export const notifyManagers = async (managerEmails, blog, poster) => {
     if (!managerEmails?.length) return;
 
-    const subject = `[Blog Review] New submission: "${blog.title}"`;
+    const subject = `[Blog Action Needed] Someone has submitted a new blog post: "${blog.title}"`;
     const htmlBody = baseTemplate(`
-    <h2 style="margin:0 0 8px;font-size:22px;color:${neonBrand.text};font-weight:600;">${blog.title}</h2>
-    <p style="margin:0 0 20px;color:${neonBrand.muted};font-size:14px;">New blog submission requires review.</p>
+    <h2 style="margin:0 0 8px;font-size:22px;color:${neonBrand.text};font-weight:600;">New Blog Submission Received</h2>
+    <p style="margin:0 0 20px;color:${neonBrand.muted};font-size:14px;">
+      Someone has posted a new blog on Neon Cinematics. Please review it for further actions.
+    </p>
     
     <div style="background:${neonBrand.cardBg};border:1px solid ${neonBrand.border};padding:24px;margin:20px 0;">
+      <h3 style="margin:0 0 16px;font-size:18px;color:${neonBrand.gold};">${blog.title}</h3>
       <table style="width:100%;border-collapse:collapse;">
-        <tr><td style="padding:8px 0;color:${neonBrand.muted};font-size:12px;text-transform:uppercase;letter-spacing:1px;width:120px;">Author</td>
-            <td style="padding:8px 0;color:${neonBrand.text};">${poster.name} (@${poster.username})</td></tr>
-        <tr><td style="padding:8px 0;color:${neonBrand.muted};font-size:12px;text-transform:uppercase;letter-spacing:1px;">Submitted</td>
-            <td style="padding:8px 0;color:${neonBrand.text};">${new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</td></tr>
-        <tr><td style="padding:8px 0;color:${neonBrand.muted};font-size:12px;text-transform:uppercase;letter-spacing:1px;">Status</td>
-            <td style="padding:8px 0;">${statusBadge("submitted")}</td></tr>
+        <tr><td style="padding:6px 0;color:${neonBrand.muted};font-size:12px;text-transform:uppercase;letter-spacing:1px;width:120px;">Poster Name</td>
+            <td style="padding:6px 0;color:${neonBrand.text};font-weight:600;">${poster.name}</td></tr>
+        <tr><td style="padding:6px 0;color:${neonBrand.muted};font-size:12px;text-transform:uppercase;letter-spacing:1px;">Username</td>
+            <td style="padding:6px 0;color:${neonBrand.text};">@${poster.username}</td></tr>
+        <tr><td style="padding:6px 0;color:${neonBrand.muted};font-size:12px;text-transform:uppercase;letter-spacing:1px;">Poster Email</td>
+            <td style="padding:6px 0;color:${neonBrand.text};">${poster.email || "N/A"}</td></tr>
+        <tr><td style="padding:6px 0;color:${neonBrand.muted};font-size:12px;text-transform:uppercase;letter-spacing:1px;">Submitted On</td>
+            <td style="padding:6px 0;color:${neonBrand.text};">${new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" })}</td></tr>
+        <tr><td style="padding:6px 0;color:${neonBrand.muted};font-size:12px;text-transform:uppercase;letter-spacing:1px;">Status</td>
+            <td style="padding:6px 0;">${statusBadge("submitted")}</td></tr>
       </table>
     </div>
     
-    ${blog.description ? `<p style="color:${neonBrand.muted};font-size:14px;line-height:1.6;border-left:3px solid ${neonBrand.gold};padding-left:16px;margin:20px 0;">${blog.description}</p>` : ""}
+    ${blog.description ? `
+      <div style="margin:20px 0;">
+        <span style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:${neonBrand.muted};margin-bottom:6px;">Summary</span>
+        <p style="color:${neonBrand.text};font-size:14px;line-height:1.6;border-left:3px solid ${neonBrand.gold};padding-left:16px;margin:0;">${blog.description}</p>
+      </div>
+    ` : ""}
     
-    ${ctaButton("→ Review Blog", `${ADMIN_URL}/${blog._id}/review`)}
+    ${ctaButton("→ Review Blog in Admin Panel", `${ADMIN_URL}/${blog._id}/review`)}
   `);
 
-    const textBody = `New blog submission: "${blog.title}" by ${poster.name}.\nReview at: ${ADMIN_URL}/${blog._id}/review`;
+    const textBody = `Someone has posted a new blog: "${blog.title}" by ${poster.name} (@${poster.username}).\n\nPlease review it for further actions at: ${ADMIN_URL}/${blog._id}/review`;
 
     const results = [];
     for (const email of managerEmails) {
@@ -131,12 +134,13 @@ export const notifyManagers = async (managerEmails, blog, poster) => {
     return results;
 };
 
-/** Notify poster that their blog was submitted */
+/** Notify poster that their blog was submitted for review */
 export const notifyPosterSubmitted = async (posterEmail, blog) => {
+    if (!posterEmail) return;
     const subject = `Blog Submitted: "${blog.title}"`;
     const htmlBody = baseTemplate(`
     <h2 style="margin:0 0 8px;font-size:22px;color:${neonBrand.text};font-weight:600;">Blog Submitted for Review</h2>
-    <p style="margin:0 0 20px;color:${neonBrand.muted};font-size:14px;">Your blog has been submitted and is pending review.</p>
+    <p style="margin:0 0 20px;color:${neonBrand.muted};font-size:14px;">Your blog post has been submitted and is now under review by Neon team managers.</p>
     
     <div style="background:${neonBrand.cardBg};border:1px solid ${neonBrand.border};padding:24px;margin:20px 0;">
       <h3 style="margin:0 0 8px;font-size:18px;color:${neonBrand.text};">${blog.title}</h3>
@@ -145,26 +149,31 @@ export const notifyPosterSubmitted = async (posterEmail, blog) => {
     </div>
     
     <p style="color:${neonBrand.muted};font-size:13px;line-height:1.6;">
-      Our team will review your submission shortly. You will receive an email once a decision has been made.
+      Our managers will review your submission shortly. You will receive an email as soon as a decision is made.
     </p>
     
-    ${ctaButton("→ View Dashboard", `${SITE_URL}/blog/dashboard`)}
+    ${ctaButton("→ Track Status in Dashboard", `${SITE_URL}/blog/dashboard`)}
   `);
 
-    return sendEmail({ to: posterEmail, subject, htmlBody, textBody: `Your blog "${blog.title}" has been submitted for review. Check your dashboard: ${SITE_URL}/blog/dashboard` });
+    return sendEmail({ to: posterEmail, subject, htmlBody, textBody: `Your blog "${blog.title}" has been submitted for review. Check status at: ${SITE_URL}/blog/dashboard` });
 };
 
 /** Notify poster that their blog was approved */
 export const notifyPosterApproved = async (posterEmail, blog) => {
-    const subject = `🎬 Blog Approved: "${blog.title}"`;
+    if (!posterEmail) return;
+    const subject = `🎬 Your Blog Post Has Been Approved: "${blog.title}"`;
     const htmlBody = baseTemplate(`
     <h2 style="margin:0 0 8px;font-size:22px;color:${neonBrand.gold};font-weight:600;">Blog Approved!</h2>
-    <p style="margin:0 0 20px;color:${neonBrand.muted};font-size:14px;">Great news — your blog has been approved and is ready for publication.</p>
+    <p style="margin:0 0 20px;color:${neonBrand.muted};font-size:14px;">Great news — your blog post "<strong>${blog.title}</strong>" has been approved by Neon managers.</p>
     
     <div style="background:${neonBrand.cardBg};border:1px solid ${neonBrand.gold}44;padding:24px;margin:20px 0;">
       <h3 style="margin:0 0 8px;font-size:18px;color:${neonBrand.text};">${blog.title}</h3>
       <div style="margin-top:12px;">${statusBadge("approved")}</div>
     </div>
+    
+    <p style="color:${neonBrand.muted};font-size:13px;line-height:1.6;">
+      Your post will be published to the main blog page shortly.
+    </p>
     
     ${ctaButton("→ View Dashboard", `${SITE_URL}/blog/dashboard`, neonBrand.gold)}
   `);
@@ -172,8 +181,9 @@ export const notifyPosterApproved = async (posterEmail, blog) => {
     return sendEmail({ to: posterEmail, subject, htmlBody, textBody: `Your blog "${blog.title}" has been approved!` });
 };
 
-/** Notify poster that their blog was rejected */
+/** Notify poster that their blog was rejected with feedback */
 export const notifyPosterRejected = async (posterEmail, blog, reviewMessage) => {
+    if (!posterEmail) return;
     const subject = `Blog Needs Revision: "${blog.title}"`;
     const htmlBody = baseTemplate(`
     <h2 style="margin:0 0 8px;font-size:22px;color:#ef4444;font-weight:600;">Blog Requires Revision</h2>
@@ -184,7 +194,7 @@ export const notifyPosterRejected = async (posterEmail, blog, reviewMessage) => 
       <div style="margin-bottom:16px;">${statusBadge("rejected")}</div>
       
       <div style="border-top:1px solid ${neonBrand.border};padding-top:16px;margin-top:16px;">
-        <p style="margin:0 0 8px;font-size:11px;text-transform:uppercase;letter-spacing:2px;color:${neonBrand.muted};">Review Feedback</p>
+        <p style="margin:0 0 8px;font-size:11px;text-transform:uppercase;letter-spacing:2px;color:${neonBrand.muted};">Manager Feedback</p>
         <p style="margin:0;font-size:14px;line-height:1.7;color:${neonBrand.text};background:#1c1012;border-left:3px solid #ef4444;padding:12px 16px;">${reviewMessage}</p>
       </div>
     </div>
@@ -200,11 +210,12 @@ export const notifyPosterRejected = async (posterEmail, blog, reviewMessage) => 
 
 /** Notify poster that their blog has been published */
 export const notifyPosterPublished = async (posterEmail, blog) => {
+    if (!posterEmail) return;
     const publicUrl = `${SITE_URL}/blog/${blog.slug?.current || blog._id}`;
     const subject = `🎬 Your Blog is Live: "${blog.title}"`;
     const htmlBody = baseTemplate(`
     <h2 style="margin:0 0 8px;font-size:22px;color:${neonBrand.gold};font-weight:600;">Your Blog is Live!</h2>
-    <p style="margin:0 0 20px;color:${neonBrand.muted};font-size:14px;">Congratulations! Your blog has been published on Neon Cinematics.</p>
+    <p style="margin:0 0 20px;color:${neonBrand.muted};font-size:14px;">Congratulations! Your blog has been published and is now live on Neon Cinematics.</p>
     
     <div style="background:${neonBrand.cardBg};border:1px solid ${neonBrand.gold}44;padding:24px;margin:20px 0;">
       <h3 style="margin:0 0 8px;font-size:18px;color:${neonBrand.text};">${blog.title}</h3>
@@ -212,11 +223,11 @@ export const notifyPosterPublished = async (posterEmail, blog) => {
       <div style="margin-top:16px;">${statusBadge("published")}</div>
     </div>
     
-    ${ctaButton("→ Read Your Blog", publicUrl, neonBrand.gold)}
+    ${ctaButton("→ Read Your Blog Live", publicUrl, neonBrand.gold)}
   `);
 
     return sendEmail({
         to: posterEmail, subject, htmlBody,
-        textBody: `Your blog "${blog.title}" is now live! Read it at: ${publicUrl}`
+        textBody: `Your blog "${blog.title}" is live! Read it at: ${publicUrl}`
     });
 };

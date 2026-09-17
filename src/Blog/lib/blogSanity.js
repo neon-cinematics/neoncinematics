@@ -27,7 +27,7 @@ export const publishedBlogsQuery = `
     publishedAt,
     createdAt,
     "coverImageUrl": coverImage.asset->url,
-    "author": author->{name, username, "profileImageUrl": profileImage.asset->url}
+    "author": author->{name, username, email, "profileImageUrl": profileImage.asset->url}
 }`;
 
 /** Single published blog by slug */
@@ -42,7 +42,7 @@ export const blogBySlugQuery = `
     publishedAt,
     createdAt,
     "coverImageUrl": coverImage.asset->url,
-    "author": author->{name, username, "profileImageUrl": profileImage.asset->url},
+    "author": author->{name, username, email, "profileImageUrl": profileImage.asset->url},
     "attachments": attachments[] {
         _key,
         filename,
@@ -69,10 +69,10 @@ export const posterBlogsQuery = `
     publishedAt,
     reviewMessage,
     "coverImageUrl": coverImage.asset->url,
-    "author": author->{name, username}
+    "author": author->{name, username, email}
 }`;
 
-/** Single blog by ID (for editing — poster sees their own) */
+/** Single blog by ID (for editing / admin review — includes author email for notifications) */
 export const blogByIdQuery = `
 *[_type == "blog" && _id == $id][0] {
     _id,
@@ -89,7 +89,7 @@ export const blogByIdQuery = `
     reviewMessage,
     "coverImageUrl": coverImage.asset->url,
     "coverImageRef": coverImage.asset._ref,
-    "author": author->{_id, name, username},
+    "author": author->{_id, name, username, email},
     "authorRef": author._ref,
     "attachments": attachments[] {
         _key,

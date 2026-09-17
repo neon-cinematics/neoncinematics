@@ -1,0 +1,54 @@
+/* ─── Bubble Selection Toolbar ─────────────────────────────────────────────── */
+
+.bubble-toolbar {
+    position: absolute;
+    z-index: 9999;
+    transform: translateX(-50%);
+    background: #14131a;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 6px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    gap: 2px;
+    animation: bubble-fade-in 0.15s ease;
+}
+
+@keyframes bubble-fade-in {
+    from { opacity: 0; transform: translate(-50%, 6px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.bubble-toolbar__btn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.bubble-toolbar__btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.bubble-toolbar__btn.active {
+    background: #FCEDB6;
+    color: #0d0c11;
+}
+
+.bubble-toolbar__divider {
+    width: 1px;
+    height: 18px;
+    background: rgba(255, 255, 255, 0.12);
+    margin: 0 3px;
+}

@@ -28,16 +28,21 @@ const AdminLayout = ({ children }) => {
                 </div>
 
                 <nav className="admin-sidebar__nav">
-                    {navLinks.map(link => (
-                        <Link
-                            key={link.to}
-                            to={link.to}
-                            className={`admin-sidebar__link ${location.pathname === link.to ? "admin-sidebar__link--active" : ""}`}
-                        >
-                            <span className="admin-sidebar__icon">{link.icon}</span>
-                            {link.label}
-                        </Link>
-                    ))}
+                    {navLinks.map(link => {
+                        const isActive = link.to === "/admin/blogs"
+                            ? location.pathname === "/admin/blogs"
+                            : location.pathname.startsWith(link.to);
+                        return (
+                            <Link
+                                key={link.to}
+                                to={link.to}
+                                className={`admin-sidebar__link ${isActive ? "admin-sidebar__link--active" : ""}`}
+                            >
+                                <span className="admin-sidebar__icon">{link.icon}</span>
+                                {link.label}
+                            </Link>
+                        );
+                    })}
                 </nav>
 
                 <div className="admin-sidebar__bottom">

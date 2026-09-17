@@ -108,6 +108,18 @@ export const PortableTextRenderer = ({ content }) => {
             return;
         }
 
+        // ─── Drawing block ───────────────────────────────────────────────────
+        if (block._type === "drawing" || block.drawingData) {
+            flushList();
+            elements.push(
+                <figure key={key} className="blog-content__drawing-block">
+                    <img src={block.drawingData || block.url} alt={block.caption || "Inline Drawing"} />
+                    {block.caption && <figcaption>{block.caption}</figcaption>}
+                </figure>
+            );
+            return;
+        }
+
         // ─── Normal text blocks ──────────────────────────────────────────────
         if (block._type === "block") {
             const { style = "normal", listItem, level = 1, children, markDefs } = block;
@@ -123,26 +135,26 @@ export const PortableTextRenderer = ({ content }) => {
             flushList();
 
             const rendered = renderChildren(children, markDefs);
+            const textContent = children?.map(c => c.text || "").join("").trim();
+            const headingId = textContent.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
             switch (style) {
                 case "h1":
-                    elements.push(<h1 key={key} className="blog-content__h1">{rendered}</h1>);
+                    elements.push(<h1 key={key} id={headingId} className="blog-content__h1">{rendered}</h1>);
                     break;
                 case "h2":
-                    elements.push(<h2 key={key} className="blog-content__h2">{rendered}</h2>);
+                    elements.push(<h2 key={key} id={headingId} className="blog-content__h2">{rendered}</h2>);
                     break;
                 case "h3":
-                    elements.push(<h3 key={key} className="blog-content__h3">{rendered}</h3>);
+                    elements.push(<h3 key={key} id={headingId} className="blog-content__h3">{rendered}</h3>);
                     break;
                 case "h4":
-                    elements.push(<h4 key={key} className="blog-content__h4">{rendered}</h4>);
+                    elements.push(<h4 key={key} id={headingId} className="blog-content__h4">{rendered}</h4>);
                     break;
                 case "blockquote":
                     elements.push(<blockquote key={key} className="blog-content__blockquote">{rendered}</blockquote>);
                     break;
                 default: // normal
-                    // Skip empty paragraphs
-                    const textContent = children?.map(c => c.text || "").join("").trim();
                     if (textContent) {
                         elements.push(<p key={key} className="blog-content__p">{rendered}</p>);
                     } else {

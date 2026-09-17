@@ -161,16 +161,19 @@
 /* ─── Shared admin utility classes ─────────────────────────────────────────── */
 
 .admin-page-title {
-    font-family: 'Cormorant Garamond', Georgia, serif;
-    font-size: 2.2rem;
-    font-weight: 500;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
     color: #f2f1eb;
-    margin: 0 0 0.25rem;
-    line-height: 1;
+    margin: 0 0 0.4rem;
+    line-height: 1.1;
 }
 
 .admin-page-sub {
+    font-family: 'Merriweather', Georgia, serif;
     font-size: 13px;
+    line-height: 1.6;
     color: #9ba4a7;
     margin: 0 0 2.5rem;
 }

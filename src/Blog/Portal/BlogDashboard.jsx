@@ -372,7 +372,7 @@ const BlogDashboard = () => {
                                                 className="dashboard__action dashboard__action--submit"
                                                 onClick={() => handleSubmit(blog)}
                                             >
-                                                Submit →
+                                                Submit for Review →
                                             </button>
                                         )}
                                         {actions.includes("resubmit") && (

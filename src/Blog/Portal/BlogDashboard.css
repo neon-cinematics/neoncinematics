@@ -173,16 +173,19 @@
 }
 
 .dashboard__title {
-    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-size: 2.5rem;
-    font-weight: 500;
+    font-weight: 800;
+    letter-spacing: -0.02em;
     color: #f2f1eb;
     margin: 0 0 0.25rem;
-    line-height: 1;
+    line-height: 1.1;
 }
 
 .dashboard__subtitle {
+    font-family: 'Merriweather', Georgia, serif;
     font-size: 13px;
+    line-height: 1.6;
     color: #9ba4a7;
     margin: 0;
 }
@@ -224,9 +227,10 @@
 
 .stat-card__value {
     display: block;
-    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-size: 2.5rem;
-    font-weight: 500;
+    font-weight: 900;
+    letter-spacing: -0.02em;
     color: var(--stat-color, #f2f1eb);
     line-height: 1;
     margin-bottom: 0.4rem;
@@ -365,6 +369,7 @@
 }
 
 .dashboard__blog-desc {
+    font-family: 'Merriweather', Georgia, serif;
     font-size: 12px;
     color: #9ba4a7;
     margin: 0 0 0.5rem;
@@ -372,7 +377,7 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 .dashboard__blog-meta {
@@ -558,14 +563,16 @@
 }
 
 .dashboard__empty h2 {
-    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-size: 2rem;
-    font-weight: 500;
+    font-weight: 800;
+    letter-spacing: -0.02em;
     color: #f2f1eb;
     margin: 0 0 0.75rem;
 }
 
 .dashboard__empty p {
+    font-family: 'Merriweather', Georgia, serif;
     color: #9ba4a7;
     font-size: 14px;
     line-height: 1.6;
@@ -609,10 +616,11 @@
 }
 
 .confirm-dialog p {
+    font-family: 'Merriweather', Georgia, serif;
     margin: 0 0 1.5rem;
     color: #f2f1eb;
-    font-size: 15px;
-    line-height: 1.5;
+    font-size: 14px;
+    line-height: 1.6;
 }
 
 .confirm-dialog__actions {

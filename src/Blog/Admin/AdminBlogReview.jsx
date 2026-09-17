@@ -142,6 +142,39 @@ const AdminBlogReview = () => {
         }
     };
 
+    const handleUnpublish = async () => {
+        if (window.confirm(`Unpublish "${blog.title}"? It will be removed from the public website and reverted to Approved status.`)) {
+            setIsSubmitting(true);
+            try {
+                const client = getWriteClient();
+                await client.patch(blog._id).set({
+                    status: STATUS.APPROVED,
+                }).unset(["publishedAt"]).commit();
+                setBlog(b => ({ ...b, status: STATUS.APPROVED }));
+                showToast("Blog has been unpublished.");
+            } catch (err) {
+                showToast("Unpublish failed: " + err.message, "error");
+            } finally {
+                setIsSubmitting(false);
+            }
+        }
+    };
+
+    const handleDelete = async () => {
+        if (window.confirm(`Delete "${blog.title}" permanently? This action cannot be undone.`)) {
+            setIsSubmitting(true);
+            try {
+                const client = getWriteClient();
+                await client.delete(blog._id);
+                showToast("Blog deleted permanently.");
+                setTimeout(() => navigate("/admin/blogs/list"), 1200);
+            } catch (err) {
+                showToast("Delete failed: " + err.message, "error");
+                setIsSubmitting(false);
+            }
+        }
+    };
+
     return (
         <AdminLayout>
             {toast && <div className={`admin-toast admin-toast--${toast.type}`}>{toast.message}</div>}
@@ -286,15 +319,34 @@ const AdminBlogReview = () => {
                                     </button>
                                 )}
                                 {blog.status === STATUS.PUBLISHED && (
-                                    <Link
-                                        to={`/blog/${blog.slug?.current}`}
-                                        className="admin-btn admin-btn--secondary"
-                                        style={{ width: "100%", padding: "10px", justifyContent: "center", textDecoration: "none" }}
-                                        target="_blank"
-                                    >
-                                        View Public Blog ↗
-                                    </Link>
+                                    <>
+                                        <Link
+                                            to={`/blog/${blog.slug?.current}`}
+                                            className="admin-btn admin-btn--secondary"
+                                            style={{ width: "100%", padding: "10px", justifyContent: "center", textDecoration: "none" }}
+                                            target="_blank"
+                                        >
+                                            View Public Blog ↗
+                                        </Link>
+                                        <button
+                                            className="admin-btn admin-btn--danger"
+                                            style={{ width: "100%", padding: "10px", justifyContent: "center" }}
+                                            onClick={handleUnpublish}
+                                            disabled={isSubmitting}
+                                        >
+                                            ↩ Unpublish Blog
+                                        </button>
+                                    </>
                                 )}
+
+                                <button
+                                    className="admin-btn admin-btn--danger"
+                                    style={{ width: "100%", padding: "10px", justifyContent: "center", marginTop: "12px", borderStyle: "dashed" }}
+                                    onClick={handleDelete}
+                                    disabled={isSubmitting}
+                                >
+                                    🗑 Delete Article
+                                </button>
                             </div>
 
                             {isSubmitting && (

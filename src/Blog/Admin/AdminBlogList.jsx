@@ -248,11 +248,12 @@ const AdminBlogList = () => {
                                 <td style={{ fontSize: "12px", color: "#526168" }}>{timeAgo(blog._updatedAt)}</td>
                                 <td>
                                     <div style={{ display: "flex", gap: "5px", flexWrap: "wrap" }}>
-                                        {(blog.status === "submitted" || blog.status === "under_review" || blog.status === "approved") && (
-                                            <Link to={`/admin/blogs/${blog._id}/review`} className="admin-btn admin-btn--primary">
-                                                Review
-                                            </Link>
-                                        )}
+                                        <Link to={`/admin/blogs/${blog._id}/review`} className="admin-btn admin-btn--primary">
+                                            Review
+                                        </Link>
+                                        <Link to={`/blog/preview/${blog._id}`} className="admin-btn admin-btn--secondary" target="_blank">
+                                            Preview
+                                        </Link>
                                         {blog.status === "approved" && (
                                             <button className="admin-btn admin-btn--success" onClick={() => handlePublish(blog)}>
                                                 Publish
@@ -260,13 +261,13 @@ const AdminBlogList = () => {
                                         )}
                                         {blog.status === "published" && (
                                             <>
-                                                <Link to={`/blog/${blog.slug?.current}`} className="admin-btn admin-btn--secondary" target="_blank">View ↗</Link>
+                                                <Link to={`/blog/${blog.slug?.current}`} className="admin-btn admin-btn--secondary" target="_blank">Live ↗</Link>
                                                 <button className="admin-btn admin-btn--secondary" onClick={() => handleUnpublish(blog)}>Unpublish</button>
                                             </>
                                         )}
-                                        {(blog.status === "draft" || blog.status === "rejected") && (
-                                            <button className="admin-btn admin-btn--danger" onClick={() => handleDelete(blog)}>Delete</button>
-                                        )}
+                                        <button className="admin-btn admin-btn--danger" onClick={() => handleDelete(blog)}>
+                                            Delete
+                                        </button>
                                     </div>
                                 </td>
                             </tr>

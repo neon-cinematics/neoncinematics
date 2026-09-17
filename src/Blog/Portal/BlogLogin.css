@@ -66,19 +66,21 @@
 /* ─── Title ─────────────────────────────────────────────────────────────────── */
 
 .blog-login__title {
-    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-size: 2.2rem;
-    font-weight: 500;
+    font-weight: 800;
+    letter-spacing: -0.02em;
     color: #f2f1eb;
     margin: 0 0 0.5rem;
-    line-height: 1;
+    line-height: 1.1;
 }
 
 .blog-login__subtitle {
+    font-family: 'Merriweather', Georgia, serif;
     font-size: 13px;
     color: #9ba4a7;
     margin: 0 0 2rem;
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 /* ─── Form ──────────────────────────────────────────────────────────────────── */
@@ -227,11 +229,12 @@
 /* ─── Help text ─────────────────────────────────────────────────────────────── */
 
 .blog-login__help {
+    font-family: 'Merriweather', Georgia, serif;
     font-size: 12px;
     color: #526168;
     text-align: center;
     margin: 1.5rem 0 0;
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 /* ─── Admin link ────────────────────────────────────────────────────────────── */

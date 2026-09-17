@@ -45,18 +45,20 @@
 }
 
 .admin-login-card h1 {
-    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-size: 2rem;
-    font-weight: 500;
+    font-weight: 800;
+    letter-spacing: -0.02em;
     color: #f2f1eb;
     margin: 0 0 0.5rem;
 }
 
 .admin-login-card > p {
+    font-family: 'Merriweather', Georgia, serif;
     font-size: 13px;
     color: #9ba4a7;
     margin: 0 0 1.5rem;
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 .admin-login-card form {
@@ -99,11 +101,12 @@
 .admin-login-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .admin-login-help {
+    font-family: 'Merriweather', Georgia, serif !important;
     font-size: 11px !important;
     color: #526168 !important;
     text-align: center;
     margin: 1rem 0 0 !important;
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 /* ─── Stats Grid ─────────────────────────────────────────────────────────────── */
@@ -125,9 +128,10 @@
 
 .admin-stat-value {
     display: block;
-    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-size: 2.5rem;
-    font-weight: 500;
+    font-weight: 900;
+    letter-spacing: -0.02em;
     line-height: 1;
     margin-bottom: 0.4rem;
 }
@@ -156,10 +160,10 @@
 }
 
 .admin-section-title {
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 2px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
     text-transform: uppercase;
     color: #9ba4a7;
     margin: 0;
@@ -201,15 +205,18 @@
 }
 
 .admin-quick-link strong {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 800;
+    letter-spacing: -0.02em;
     color: #f2f1eb;
 }
 
 .admin-quick-link span:last-child {
+    font-family: 'Merriweather', Georgia, serif;
     font-size: 12px;
     color: #9ba4a7;
-    line-height: 1.4;
+    line-height: 1.6;
 }
 
 /* ─── Responsive ────────────────────────────────────────────────────────────── */

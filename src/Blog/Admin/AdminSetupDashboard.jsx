@@ -17,6 +17,11 @@ const AdminSetupDashboard = () => {
     const [tokenMessage, setTokenMessage] = useState(null);
     const [seedMessage, setSeedMessage] = useState(null);
 
+    // Resend Form
+    const [resendApiKey, setResendApiKey] = useState("");
+    const [resendFromEmail, setResendFromEmail] = useState("");
+    const [resendMessage, setResendMessage] = useState(null);
+
     // SMTP Form
     const [smtpHost, setSmtpHost] = useState("");
     const [smtpPort, setSmtpPort] = useState("587");
@@ -90,6 +95,30 @@ const AdminSetupDashboard = () => {
         }
     };
 
+    const handleSaveResend = async (e) => {
+        e.preventDefault();
+        setResendMessage({ type: "info", text: "Saving Resend API Key..." });
+        try {
+            const res = await fetch(`${API_BASE}/api/email/config`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    resendApiKey: resendApiKey.trim(),
+                    fromEmail: resendFromEmail.trim() || undefined,
+                }),
+            });
+            const data = await res.json();
+            if (res.ok) {
+                setResendMessage({ type: "success", text: "Resend.com API key saved! Emails are now live." });
+                fetchDiagnostics();
+            } else {
+                setResendMessage({ type: "error", text: data.error });
+            }
+        } catch (err) {
+            setResendMessage({ type: "error", text: err.message });
+        }
+    };
+
     const handleSaveSmtp = async (e) => {
         e.preventDefault();
         setSmtpMessage({ type: "info", text: "Saving SMTP credentials..." });
@@ -142,10 +171,10 @@ const AdminSetupDashboard = () => {
                 res = await notifyPosterPublished(testTo.trim(), dummyBlog);
             }
 
-            if (res?.mode === "live" || res?.messageId) {
-                setTestResult({ type: "success", text: `Live email dispatched successfully to ${testTo}! (Message ID: ${res.messageId || "sent"})` });
+            if (res?.mode === "resend" || res?.mode === "smtp" || res?.messageId) {
+                setTestResult({ type: "success", text: `Live email dispatched via ${res.mode?.toUpperCase() || "Engine"} to ${testTo}! (Message ID: ${res.messageId || "sent"})` });
             } else if (res?.mode === "stub") {
-                setTestResult({ type: "warning", text: `Email logged to console! (SMTP credentials not yet saved above). Configure Gmail/SMTP below to receive in actual inbox.` });
+                setTestResult({ type: "warning", text: `Email logged to console! Paste your Resend.com API Key below to deliver live emails to actual inboxes.` });
             } else {
                 setTestResult({ type: "success", text: `Email trigger executed!` });
             }
@@ -161,7 +190,7 @@ const AdminSetupDashboard = () => {
             <div className="admin-setup">
                 <header className="admin-setup__header">
                     <h2>Sanity & Email System Health</h2>
-                    <p>Manage Sanity dataset access, seed sample blogs, and verify email inbox notifications.</p>
+                    <p>Manage Sanity dataset access, seed sample blogs, and configure Resend.com / SMTP email delivery.</p>
                 </header>
 
                 {/* Status Cards */}
@@ -183,12 +212,12 @@ const AdminSetupDashboard = () => {
                         </div>
                     </div>
                     <div className="setup-card">
-                        <div className={`setup-card__badge ${diagnostics?.smtpConfigured ? "setup-card__badge--ok" : "setup-card__badge--stub"}`}>
-                            {diagnostics?.smtpConfigured ? "SMTP LIVE" : "CONSOLE STUB"}
+                        <div className={`setup-card__badge ${diagnostics?.resendConfigured ? "setup-card__badge--resend" : diagnostics?.smtpConfigured ? "setup-card__badge--ok" : "setup-card__badge--stub"}`}>
+                            {diagnostics?.resendConfigured ? "RESEND LIVE" : diagnostics?.smtpConfigured ? "SMTP LIVE" : "CONSOLE STUB"}
                         </div>
                         <div className="setup-card__info">
-                            <span className="setup-card__label">Email Engine</span>
-                            <strong className="setup-card__val">{diagnostics?.smtpConfigured ? "Dispatches to Inboxes" : "Console Log Mode"}</strong>
+                            <span className="setup-card__label">Active Email Engine</span>
+                            <strong className="setup-card__val">{diagnostics?.activeEngine || "Console Stub"}</strong>
                         </div>
                     </div>
                     <div className="setup-card">
@@ -243,13 +272,54 @@ const AdminSetupDashboard = () => {
 
                 {/* Section 2: Email Configuration & Testing */}
                 <div className="admin-setup__section">
-                    <h3>2. Email Notifications & Live Inbox Verification</h3>
+                    <h3>2. Email Delivery (Resend.com / SMTP)</h3>
                     <div className="admin-setup__grid">
+                        {/* Resend.com Setup Box */}
+                        <form className="admin-setup__form" onSubmit={handleSaveResend}>
+                            <h4>⚡ Option A: Resend.com (Recommended)</h4>
+                            <p className="admin-setup__help">
+                                Get your free API key from <a href="https://resend.com" target="_blank" rel="noreferrer" style={{ color: '#FCEDB6' }}>resend.com</a> (takes 1 minute). Resend delivers instant emails with high inbox deliverability.
+                            </p>
+
+                            <div className="admin-setup__field">
+                                <label>Resend API Key:</label>
+                                <input
+                                    type="password"
+                                    placeholder="re_123456789..."
+                                    value={resendApiKey}
+                                    onChange={(e) => setResendApiKey(e.target.value)}
+                                    required
+                                    className="admin-setup__input"
+                                />
+                            </div>
+
+                            <div className="admin-setup__field">
+                                <label>Sender Email (Optional):</label>
+                                <input
+                                    type="text"
+                                    placeholder="Neon Cinematics <onboarding@resend.dev>"
+                                    value={resendFromEmail}
+                                    onChange={(e) => setResendFromEmail(e.target.value)}
+                                    className="admin-setup__input"
+                                />
+                            </div>
+
+                            <button type="submit" className="admin-setup__btn admin-setup__btn--gold">
+                                Save Resend API Key
+                            </button>
+
+                            {resendMessage && (
+                                <div className={`admin-setup__msg admin-setup__msg--${resendMessage.type}`}>
+                                    {resendMessage.text}
+                                </div>
+                            )}
+                        </form>
+
                         {/* Live Email Test Box */}
                         <form className="admin-setup__form" onSubmit={handleSendTestEmail}>
                             <h4>Test Email Dispatch</h4>
                             <p className="admin-setup__help">
-                                Send a test email to your real email inbox to check how confirmation and decision emails look!
+                                Send a test email to your real email inbox to verify Resend / SMTP live email delivery.
                             </p>
 
                             <div className="admin-setup__field">
@@ -285,67 +355,6 @@ const AdminSetupDashboard = () => {
                             {testResult && (
                                 <div className={`admin-setup__msg admin-setup__msg--${testResult.type}`}>
                                     {testResult.text}
-                                </div>
-                            )}
-                        </form>
-
-                        {/* SMTP Setup Box */}
-                        <form className="admin-setup__form" onSubmit={handleSaveSmtp}>
-                            <h4>Configure Real SMTP (Gmail / Resend / Custom)</h4>
-                            <p className="admin-setup__help">
-                                Optional: Enter your SMTP credentials to send real emails to poster and admin inboxes automatically.
-                            </p>
-
-                            <div className="admin-setup__row">
-                                <div className="admin-setup__field">
-                                    <label>Host:</label>
-                                    <input
-                                        type="text"
-                                        placeholder="smtp.gmail.com"
-                                        value={smtpHost}
-                                        onChange={(e) => setSmtpHost(e.target.value)}
-                                        className="admin-setup__input"
-                                    />
-                                </div>
-                                <div className="admin-setup__field admin-setup__field--small">
-                                    <label>Port:</label>
-                                    <input
-                                        type="text"
-                                        placeholder="587"
-                                        value={smtpPort}
-                                        onChange={(e) => setSmtpPort(e.target.value)}
-                                        className="admin-setup__input"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="admin-setup__field">
-                                <label>Username / Email:</label>
-                                <input
-                                    type="text"
-                                    placeholder="your-email@gmail.com"
-                                    value={smtpUser}
-                                    onChange={(e) => setSmtpUser(e.target.value)}
-                                    className="admin-setup__input"
-                                />
-                            </div>
-
-                            <div className="admin-setup__field">
-                                <label>Password / App Password:</label>
-                                <input
-                                    type="password"
-                                    placeholder="App password"
-                                    value={smtpPass}
-                                    onChange={(e) => setSmtpPass(e.target.value)}
-                                    className="admin-setup__input"
-                                />
-                            </div>
-
-                            <button type="submit" className="admin-setup__btn">Save SMTP Settings</button>
-
-                            {smtpMessage && (
-                                <div className={`admin-setup__msg admin-setup__msg--${smtpMessage.type}`}>
-                                    {smtpMessage.text}
                                 </div>
                             )}
                         </form>
