@@ -1,13 +1,9 @@
 import { createBlogWriteClient } from "./blogSanity";
 
-// ─── Blog Auth Utilities ─────────────────────────────────────────────────────
-// Manages poster JWT session stored in sessionStorage
-
 const SESSION_KEY = "neon_blog_session";
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
 
-// ─── Session Management ───────────────────────────────────────────────────────
-
+// Poster session handling
 export const saveSession = (token, poster) => {
     sessionStorage.setItem(SESSION_KEY, JSON.stringify({ token, poster }));
 };
@@ -37,7 +33,7 @@ export const getPoster = () => {
 
 export const isLoggedIn = () => !!getToken();
 
-// ─── Admin Session ────────────────────────────────────────────────────────────
+// Admin session handling
 const ADMIN_SESSION_KEY = "neon_blog_admin_session";
 
 export const saveAdminSession = (token, admin, sanityToken) => {
@@ -80,8 +76,7 @@ export const setCustomSanityWriteToken = (token) => {
     }
 };
 
-// ─── API Calls ────────────────────────────────────────────────────────────────
-
+// Auth API calls
 export const loginPoster = async (username, password) => {
     try {
         const res = await fetch(`${API_BASE}/api/auth/login`, {

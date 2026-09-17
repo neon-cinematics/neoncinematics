@@ -10,7 +10,7 @@ import Section3 from "./Section3";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { preloadMediaAssets } from "./lib/assetPreloader";
 
-// ─── Blog System (lazy-loaded so it doesn't affect initial bundle) ─────────────
+// Lazy-loaded blog components
 const BlogPage = lazy(() => import("./Blog/BlogPage"));
 const BlogDetail = lazy(() => import("./Blog/BlogDetail"));
 const BlogLogin = lazy(() => import("./Blog/Portal/BlogLogin"));
@@ -19,7 +19,6 @@ const BlogEditor = lazy(() => import("./Blog/Portal/BlogEditor"));
 
 const ContactPage = lazy(() => import("./ContactPage"));
 
-// Admin pages
 const MasterAdminDashboard = lazy(() => import("./Blog/Admin/MasterAdminDashboard"));
 const AdminDashboard = lazy(() => import("./Blog/Admin/AdminDashboard"));
 const AdminBlogList = lazy(() => import("./Blog/Admin/AdminBlogList"));
@@ -28,7 +27,6 @@ const AdminPosterManagement = lazy(() => import("./Blog/Admin/AdminPosterManagem
 const AdminManagerConfig = lazy(() => import("./Blog/Admin/AdminManagerConfig"));
 const AdminSetupDashboard = lazy(() => import("./Blog/Admin/AdminSetupDashboard"));
 
-// Minimal loading fallback (matches dark bg — no flash)
 const PageFallback = () => (
   <div style={{ minHeight: "100vh", background: "#080a0d", display: "flex", alignItems: "center", justifyContent: "center" }}>
     <div style={{ width: 20, height: 20, border: "2px solid rgba(242,241,235,0.08)", borderTopColor: "rgba(125,229,210,0.5)", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
@@ -70,7 +68,6 @@ const App = () => {
       if (isMounted) setAssetsLoaded(true);
     });
 
-    // Failsafe 8 second timeout
     const timeoutId = setTimeout(() => {
       if (isMounted) setAssetsLoaded(true);
     }, 8000);
@@ -95,7 +92,7 @@ const App = () => {
       <ScrollToTop />
       <Suspense fallback={<PageFallback />}>
         <Routes>
-          {/* ─── Existing Routes (unchanged) ─────────────────────────── */}
+          {/* Main Site */}
           <Route path="/" element={<Section1 />} />
           <Route path="/work" element={<Section2 />} />
           <Route path="/aboutUs" element={<Section3 />} />
@@ -104,18 +101,18 @@ const App = () => {
           <Route path="/video-admin" element={<VideoAdmin />} />
           <Route path="/team-admin" element={<TeamAdmin />} />
 
-          {/* ─── Public Blog Routes ───────────────────────────────────── */}
+          {/* Blog */}
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/blog/:slug" element={<BlogDetail />} />
 
-          {/* ─── Poster Portal Routes ─────────────────────────────────── */}
+          {/* Poster Portal */}
           <Route path="/blog/login" element={<BlogLogin />} />
           <Route path="/blog/dashboard" element={<BlogDashboard />} />
           <Route path="/blog/create" element={<BlogEditor />} />
           <Route path="/blog/edit/:id" element={<BlogEditor />} />
           <Route path="/blog/preview/:id" element={<BlogDetail />} />
 
-          {/* ─── Admin Routes ─────────────────────────────────────────── */}
+          {/* Master Admin */}
           <Route path="/neoncinematicsadminhere" element={<MasterAdminDashboard />} />
           <Route path="/neoncinematicsadminhere/blogs" element={<AdminDashboard />} />
           <Route path="/neoncinematicsadminhere/blogs/list" element={<AdminBlogList />} />
