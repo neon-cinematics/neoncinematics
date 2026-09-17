@@ -740,7 +740,7 @@ export default function MorphSlider({
           className={`morph-slider-watch-btn ${hovering ? 'visible' : ''}`}
           onClick={e => e.stopPropagation()}
         >
-          ▶ Watch Video
+          WATCH VIDEO ↗
         </a>
       )}
 

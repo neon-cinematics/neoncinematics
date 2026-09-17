@@ -3,7 +3,13 @@ import { sanityClient } from "./sanity";
 
 const builder = sanityClient ? imageUrlBuilder(sanityClient) : null;
 
-export const sanityImageUrl = (source, width = 700) => {
+export const sanityImageUrl = (source, width = 700, height = null) => {
     if (!builder || !source) return null;
-    return builder.image(source).width(width).fit("max").auto("format").url();
+    let img = builder.image(source).width(width).auto("format");
+    if (height) {
+        img = img.height(height).fit("crop");
+    } else {
+        img = img.fit("max");
+    }
+    return img.url();
 };

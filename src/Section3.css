@@ -95,172 +95,202 @@
     border-radius: 2px;
 }
 
+/* Team Hierarchy Section Heading Container */
+.meet-team-heading-container {
+    position: relative;
+    height: clamp(60px, 10vh, 110px);
+    width: clamp(280px, 70%, 900px);
+    margin: clamp(3rem, 6vh, 6rem) auto clamp(2rem, 4vh, 4rem);
+    padding: 0 5%;
+}
+
 /* Team Hierarchy Sections */
 .team-hierarchy-section {
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 4rem 5%;
+    padding: clamp(2rem, 4vh, 4rem) 5%;
+    margin-bottom: clamp(3rem, 6vh, 6rem);
     position: relative;
 }
 
+.team-hierarchy-section:last-of-type {
+    margin-bottom: clamp(4rem, 8vh, 8rem);
+}
+
 .team-hierarchy-section h2 {
-    font-size: 2.5rem;
-    margin-bottom: 3rem;
+    font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+    margin-bottom: clamp(1.5rem, 3vh, 2.5rem);
     color: white;
     text-align: center;
     letter-spacing: 2px;
     font-weight: 300;
 }
 
-/* Base Team Member Card */
-.team-member-card {
-    background: rgba(6, 8, 13, 0.7);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
-    overflow: hidden;
+/* Base Team Member Card — Showcase Card Format */
+.team-member-card-wrapper {
+    width: clamp(210px, 20vw, 260px);
+    position: relative;
+    flex: 0 0 auto;
+}
+
+.team-member-card.showcase-card {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    transition: all 0.3s ease;
-}
-
-.team-member-card:hover {
-    transform: translateY(-8px);
-    background: #080b12;
-    border-color: #00b4ff;
-    box-shadow: 0 0 20px rgba(0, 180, 255, 0.15);
-}
-
-.team-member-card img {
     width: 100%;
-    aspect-ratio: 1 / 1.15;
-    object-fit: cover;
+    background: #121214;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.team-member-info {
-    padding: 2rem 1.5rem;
-    text-align: center;
+.team-member-card.showcase-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(4, 144, 233, 0.5);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+}
+
+/* 4:5 Portrait Aspect Ratio Image Wrapper */
+.showcase-card__image-wrapper {
     width: 100%;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: #18181b;
     position: relative;
 }
 
-
-.team-member-info::before {
-    content: '';
-    position: absolute;
-    top: -50px;
-    left: 0;
+.showcase-card__image-wrapper img {
+    display: block;
     width: 100%;
-    height: 50px;
-    background: linear-gradient(to bottom, transparent, rgba(6, 8, 13, 0.7));
-    pointer-events: none;
-    transition: background 0.3s ease;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+    transition: transform 0.5s ease;
 }
 
-.team-member-card:hover .team-member-info::before {
-    background: linear-gradient(to bottom, transparent, rgba(8, 11, 18, 0.8));
+.team-member-card.showcase-card:hover .showcase-card__image-wrapper img {
+    transform: scale(1.08);
 }
 
-.show-on-hover .position-wrapper {
-    opacity: 0;
-    transition: opacity 0.3s ease;
+/* Meta text section below the 4:5 image */
+.showcase-card__meta {
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    background: #121214;
+    min-height: 72px;
+    justify-content: center;
+    position: relative;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.35s ease, border-color 0.35s ease;
 }
 
-.team-member-card:hover .position-wrapper {
-    opacity: 1;
-}
-
-.team-member-info h3 {
-    margin: 0 0 0.8rem 0;
-    font-size: 1.4rem;
-    font-family: "DM Sans", sans-serif;
+.showcase-card__type {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: #0490e9;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    font-weight: 600;
-    color: white;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    font-weight: 700;
 }
 
-.team-member-info p {
+.showcase-card__title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #f2f1eb;
     margin: 0;
-    font-size: 0.9rem;
-    color: #7de5d2;
+    letter-spacing: 0.02em;
+    line-height: 1.25;
 }
 
-/* Coordinators Level (Massive Cards) */
-.team-grid--coordinators {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 4rem;
-    max-width: 1000px;
-    width: 100%;
+/* For 2nd & 1st Year Cards (hide-meta-initially): identical 4:5 card dimensions, text slides up smoothly on hover */
+.team-member-card.hide-meta-initially {
+    position: relative;
+    overflow: hidden;
 }
-.team-grid--coordinators .team-member-card:hover {
-    border-color: #ff7800;
-    box-shadow: 0 0 30px rgba(255, 120, 0, 0.2);
-}
-.team-grid--coordinators img {
-    aspect-ratio: 1 / 1.25;
-}
-.team-grid--coordinators .team-member-info h3 { font-size: 2.2rem; letter-spacing: 3px; }
-.team-grid--coordinators .team-member-info p { font-size: 1.1rem; color: #ff7800; }
 
-/* 3rd Year Level (Medium Grid) */
-.team-grid--3rd-year {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 2.5rem;
-    width: 100%;
-    max-width: 1200px;
+.team-member-card.hide-meta-initially .showcase-card__meta > * {
+    opacity: 0 !important;
+    transform: translateY(12px) !important;
+    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
-.team-grid--3rd-year .team-member-info h3 { font-size: 1.6rem; }
-.team-grid--3rd-year .team-member-card:hover {
-    border-color: #00b4ff;
-    box-shadow: 0 0 25px rgba(0, 180, 255, 0.15);
-}
-.team-grid--3rd-year .team-member-info p { color: #00b4ff; }
 
-/* 2nd Year Level (Smaller Grid) */
-.team-grid--2nd-year {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+.team-member-card.hide-meta-initially:hover .showcase-card__meta,
+.team-member-card-wrapper:hover .team-member-card.hide-meta-initially .showcase-card__meta {
+    background: #18181c;
+    border-top-color: rgba(4, 144, 233, 0.35);
+}
+
+.team-member-card.hide-meta-initially:hover .showcase-card__meta > *,
+.team-member-card-wrapper:hover .team-member-card.hide-meta-initially .showcase-card__meta > * {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+.team-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 2rem;
     width: 100%;
-    max-width: 1400px;
-}
-.team-grid--2nd-year .team-member-info h3 { font-size: 1.3rem; }
-.team-grid--2nd-year .team-member-info p { font-size: 0.8rem; color: #ff7800; }
-.team-grid--2nd-year .team-member-card:hover {
-    border-color: #ff7800;
-    box-shadow: 0 0 20px rgba(255, 120, 0, 0.15);
+    max-width: 1300px;
+    margin: 0 auto;
 }
 
-/* 1st Year Level (Dense Grid) */
-.team-grid--1st-year {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 1.5rem;
-    width: 100%;
-    max-width: 1600px;
+/* Coordinators Level Accent & Custom Sizing */
+.team-grid--coordinators {
+    gap: 2.5rem;
 }
-.team-grid--1st-year .team-member-info { padding: 1.5rem 1rem; }
-.team-grid--1st-year .team-member-info h3 { font-size: 1.1rem; letter-spacing: 1px; }
-.team-grid--1st-year .team-member-info p { font-size: 0.75rem; color: #00b4ff; }
-.team-grid--1st-year .team-member-card:hover {
-    border-color: #00b4ff;
-    box-shadow: 0 0 15px rgba(0, 180, 255, 0.15);
+
+.team-grid--coordinators .team-member-card-wrapper {
+    width: clamp(240px, 22vw, 290px);
+}
+
+.team-grid--coordinators .showcase-card__type {
+    color: #ee074c;
+    font-size: 12px;
+}
+
+.team-grid--coordinators .showcase-card__title {
+    font-size: 1.35rem;
+}
+
+.team-grid--coordinators .team-member-card.showcase-card:hover {
+    border-color: rgba(238, 7, 76, 0.6);
+    box-shadow: 0 16px 40px rgba(238, 7, 76, 0.25);
+}
+
+/* 3rd Year Level */
+.team-grid--3rd-year {
+    gap: 2rem;
+}
+
+/* 2nd Year Level (Hover Meta) */
+.team-grid--2nd-year {
+    gap: 1.75rem;
+}
+
+.team-grid--2nd-year .showcase-card__type {
+    color: #ee074c;
+}
+
+/* 1st Year Level (Hover Meta) */
+.team-grid--1st-year {
+    gap: 1.5rem;
 }
 
 /* Responsive Overrides */
 @media (max-width: 768px) {
-    .team-grid--coordinators {
-        grid-template-columns: 1fr;
-        max-width: 400px;
+    .team-grid {
+        gap: 1.25rem;
+    }
+    .team-member-card-wrapper,
+    .team-grid--coordinators .team-member-card-wrapper {
+        width: clamp(150px, 42vw, 220px);
     }
     .about-intro h1 {
         font-size: 2.5rem;

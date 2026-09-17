@@ -157,37 +157,29 @@
   z-index: 4;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: 0.6rem;
   padding: 14px 28px;
-  border-radius: 999px;
-  font-family: "DM Sans", sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 1.8px;
+  border-radius: 6px;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   text-decoration: none;
-  color: #f1faee;
-  background: linear-gradient(
-    135deg,
-    rgba(241, 250, 238, 0.28) 0%,
-    rgba(230, 57, 70, 0.32) 100%
-  );
-  border: 1px solid rgba(241, 250, 238, 0.7);
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
-  box-shadow:
-    0 10px 32px rgba(230, 57, 70, 0.28),
-    inset 0 1px 0 rgba(241, 250, 238, 0.45);
+  color: #ffffff;
+  background: #ee074c;
+  border: 1px solid #ee074c;
+  box-shadow: 0 10px 30px rgba(238, 7, 76, 0.35);
   opacity: 0;
   pointer-events: none;
   transform: translate(-50%, -50%) scale(0.92);
   transition:
     opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1),
     transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
-    background 0.28s ease,
-    box-shadow 0.28s ease,
-    border-color 0.28s ease,
-    color 0.28s ease;
+    background 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease;
 }
 
 .morph-slider-watch-btn.visible {
@@ -197,15 +189,15 @@
 }
 
 .morph-slider-watch-btn:hover {
-  color: #080a0d;
-  background: linear-gradient(135deg, #f1faee 0%, #e63946 100%);
-  border-color: #f1faee;
-  box-shadow: 0 14px 40px rgba(230, 57, 70, 0.45);
+  color: #0d0c11;
+  background: #ffffff;
+  border-color: #ffffff;
+  box-shadow: 0 12px 35px rgba(255, 255, 255, 0.4);
   transform: translate(-50%, -50%) scale(1.05);
 }
 
 .morph-slider-watch-btn:focus-visible {
-  outline: 2px solid #e63946;
+  outline: 2px solid #0490e9;
   outline-offset: 3px;
 }
 

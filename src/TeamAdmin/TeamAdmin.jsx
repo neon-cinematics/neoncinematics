@@ -225,14 +225,14 @@ const TeamAdmin = () => {
                                     crop={crop}
                                     zoom={zoom}
                                     rotation={rotation}
-                                    aspect={1 / 1.25}
+                                    aspect={1}
                                     onCropChange={setCrop}
                                     onCropComplete={onCropComplete}
                                     onZoomChange={setZoom}
                                     onRotationChange={setRotation}
                                 />
                             </div>
-                            <p className="crop-hint">Images are cropped to a strict 1:1.25 portrait aspect ratio.</p>
+                            <p className="crop-hint">Images are cropped to a strict 1:1 square aspect ratio.</p>
                             <div className="crop-controls">
                                 <div className="crop-control-group">
                                     <label>Zoom</label>
