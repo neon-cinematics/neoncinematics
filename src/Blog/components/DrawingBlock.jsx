@@ -20,169 +20,256 @@ const STROKE_SIZES = [
 
 export const DrawingModal = ({ initialData, onSave, onClose }) => {
   const canvasRef = useRef(null);
-  const [tool, setTool] = useState("pen"); // pen | marker | eraser | rect | circle | arrow | line
+  const [tool, setTool] = useState("pen"); // pen | marker | eraser | line | arrow | rect | circle
   const [color, setColor] = useState("#FCEDB6");
   const [strokeWidth, setStrokeWidth] = useState(4);
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [history, setHistory] = useState([]);
   const [historyStep, setHistoryStep] = useState(-1);
-  const [startPos, setStartPos] = useState(null);
+  const [historyLength, setHistoryLength] = useState(0);
 
-  // Initialize canvas
+  // Imperative state refs to eliminate asynchronous closure lag in high-frequency pointer listeners
+  const toolRef = useRef(tool);
+  const colorRef = useRef(color);
+  const strokeWidthRef = useRef(strokeWidth);
+  const isDrawingRef = useRef(false);
+  const startPosRef = useRef({ x: 0, y: 0 });
+  const lastPosRef = useRef({ x: 0, y: 0 });
+  const snapshotRef = useRef(null);
+  const historyRef = useRef([]);
+  const historyStepRef = useRef(-1);
+
+  // Sync refs with React state changes
+  useEffect(() => { toolRef.current = tool; }, [tool]);
+  useEffect(() => { colorRef.current = color; }, [color]);
+  useEffect(() => { strokeWidthRef.current = strokeWidth; }, [strokeWidth]);
+
+  const saveHistoryState = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const nextStep = historyStepRef.current + 1;
+    const nextHistory = [...historyRef.current.slice(0, nextStep), data];
+    historyRef.current = nextHistory;
+    historyStepRef.current = nextHistory.length - 1;
+    setHistoryStep(historyStepRef.current);
+    setHistoryLength(nextHistory.length);
+  }, []);
+
+  // Initialize canvas resolution & initial state
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
-    
-    // Set actual display resolution
-    canvas.width = 900;
-    canvas.height = 550;
 
-    // Fill initial dark canvas background
+    const dpr = window.devicePixelRatio || 1;
+    const displayWidth = 900;
+    const displayHeight = 550;
+
+    canvas.width = Math.round(displayWidth * dpr);
+    canvas.height = Math.round(displayHeight * dpr);
+
+    // Initial dark background fill
     ctx.fillStyle = "#0d0c11";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // If initial image exists, draw it
     if (initialData?.dataUrl) {
       const img = new Image();
       img.onload = () => {
-        ctx.drawImage(img, 0, 0);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         saveHistoryState();
       };
       img.src = initialData.dataUrl;
     } else {
       saveHistoryState();
     }
-  }, []);
+  }, [initialData, saveHistoryState]);
 
-  const saveHistoryState = () => {
+  const getCanvasCoords = (e) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return { x: 0, y: 0, scale: 1 };
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / (rect.width || 1);
+    const scaleY = canvas.height / (rect.height || 1);
+    const clientX = e.clientX ?? e.touches?.[0]?.clientX ?? 0;
+    const clientY = e.clientY ?? e.touches?.[0]?.clientY ?? 0;
+
+    return {
+      x: (clientX - rect.left) * scaleX,
+      y: (clientY - rect.top) * scaleY,
+      scale: scaleX,
+    };
+  };
+
+  const handlePointerDown = (e) => {
+    e.preventDefault();
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    try {
+      canvas.setPointerCapture(e.pointerId);
+    } catch (_) {}
+
+    const coords = getCanvasCoords(e);
+    isDrawingRef.current = true;
+    startPosRef.current = coords;
+    lastPosRef.current = coords;
+
+    const ctx = canvas.getContext("2d");
+    snapshotRef.current = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+    // For freehand tools (pen, marker, eraser), draw initial dot
+    const currentTool = toolRef.current;
+    if (["pen", "marker", "eraser"].includes(currentTool)) {
+      const currentWidth = strokeWidthRef.current * coords.scale;
+      ctx.save();
+      ctx.fillStyle = currentTool === "eraser"
+        ? "#0d0c11"
+        : currentTool === "marker"
+        ? colorRef.current + "55"
+        : colorRef.current;
+      ctx.beginPath();
+      ctx.arc(coords.x, coords.y, currentWidth / 2, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.restore();
+    }
+  };
+
+  const handlePointerMove = (e) => {
+    if (!isDrawingRef.current) return;
+    e.preventDefault();
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
-    const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    setHistory(prev => [...prev.slice(0, historyStep + 1), data]);
-    setHistoryStep(prev => prev + 1);
+    const coords = getCanvasCoords(e);
+
+    const currentTool = toolRef.current;
+    const currentColor = colorRef.current;
+    const currentWidth = strokeWidthRef.current * coords.scale;
+
+    if (["pen", "marker", "eraser"].includes(currentTool)) {
+      // Freehand segment stroke
+      ctx.save();
+      ctx.lineWidth = currentWidth;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+
+      if (currentTool === "eraser") {
+        ctx.strokeStyle = "#0d0c11";
+      } else if (currentTool === "marker") {
+        ctx.strokeStyle = currentColor + "55"; // 33% alpha highlighter
+      } else {
+        ctx.strokeStyle = currentColor;
+      }
+
+      ctx.beginPath();
+      ctx.moveTo(lastPosRef.current.x, lastPosRef.current.y);
+      ctx.lineTo(coords.x, coords.y);
+      ctx.stroke();
+      ctx.restore();
+
+      lastPosRef.current = coords;
+    } else if (["line", "arrow", "rect", "circle"].includes(currentTool)) {
+      // Restore clean committed canvas snapshot before rendering new single preview shape
+      if (snapshotRef.current) {
+        ctx.putImageData(snapshotRef.current, 0, 0);
+      }
+
+      ctx.save();
+      ctx.lineWidth = currentWidth;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.strokeStyle = currentColor;
+      ctx.fillStyle = "transparent";
+
+      const startX = startPosRef.current.x;
+      const startY = startPosRef.current.y;
+      const endX = coords.x;
+      const endY = coords.y;
+
+      if (currentTool === "line") {
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(endX, endY);
+        ctx.stroke();
+      } else if (currentTool === "arrow") {
+        // Shaft
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(endX, endY);
+        ctx.stroke();
+
+        // Arrowhead
+        const angle = Math.atan2(endY - startY, endX - startX);
+        const headLen = Math.max(14 * coords.scale, currentWidth * 2.5);
+        ctx.beginPath();
+        ctx.moveTo(endX, endY);
+        ctx.lineTo(endX - headLen * Math.cos(angle - Math.PI / 6), endY - headLen * Math.sin(angle - Math.PI / 6));
+        ctx.moveTo(endX, endY);
+        ctx.lineTo(endX - headLen * Math.cos(angle + Math.PI / 6), endY - headLen * Math.sin(angle + Math.PI / 6));
+        ctx.stroke();
+      } else if (currentTool === "rect") {
+        ctx.beginPath();
+        ctx.strokeRect(startX, startY, endX - startX, endY - startY);
+      } else if (currentTool === "circle") {
+        const rx = Math.abs(endX - startX) / 2;
+        const ry = Math.abs(endY - startY) / 2;
+        const cx = Math.min(startX, endX) + rx;
+        const cy = Math.min(startY, endY) + ry;
+        ctx.beginPath();
+        ctx.ellipse(cx, cy, Math.max(1, rx), Math.max(1, ry), 0, 0, 2 * Math.PI);
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    }
+  };
+
+  const handlePointerUp = (e) => {
+    if (!isDrawingRef.current) return;
+    isDrawingRef.current = false;
+    const canvas = canvasRef.current;
+    if (canvas && e.pointerId !== undefined) {
+      try { canvas.releasePointerCapture(e.pointerId); } catch (_) {}
+    }
+    snapshotRef.current = null;
+    saveHistoryState();
   };
 
   const handleUndo = () => {
-    if (historyStep <= 0) return;
+    if (historyStepRef.current <= 0) return;
     const canvas = canvasRef.current;
+    if (!canvas) return;
     const ctx = canvas.getContext("2d");
-    const prevStep = historyStep - 1;
-    ctx.putImageData(history[prevStep], 0, 0);
-    setHistoryStep(prevStep);
+    const prevStep = historyStepRef.current - 1;
+    const data = historyRef.current[prevStep];
+    if (data) {
+      ctx.putImageData(data, 0, 0);
+      historyStepRef.current = prevStep;
+      setHistoryStep(prevStep);
+    }
   };
 
   const handleRedo = () => {
-    if (historyStep >= history.length - 1) return;
+    if (historyStepRef.current >= historyRef.current.length - 1) return;
     const canvas = canvasRef.current;
+    if (!canvas) return;
     const ctx = canvas.getContext("2d");
-    const nextStep = historyStep + 1;
-    ctx.putImageData(history[nextStep], 0, 0);
-    setHistoryStep(nextStep);
+    const nextStep = historyStepRef.current + 1;
+    const data = historyRef.current[nextStep];
+    if (data) {
+      ctx.putImageData(data, 0, 0);
+      historyStepRef.current = nextStep;
+      setHistoryStep(nextStep);
+    }
   };
 
   const handleClear = () => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
     const ctx = canvas.getContext("2d");
     ctx.fillStyle = "#0d0c11";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     saveHistoryState();
-  };
-
-  const getCoordinates = (e) => {
-    const canvas = canvasRef.current;
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
-    return {
-      x: (clientX - rect.left) * scaleX,
-      y: (clientY - rect.top) * scaleY
-    };
-  };
-
-  const startDraw = (e) => {
-    e.preventDefault();
-    const pos = getCoordinates(e);
-    setIsDrawing(true);
-    setStartPos(pos);
-
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    ctx.beginPath();
-    ctx.moveTo(pos.x, pos.y);
-  };
-
-  const draw = (e) => {
-    if (!isDrawing) return;
-    e.preventDefault();
-    const pos = getCoordinates(e);
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-
-    ctx.lineWidth = strokeWidth;
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-
-    if (tool === "eraser") {
-      ctx.strokeStyle = "#0d0c11";
-      ctx.lineTo(pos.x, pos.y);
-      ctx.stroke();
-    } else if (tool === "marker") {
-      ctx.strokeStyle = color + "66"; // 40% opacity marker
-      ctx.lineTo(pos.x, pos.y);
-      ctx.stroke();
-    } else if (tool === "pen") {
-      ctx.strokeStyle = color;
-      ctx.lineTo(pos.x, pos.y);
-      ctx.stroke();
-    } else if (["rect", "circle", "line", "arrow"].includes(tool)) {
-      // Live preview for shape tools: restore previous history state first
-      if (history[historyStep]) {
-        ctx.putImageData(history[historyStep], 0, 0);
-      }
-      ctx.strokeStyle = color;
-      ctx.fillStyle = "transparent";
-
-      if (tool === "rect") {
-        ctx.strokeRect(startPos.x, startPos.y, pos.x - startPos.x, pos.y - startPos.y);
-      } else if (tool === "circle") {
-        const radius = Math.hypot(pos.x - startPos.x, pos.y - startPos.y);
-        ctx.beginPath();
-        ctx.arc(startPos.x, startPos.y, radius, 0, 2 * Math.PI);
-        ctx.stroke();
-      } else if (tool === "line") {
-        ctx.beginPath();
-        ctx.moveTo(startPos.x, startPos.y);
-        ctx.lineTo(pos.x, pos.y);
-        ctx.stroke();
-      } else if (tool === "arrow") {
-        ctx.beginPath();
-        ctx.moveTo(startPos.x, startPos.y);
-        ctx.lineTo(pos.x, pos.y);
-        ctx.stroke();
-        // Arrow head
-        const angle = Math.atan2(pos.y - startPos.y, pos.x - startPos.x);
-        const headLen = 14;
-        ctx.beginPath();
-        ctx.moveTo(pos.x, pos.y);
-        ctx.lineTo(pos.x - headLen * Math.cos(angle - Math.PI / 6), pos.y - headLen * Math.sin(angle - Math.PI / 6));
-        ctx.moveTo(pos.x, pos.y);
-        ctx.lineTo(pos.x - headLen * Math.cos(angle + Math.PI / 6), pos.y - headLen * Math.sin(angle + Math.PI / 6));
-        ctx.stroke();
-      }
-    }
-  };
-
-  const endDraw = () => {
-    if (isDrawing) {
-      setIsDrawing(false);
-      saveHistoryState();
-    }
   };
 
   const handleSaveDrawing = () => {
@@ -192,6 +279,25 @@ export const DrawingModal = ({ initialData, onSave, onClose }) => {
     onSave({ dataUrl });
     onClose();
   };
+
+  // Keyboard shortcut support (Ctrl+Z, Ctrl+Y, Esc)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onClose();
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
+        e.preventDefault();
+        if (e.shiftKey) handleRedo();
+        else handleUndo();
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "y") {
+        e.preventDefault();
+        handleRedo();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
 
   return (
     <div className="drawing-modal-overlay">
@@ -203,10 +309,22 @@ export const DrawingModal = ({ initialData, onSave, onClose }) => {
           </div>
 
           <div className="drawing-modal__header-actions">
-            <button type="button" onClick={handleUndo} disabled={historyStep <= 0} className="drawing-btn">
+            <button
+              type="button"
+              onClick={handleUndo}
+              disabled={historyStep <= 0}
+              className="drawing-btn"
+              title="Undo (Ctrl+Z)"
+            >
               ↩ Undo
             </button>
-            <button type="button" onClick={handleRedo} disabled={historyStep >= history.length - 1} className="drawing-btn">
+            <button
+              type="button"
+              onClick={handleRedo}
+              disabled={historyStep >= historyLength - 1}
+              className="drawing-btn"
+              title="Redo (Ctrl+Y)"
+            >
               ↪ Redo
             </button>
             <button type="button" onClick={handleClear} className="drawing-btn drawing-btn--danger">
@@ -319,13 +437,10 @@ export const DrawingModal = ({ initialData, onSave, onClose }) => {
         <div className="drawing-modal__canvas-wrapper">
           <canvas
             ref={canvasRef}
-            onMouseDown={startDraw}
-            onMouseMove={draw}
-            onMouseUp={endDraw}
-            onMouseLeave={endDraw}
-            onTouchStart={startDraw}
-            onTouchMove={draw}
-            onTouchEnd={endDraw}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerUp}
             className="drawing-modal__canvas"
           />
         </div>
