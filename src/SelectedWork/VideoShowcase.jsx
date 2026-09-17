@@ -7,6 +7,12 @@ import { sanityClient, videoThumbnailsQuery } from "../lib/sanity";
 import { sanityImageUrl } from "../lib/sanityImage";
 import "./VideoShowcase.css";
 
+const extractYoutubeId = (url) => {
+    if (!url) return null;
+    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+    return match ? match[1] : null;
+};
+
 const VideoShowcase = () => {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -39,11 +45,16 @@ const VideoShowcase = () => {
             if (!sanityClient) return;
             try {
                 const result = await sanityClient.fetch(videoThumbnailsQuery);
-                const formattedItems = result.map(item => ({
-                    image: sanityImageUrl(item.image, 1600),
-                    caption: item.caption,
-                    videoLink: item.videoLink
-                }));
+                const formattedItems = result.map(item => {
+                    const ytId = extractYoutubeId(item.videoLink);
+                    const mainImage = sanityImageUrl(item.image, 1600) || (ytId ? `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg` : "");
+                    return {
+                        image: mainImage,
+                        caption: item.caption,
+                        videoLink: item.videoLink,
+                        youtubeId: ytId
+                    };
+                });
                 setItems(formattedItems);
             } catch (error) {
                 console.error("Failed to load video thumbnails:", error);

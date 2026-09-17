@@ -204,6 +204,12 @@ function hexToRgb(hex) {
   return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
 }
 
+function extractYoutubeId(url) {
+  if (!url) return null;
+  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+  return match ? match[1] : null;
+}
+
 class MorphEngine {
   constructor(container, { items, startIndex, reducedMotion, getOptions, onIndexChange, dprCap }) {
     this.container = container;
@@ -218,6 +224,12 @@ class MorphEngine {
     this.dragDir = 0;
     this.shownIndex = startIndex;
     this.tween = null;
+
+    this.isHovered = false;
+    this.hoverTextures = this.items.map(() => []);
+    this.hoverSizes = this.items.map(() => []);
+    this.hoverFrameIndex = 0;
+    this.lastFrameTime = 0;
 
     this.renderer = new Renderer({
       alpha: false,
@@ -285,13 +297,49 @@ class MorphEngine {
         texture.image = img;
         this.textures[index] = texture;
         this.sizes[index] = [img.naturalWidth || 1, img.naturalHeight || 1];
-        if (index === this.current) {
+        if (index === this.current && !this.isHovered) {
           this.program.uniforms.tCurrent.value = texture;
           this.program.uniforms.uCurrentSize.value = this.sizes[index];
         }
       };
       img.onerror = () => {};
+
+      const ytId = item.youtubeId || extractYoutubeId(item.videoLink);
+      if (ytId) {
+        const frameUrls = [
+          `https://img.youtube.com/vi/${ytId}/hq1.jpg`,
+          `https://img.youtube.com/vi/${ytId}/hq2.jpg`,
+          `https://img.youtube.com/vi/${ytId}/hq3.jpg`
+        ];
+        this.hoverTextures[index] = [null, null, null];
+        this.hoverSizes[index] = [[1, 1], [1, 1], [1, 1]];
+
+        frameUrls.forEach((url, fIdx) => {
+          const fImg = new Image();
+          fImg.crossOrigin = 'anonymous';
+          fImg.src = url;
+          fImg.onload = () => {
+            const texture = new Texture(this.gl, { generateMipmaps: false });
+            texture.image = fImg;
+            this.hoverTextures[index][fIdx] = texture;
+            this.hoverSizes[index][fIdx] = [fImg.naturalWidth || 1, fImg.naturalHeight || 1];
+          };
+        });
+      }
     });
+  }
+
+  setHovered(isHovered) {
+    this.isHovered = isHovered;
+    if (!isHovered) {
+      if (!this.animating && !this.dragging && this.textures[this.current]) {
+        this.program.uniforms.tCurrent.value = this.textures[this.current];
+        this.program.uniforms.uCurrentSize.value = this.sizes[this.current];
+      }
+    } else {
+      this.lastFrameTime = performance.now();
+      this.hoverFrameIndex = 0;
+    }
   }
 
   resize() {
@@ -314,6 +362,28 @@ class MorphEngine {
 
   loop(t) {
     this.program.uniforms.uTime.value = t * 0.001;
+
+    if (this.isHovered && !this.dragging && !this.animating) {
+      const frames = this.hoverTextures[this.current];
+      if (frames && frames.length > 0) {
+        const validFrames = frames.filter(Boolean);
+        if (validFrames.length > 0) {
+          if (performance.now() - this.lastFrameTime > 400) {
+            this.hoverFrameIndex = (this.hoverFrameIndex + 1) % validFrames.length;
+            this.lastFrameTime = performance.now();
+          }
+          const activeTex = validFrames[this.hoverFrameIndex];
+          if (activeTex) {
+            this.program.uniforms.tCurrent.value = activeTex;
+            const validIdx = frames.indexOf(activeTex);
+            if (validIdx !== -1 && this.hoverSizes[this.current]?.[validIdx]) {
+              this.program.uniforms.uCurrentSize.value = this.hoverSizes[this.current][validIdx];
+            }
+          }
+        }
+      }
+    }
+
     if (!this.dragging && !this.animating) this.syncOptions();
     this.renderer.render({ scene: this.mesh });
     this.raf = requestAnimationFrame(this.boundLoop);
@@ -457,6 +527,15 @@ class MorphEngine {
     this.textures.forEach(tex => {
       if (tex && tex.texture) this.gl.deleteTexture(tex.texture);
     });
+    if (Array.isArray(this.hoverTextures)) {
+      this.hoverTextures.forEach(arr => {
+        if (Array.isArray(arr)) {
+          arr.forEach(tex => {
+            if (tex && tex.texture) this.gl.deleteTexture(tex.texture);
+          });
+        }
+      });
+    }
     if (this.program && this.program.program) this.gl.deleteProgram(this.program.program);
     const ext = this.gl.getExtension('WEBGL_lose_context');
     if (ext) ext.loseContext();
@@ -497,6 +576,12 @@ export default function MorphSlider({
 
   const optsRef = useRef();
   optsRef.current = { transition, duration, ease, intensity, scale, aberration, drift, overlayColor, loop };
+
+  useEffect(() => {
+    if (engineRef.current) {
+      engineRef.current.setHovered(hovering);
+    }
+  }, [hovering]);
 
   useEffect(() => {
     if (!containerRef.current) return undefined;
@@ -647,6 +732,17 @@ export default function MorphSlider({
         </div>
       )}
 
+      {currentItem?.videoLink && (
+        <a
+          href={currentItem.videoLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`morph-slider-watch-btn ${hovering ? 'visible' : ''}`}
+          onClick={e => e.stopPropagation()}
+        >
+          ▶ Watch Video
+        </a>
+      )}
 
       {showControls && (
         <div className="morph-slider-controls">

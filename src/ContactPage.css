@@ -57,14 +57,15 @@
 }
 
 .contact-btn--primary {
-    background: #FCEDB6;
-    color: #0d0c11;
+    background: #ee074c;
+    color: #ffffff;
 }
 
 .contact-btn--primary:hover {
     background: #ffffff;
+    color: #0d0c11;
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(252, 237, 182, 0.2);
+    box-shadow: 0 8px 24px rgba(238, 7, 76, 0.4);
 }
 
 .contact-btn--ghost {
@@ -81,8 +82,8 @@
 
 .contact-btn--submit {
     width: 100%;
-    background: #FCEDB6;
-    color: #0d0c11;
+    background: #ee074c;
+    color: #ffffff;
     padding: 16px 32px;
     font-size: 14px;
     margin-top: 1rem;
@@ -90,8 +91,9 @@
 
 .contact-btn--submit:hover:not(:disabled) {
     background: #ffffff;
+    color: #0d0c11;
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(252, 237, 182, 0.25);
+    box-shadow: 0 8px 24px rgba(238, 7, 76, 0.4);
 }
 
 .contact-btn--submit:disabled {
@@ -213,7 +215,7 @@
     font-size: 12px;
     letter-spacing: 0.12em;
     font-weight: 700;
-    color: #FCEDB6;
+    color: #0490e9;
     text-transform: uppercase;
     transition: transform 0.25s ease;
 }
@@ -265,11 +267,11 @@
 }
 
 .inquiry-chip.is-selected {
-    background: #FCEDB6;
-    color: #0d0c11;
-    border-color: #FCEDB6;
+    background: #ee074c;
+    color: #ffffff;
+    border-color: #ee074c;
     font-weight: 700;
-    box-shadow: 0 4px 20px rgba(252, 237, 182, 0.2);
+    box-shadow: 0 4px 20px rgba(238, 7, 76, 0.4);
 }
 
 .chip-indicator {
@@ -314,8 +316,8 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    background: rgba(252, 237, 182, 0.1);
-    border: 1px solid rgba(252, 237, 182, 0.3);
+    background: rgba(4, 144, 233, 0.12);
+    border: 1px solid rgba(4, 144, 233, 0.35);
     padding: 8px 16px;
     border-radius: 20px;
     margin-bottom: 2rem;
@@ -325,9 +327,9 @@
 .pulse-dot {
     width: 8px;
     height: 8px;
-    background: #FCEDB6;
+    background: #0490e9;
     border-radius: 50%;
-    box-shadow: 0 0 10px #FCEDB6;
+    box-shadow: 0 0 10px #0490e9;
     animation: pulse 2s infinite;
 }
 
@@ -341,7 +343,7 @@
     font-size: 11px;
     letter-spacing: 0.1em;
     font-weight: 700;
-    color: #FCEDB6;
+    color: #0490e9;
     text-transform: uppercase;
 }
 
@@ -389,8 +391,8 @@
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-    border-color: #FCEDB6;
-    box-shadow: 0 0 0 3px rgba(252, 237, 182, 0.15);
+    border-color: #0490e9;
+    box-shadow: 0 0 0 3px rgba(4, 144, 233, 0.2);
 }
 
 .form-alert {
@@ -408,9 +410,9 @@
 }
 
 .form-alert--success {
-    background: rgba(252, 237, 182, 0.15);
-    border: 1px solid rgba(252, 237, 182, 0.4);
-    color: #FCEDB6;
+    background: rgba(4, 144, 233, 0.15);
+    border: 1px solid rgba(4, 144, 233, 0.4);
+    color: #0490e9;
 }
 
 /* ─── COLLABORATION FEATURE ────────────────────────────────────────────────── */
@@ -478,7 +480,7 @@
 }
 
 .location-details strong {
-    color: #FCEDB6;
+    color: #0490e9;
     font-size: 16px;
     letter-spacing: 0.05em;
 }
@@ -508,7 +510,7 @@
     font-size: 12px;
     letter-spacing: 0.1em;
     font-weight: 700;
-    color: #FCEDB6;
+    color: #0490e9;
     text-decoration: none;
     text-transform: uppercase;
 }
@@ -538,7 +540,7 @@
 
 .showcase-card:hover {
     transform: translateY(-4px);
-    border-color: rgba(252, 237, 182, 0.4);
+    border-color: rgba(4, 144, 233, 0.4);
 }
 
 .showcase-card__image-wrapper {
@@ -581,7 +583,7 @@
 .showcase-card__type {
     font-size: 10px;
     letter-spacing: 0.15em;
-    color: #FCEDB6;
+    color: #0490e9;
     text-transform: uppercase;
     font-weight: 600;
 }
@@ -616,7 +618,7 @@
 }
 
 .faq-item.is-open {
-    border-color: rgba(252, 237, 182, 0.3);
+    border-color: rgba(4, 144, 233, 0.35);
 }
 
 .faq-question {
@@ -637,7 +639,7 @@
 
 .faq-toggle {
     font-size: 1.25rem;
-    color: #FCEDB6;
+    color: #0490e9;
 }
 
 .faq-answer {

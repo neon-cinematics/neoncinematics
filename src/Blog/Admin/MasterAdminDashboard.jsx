@@ -323,7 +323,7 @@ const MasterAdminDashboard = () => {
 
                 {/* Quick Main Site Navigation Bar */}
                 <div style={{ background: "rgba(255, 255, 255, 0.03)", border: "1px solid rgba(255, 255, 255, 0.08)", borderRadius: "8px", padding: "1.5rem", marginTop: "1rem" }}>
-                    <h3 style={{ fontSize: "13px", letterSpacing: "1px", textTransform: "uppercase", color: "#FCEDB6", margin: "0 0 1rem" }}>
+                    <h3 style={{ fontSize: "13px", letterSpacing: "1px", textTransform: "uppercase", color: "#0490e9", margin: "0 0 1rem" }}>
                         Preview Main Website Pages
                     </h3>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>

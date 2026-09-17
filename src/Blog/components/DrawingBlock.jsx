@@ -3,7 +3,7 @@ import "./DrawingBlock.css";
 
 const COLOR_PALETTE = [
   "#ffffff",
-  "#FCEDB6",
+  "#ee074c",
   "#ff9f0a",
   "#00b4ff",
   "#10b981",
@@ -21,7 +21,7 @@ const STROKE_SIZES = [
 export const DrawingModal = ({ initialData, onSave, onClose }) => {
   const canvasRef = useRef(null);
   const [tool, setTool] = useState("pen"); // pen | marker | eraser | line | arrow | rect | circle
-  const [color, setColor] = useState("#FCEDB6");
+  const [color, setColor] = useState("#ee074c");
   const [strokeWidth, setStrokeWidth] = useState(4);
   const [historyStep, setHistoryStep] = useState(-1);
   const [historyLength, setHistoryLength] = useState(0);

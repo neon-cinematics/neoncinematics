@@ -115,7 +115,7 @@ const BlogPage = () => {
                         direction="right"
                         fade={0.62}
                         blur={3}
-                        tint="#FCEDB6"
+                        tint="#0490e9"
                         mode="pointer"
                         cursorRadius={320}
                         duration={900}
@@ -165,8 +165,8 @@ const BlogPage = () => {
                             speed={15}
                             textColor="#ffffff"
                             bgColor="transparent"
-                            marqueeBgColor="#FCEDB6"
-                            marqueeTextColor="#0d0d0d"
+                            marqueeBgColor="#ee074c"
+                            marqueeTextColor="#ffffff"
                             borderColor="rgba(255, 255, 255, 0.15)"
                         />
                     </div>

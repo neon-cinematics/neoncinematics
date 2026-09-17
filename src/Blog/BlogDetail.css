@@ -16,8 +16,8 @@
     top: 0;
     left: 0;
     height: 3px;
-    background: linear-gradient(90deg, #FCEDB6, #e2cb82);
-    box-shadow: 0 0 10px rgba(252, 237, 182, 0.4);
+    background: linear-gradient(90deg, #0490e9, #ee074c);
+    box-shadow: 0 0 10px rgba(4, 144, 233, 0.4);
     z-index: 1000;
     transition: width 0.1s linear;
 }
@@ -26,7 +26,7 @@
 
 .blog-detail__preview-banner {
     background: #181524;
-    border-bottom: 1px solid rgba(252, 237, 182, 0.3);
+    border-bottom: 1px solid rgba(249, 229, 176, 0.3);
     color: #f2f1eb;
     padding: 10px 5vw;
     font-size: 13px;
@@ -37,7 +37,7 @@
 }
 
 .blog-detail__preview-status {
-    color: #FCEDB6;
+    color: #ee074c;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -56,9 +56,9 @@
 }
 
 .blog-detail__preview-close:hover {
-    background: rgba(252, 237, 182, 0.2);
-    border-color: #FCEDB6;
-    color: #FCEDB6;
+    background: rgba(249, 229, 176, 0.2);
+    border-color: #ee074c;
+    color: #ee074c;
 }
 
 /* ─── Top Navigation Bar ────────────────────────────────────────────────────── */
@@ -94,7 +94,7 @@
 }
 
 .blog-detail__back:hover {
-    color: #FCEDB6;
+    color: #ee074c;
 }
 
 .blog-detail__back:hover .blog-detail__back-arrow {
@@ -136,12 +136,12 @@
     font-weight: 700;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: #FCEDB6;
+    color: #ee074c;
     margin-bottom: 1.25rem;
-    background: rgba(252, 237, 182, 0.08);
+    background: rgba(249, 229, 176, 0.08);
     padding: 4px 12px;
     border-radius: 4px;
-    border: 1px solid rgba(252, 237, 182, 0.2);
+    border: 1px solid rgba(249, 229, 176, 0.2);
 }
 
 .blog-detail__title {
@@ -184,7 +184,7 @@
     height: 42px;
     border-radius: 50%;
     object-fit: cover;
-    border: 1px solid rgba(252, 237, 182, 0.4);
+    border: 1px solid rgba(249, 229, 176, 0.4);
 }
 
 .blog-detail__author-avatar--initials {
@@ -194,11 +194,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(252, 237, 182, 0.12);
-    color: #FCEDB6;
+    background: rgba(249, 229, 176, 0.12);
+    color: #ee074c;
     font-size: 15px;
     font-weight: 700;
-    border: 1px solid rgba(252, 237, 182, 0.3);
+    border: 1px solid rgba(249, 229, 176, 0.3);
 }
 
 .blog-detail__author-info {
@@ -247,9 +247,9 @@
 }
 
 .blog-detail__share-inline button:hover {
-    background: rgba(252, 237, 182, 0.12);
-    border-color: #FCEDB6;
-    color: #FCEDB6;
+    background: rgba(249, 229, 176, 0.12);
+    border-color: #ee074c;
+    color: #ee074c;
     transform: translateY(-2px);
 }
 
@@ -351,9 +351,9 @@
 }
 
 .blog-detail__toc-item.is-active {
-    color: #FCEDB6;
-    border-left-color: #FCEDB6;
-    background: rgba(252, 237, 182, 0.06);
+    color: #ee074c;
+    border-left-color: #ee074c;
+    background: rgba(249, 229, 176, 0.06);
     font-weight: 500;
 }
 
@@ -413,7 +413,7 @@
     font-size: 1.25rem;
     font-weight: 800;
     letter-spacing: -0.02em;
-    color: #FCEDB6;
+    color: #ee074c;
     margin: 2.25rem 0 0.85rem;
     scroll-margin-top: 100px;
 }
@@ -429,10 +429,10 @@
 }
 
 .blog-content__blockquote {
-    border-left: 3px solid #FCEDB6;
+    border-left: 3px solid #ee074c;
     margin: 2.5rem 0;
     padding: 1.25rem 1.75rem;
-    background: rgba(252, 237, 182, 0.04);
+    background: rgba(249, 229, 176, 0.04);
     border-radius: 0 8px 8px 0;
     font-family: 'Merriweather', Georgia, serif;
     font-weight: 400;
@@ -456,7 +456,7 @@
 }
 
 .blog-content__link {
-    color: #FCEDB6;
+    color: #ee074c;
     text-decoration: underline;
     text-underline-offset: 4px;
     transition: opacity 0.2s;
@@ -469,11 +469,11 @@
 .inline-code {
     font-family: 'Fira Code', 'Courier New', monospace;
     font-size: 0.88em;
-    background: rgba(252, 237, 182, 0.08);
-    border: 1px solid rgba(252, 237, 182, 0.2);
+    background: rgba(249, 229, 176, 0.08);
+    border: 1px solid rgba(249, 229, 176, 0.2);
     padding: 2px 7px;
     border-radius: 4px;
-    color: #FCEDB6;
+    color: #ee074c;
 }
 
 .blog-content__code-block {
@@ -492,8 +492,8 @@
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: #FCEDB6;
-    background: rgba(252, 237, 182, 0.06);
+    color: #ee074c;
+    background: rgba(249, 229, 176, 0.06);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -504,7 +504,7 @@
     font-family: 'Fira Code', 'Courier New', monospace;
     font-size: 0.9rem;
     line-height: 1.65;
-    color: #e2cb82;
+    color: #ee074c;
 }
 
 .blog-content__image-block {
@@ -535,7 +535,7 @@
     margin: 2.5rem 0;
     padding: 1.5rem;
     background: #070609;
-    border: 1px solid rgba(252, 237, 182, 0.25);
+    border: 1px solid rgba(249, 229, 176, 0.25);
     border-radius: 12px;
     text-align: center;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -601,9 +601,9 @@
 }
 
 .blog-detail__share-btn:hover {
-    background: rgba(252, 237, 182, 0.1);
-    border-color: #FCEDB6;
-    color: #FCEDB6;
+    background: rgba(249, 229, 176, 0.1);
+    border-color: #ee074c;
+    color: #ee074c;
 }
 
 /* ─── Related Articles Grid ─────────────────────────────────────────────────── */
@@ -639,7 +639,7 @@
 }
 
 .blog-detail__more-card:hover {
-    border-color: rgba(252, 237, 182, 0.3);
+    border-color: rgba(249, 229, 176, 0.3);
     transform: translateY(-4px);
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
 }
@@ -712,9 +712,9 @@
 }
 
 .blog-detail__back-footer:hover {
-    border-color: #FCEDB6;
-    color: #FCEDB6;
-    background: rgba(252, 237, 182, 0.06);
+    border-color: #ee074c;
+    color: #ee074c;
+    background: rgba(249, 229, 176, 0.06);
 }
 
 /* ─── Toast Notification ───────────────────────────────────────────────────── */
@@ -723,7 +723,7 @@
     position: fixed;
     bottom: 30px;
     right: 30px;
-    background: #FCEDB6;
+    background: #ee074c;
     color: #0b0a0f;
     padding: 12px 20px;
     border-radius: 30px;
@@ -812,8 +812,8 @@
 }
 
 .blog-detail__error-btn:hover {
-    border-color: #FCEDB6;
-    color: #FCEDB6;
+    border-color: #ee074c;
+    color: #ee074c;
 }
 
 /* ─── Responsive ───────────────────────────────────────────────────────────── */

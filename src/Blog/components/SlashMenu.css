@@ -22,7 +22,7 @@
     justify-content: space-between;
     align-items: center;
     font-size: 11px;
-    color: #FCEDB6;
+    color: #ee074c;
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -60,7 +60,7 @@
 
 .slash-menu__item:hover,
 .slash-menu__item.active {
-    background: rgba(252, 237, 182, 0.12);
+    background: rgba(249, 229, 176, 0.12);
 }
 
 .slash-menu__icon {
@@ -74,14 +74,14 @@
     justify-content: center;
     font-size: 13px;
     font-weight: 700;
-    color: #FCEDB6;
+    color: #ee074c;
     flex-shrink: 0;
 }
 
 .slash-menu__item.active .slash-menu__icon {
-    background: #FCEDB6;
+    background: #ee074c;
     color: #0d0c11;
-    border-color: #FCEDB6;
+    border-color: #ee074c;
 }
 
 .slash-menu__info {

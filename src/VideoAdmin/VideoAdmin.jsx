@@ -330,7 +330,7 @@ const VideoAdmin = () => {
                                     return (
                                         <div key={item._id} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                <span style={{ fontSize: '11px', letterSpacing: '1px', textTransform: 'uppercase', color: '#FCEDB6', fontWeight: 700 }}>
+                                                <span style={{ fontSize: '11px', letterSpacing: '1px', textTransform: 'uppercase', color: '#0490e9', fontWeight: 700 }}>
                                                     {isContact ? "Contact Page (/contact)" : "About Us Page (/aboutUs)"}
                                                 </span>
                                                 <span style={{ fontSize: '10px', color: '#9ba4a7' }}>{new Date(item._updatedAt).toLocaleDateString()}</span>

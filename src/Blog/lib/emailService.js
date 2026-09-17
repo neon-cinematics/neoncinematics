@@ -32,7 +32,7 @@ const neonBrand = {
     bg: "#0d0c11",
     cardBg: "#16151c",
     border: "rgba(255, 255, 255, 0.12)",
-    gold: "#FCEDB6",
+    gold: "#ee074c",
     text: "#f2f1eb",
     muted: "#9ba4a7",
 };
