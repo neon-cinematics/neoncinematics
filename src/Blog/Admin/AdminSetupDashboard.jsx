@@ -76,7 +76,7 @@ const AdminSetupDashboard = () => {
     };
 
     const handleSeedDemo = async () => {
-        setSeedMessage({ type: "info", text: "Seeding 3 demo blogs into Sanity..." });
+        setSeedMessage({ type: "info", text: "Seeding 3 demo blogs..." });
         try {
             const res = await fetch(`${API_BASE}/api/sanity/seed-demo`, {
                 method: "POST",
@@ -189,8 +189,8 @@ const AdminSetupDashboard = () => {
         <AdminLayout activeTab="setup" title="System Setup & Diagnostics">
             <div className="admin-setup">
                 <header className="admin-setup__header">
-                    <h2>Sanity & Email System Health</h2>
-                    <p>Manage Sanity dataset access, seed sample blogs, and configure Resend.com / SMTP email delivery.</p>
+                    <h2>Database & Email System Health</h2>
+                    <p>Manage dataset access, seed sample blogs, and configure Resend.com / SMTP email delivery.</p>
                 </header>
 
                 {/* Status Cards */}
@@ -198,7 +198,7 @@ const AdminSetupDashboard = () => {
                     <div className="setup-card">
                         <div className="setup-card__icon">✦</div>
                         <div className="setup-card__info">
-                            <span className="setup-card__label">Sanity Dataset</span>
+                            <span className="setup-card__label">Dataset</span>
                             <strong className="setup-card__val">{diagnostics?.projectId || "047erfze"} / {diagnostics?.dataset || "gallery-images"}</strong>
                         </div>
                     </div>
@@ -223,20 +223,20 @@ const AdminSetupDashboard = () => {
                     <div className="setup-card">
                         <div className="setup-card__icon">📚</div>
                         <div className="setup-card__info">
-                            <span className="setup-card__label">Sanity Documents</span>
+                            <span className="setup-card__label">Documents</span>
                             <strong className="setup-card__val">{diagnostics?.counts?.totalBlogs || 0} Blogs ({diagnostics?.counts?.publishedBlogs || 0} Published)</strong>
                         </div>
                     </div>
                 </div>
 
-                {/* Section 1: Sanity Token & Seeding */}
+                {/* Section 1: Write Access & Seeding */}
                 <div className="admin-setup__section">
-                    <h3>1. Sanity Write Access & Demo Data</h3>
+                    <h3>1. Write Access & Demo Data</h3>
                     <div className="admin-setup__grid">
                         <form className="admin-setup__form" onSubmit={handleSaveToken}>
-                            <h4>Set Sanity Write Token</h4>
+                            <h4>Set Write Token</h4>
                             <p className="admin-setup__help">
-                                Paste your Sanity API Editor Token (from Sanity Management Console → API → Tokens) to enable blog creation and poster accounts.
+                                Paste your API Write Token (from project management console) to enable blog creation and poster accounts.
                             </p>
                             <input
                                 type="password"
@@ -256,7 +256,7 @@ const AdminSetupDashboard = () => {
                         <div className="admin-setup__box">
                             <h4>Seed Demo Blogs</h4>
                             <p className="admin-setup__help">
-                                Don't have blogs in Sanity yet? Click below to instantly publish 3 cinematic demo blogs into your Sanity dataset so the public blog page renders immediately.
+                                Don't have blogs in database yet? Click below to instantly publish 3 cinematic demo blogs into your dataset so the public blog page renders immediately.
                             </p>
                             <button onClick={handleSeedDemo} className="admin-setup__btn admin-setup__btn--gold">
                                 ⚡ Seed 3 Demo Published Blogs

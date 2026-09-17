@@ -72,7 +72,7 @@ const AdminDashboard = () => {
     const handleAdminLogin = async (e) => {
         e.preventDefault();
         if (!sanityToken.trim()) {
-            setLoginError("Please enter your Sanity write token.");
+            setLoginError("Please enter your write token.");
             return;
         }
         setIsLoggingIn(true);
@@ -98,11 +98,11 @@ const AdminDashboard = () => {
                         <span className="admin-login-sub">Admin Panel</span>
                     </div>
                     <h1>Admin Access</h1>
-                    <p>Enter your Sanity write token to access the admin panel.</p>
+                    <p>Enter your access token to access the admin panel.</p>
 
                     <form onSubmit={handleAdminLogin}>
                         <label>
-                            Sanity Write Token
+                            Access Token
                             <input
                                 type="password"
                                 className="admin-input"
@@ -124,7 +124,7 @@ const AdminDashboard = () => {
                         </button>
                     </form>
                     <p className="admin-login-help">
-                        Your Sanity token grants access and is stored only in this browser session.
+                        Your token grants access and is stored only in this browser session.
                     </p>
                 </div>
             </div>

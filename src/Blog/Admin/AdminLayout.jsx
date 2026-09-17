@@ -56,6 +56,17 @@ const AdminLayout = ({ children }) => {
             </aside>
 
             <main className="admin-content">
+                <div className="admin-topbar">
+                    <div className="admin-topbar__badge">
+                        <span className="admin-topbar__dot" />
+                        Admin Session Active
+                    </div>
+                    {isAdminLoggedIn() && (
+                        <button className="admin-topbar__signout" onClick={handleLogout}>
+                            Sign Out ➔
+                        </button>
+                    )}
+                </div>
                 {children}
             </main>
         </div>
