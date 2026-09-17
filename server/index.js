@@ -166,7 +166,7 @@ app.post("/api/auth/login", async (req, res) => {
         });
     } catch (err) {
         console.error("Login error:", err);
-        res.status(500).json({ error: "Server error during authentication" });
+        res.status(500).json({ error: "Server error during authentication: " + (err.message || err) });
     }
 });
 
