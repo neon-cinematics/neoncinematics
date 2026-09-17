@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import Cropper from "react-easy-crop";
-import { createSanityWriteClient, videoThumbnailsQuery, sanityClient } from "../lib/sanity";
+import { createSanityWriteClient, videoThumbnailsQuery, bgVideosQuery, sanityClient } from "../lib/sanity";
 import { sanityImageUrl } from "../lib/sanityImage";
 import getCroppedImg from "../lib/cropImage";
 import "./VideoAdmin.css";
@@ -29,6 +29,8 @@ const VideoAdmin = () => {
 
     // Background video state
     const [bgVideoFile, setBgVideoFile] = useState(null);
+    const [bgTarget, setBgTarget] = useState("aboutUsVideo");
+    const [bgVideoList, setBgVideoList] = useState([]);
     const [bgStatus, setBgStatus] = useState("");
 
     const handleSignOut = () => {
@@ -54,15 +56,41 @@ const VideoAdmin = () => {
             
             setBgStatus("Saving background video record...");
             await client.create({
-                _type: "aboutUsVideo",
+                _type: bgTarget,
                 video: { _type: "file", asset: { _type: "reference", _ref: asset._id } }
             });
             
-            setBgStatus("About Us Background Video updated successfully!");
+            const targetLabel = bgTarget === "contactUsVideo" ? "Contact Page" : "About Us Page";
+            setBgStatus(`${targetLabel} Background Video updated successfully!`);
             setBgVideoFile(null);
             document.getElementById("bg-video-upload").value = "";
+            await loadItems();
         } catch (error) {
             setBgStatus(error.message || "Failed to upload video.");
+        } finally {
+            setIsBusy(false);
+        }
+    };
+
+    const handleDeleteBgVideo = async (id, assetId, type) => {
+        const targetLabel = type === "contactUsVideo" ? "Contact Page" : "About Us Page";
+        if (!window.confirm(`Delete active background video for ${targetLabel}?`)) return;
+        setIsBusy(true);
+        setBgStatus(`Deleting ${targetLabel} background video...`);
+        try {
+            const client = getWriteClient();
+            await client.delete(id);
+            if (assetId) {
+                try {
+                    await client.delete(assetId);
+                } catch (e) {
+                    console.warn("Could not delete video asset:", e);
+                }
+            }
+            setBgStatus(`${targetLabel} background video removed.`);
+            await loadItems();
+        } catch (error) {
+            setBgStatus(error.message || "Unable to delete background video.");
         } finally {
             setIsBusy(false);
         }
@@ -71,8 +99,12 @@ const VideoAdmin = () => {
     const loadItems = async () => {
         if (!sanityClient) return;
         try {
-            const result = await sanityClient.fetch(videoThumbnailsQuery);
+            const [result, bgResult] = await Promise.all([
+                sanityClient.fetch(videoThumbnailsQuery).catch(() => []),
+                sanityClient.fetch(bgVideosQuery).catch(() => [])
+            ]);
             setItems(result.map((item) => ({ ...item, preview: sanityImageUrl(item.image, 420) })));
+            setBgVideoList(bgResult || []);
         } catch (error) { setStatus(error.message || "Unable to load videos."); }
     };
 
@@ -251,17 +283,58 @@ const VideoAdmin = () => {
 
             <main className="admin-main">
                 <section className="upload-section bg-video-section">
-                    <h3>About Us Background Video</h3>
+                    <h3>Page Background Video Management</h3>
                     <form onSubmit={handleBgVideoUpload} className="upload-form">
+                        <div className="form-group">
+                            <label>Target Page</label>
+                            <select value={bgTarget} onChange={(e) => setBgTarget(e.target.value)} disabled={isBusy}>
+                                <option value="aboutUsVideo">About Us Page (/aboutUs)</option>
+                                <option value="contactUsVideo">Contact Us Page (/contact)</option>
+                            </select>
+                        </div>
                         <div className="form-group">
                             <label>Background Video (.mp4)</label>
                             <input id="bg-video-upload" type="file" accept="video/mp4" onChange={handleBgFile} disabled={isBusy} required />
                         </div>
                         <button type="submit" disabled={isBusy || !bgVideoFile} className="upload-btn">
-                            {isBusy ? "Processing..." : "Upload Background Video"}
+                            {isBusy ? "Processing..." : `Upload Background Video to ${bgTarget === 'contactUsVideo' ? 'Contact Page' : 'About Us Page'}`}
                         </button>
                         {bgStatus && <div className="status-message">{bgStatus}</div>}
                     </form>
+
+                    {bgVideoList.length > 0 && (
+                        <div className="bg-video-list" style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            <h4 style={{ color: 'var(--text-primary)', margin: 0, fontSize: '15px' }}>Active Background Videos ({bgVideoList.length})</h4>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1rem' }}>
+                                {bgVideoList.map(item => {
+                                    const isContact = item._type === "contactUsVideo";
+                                    return (
+                                        <div key={item._id} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                <span style={{ fontSize: '11px', letterSpacing: '1px', textTransform: 'uppercase', color: '#FCEDB6', fontWeight: 700 }}>
+                                                    {isContact ? "Contact Page (/contact)" : "About Us Page (/aboutUs)"}
+                                                </span>
+                                                <span style={{ fontSize: '10px', color: '#9ba4a7' }}>{new Date(item._updatedAt).toLocaleDateString()}</span>
+                                            </div>
+                                            {item.videoUrl ? (
+                                                <video src={item.videoUrl} controls muted style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '4px' }} />
+                                            ) : (
+                                                <div style={{ padding: '1rem', background: '#121214', color: '#9ba4a7', fontSize: '12px' }}>Video Asset Reference</div>
+                                            )}
+                                            <button
+                                                type="button"
+                                                onClick={() => handleDeleteBgVideo(item._id, item.assetId, item._type)}
+                                                disabled={isBusy}
+                                                style={{ padding: '8px 12px', background: 'rgba(239,68,68,0.15)', color: '#fca5a5', border: '1px solid rgba(239,68,68,0.4)', borderRadius: '4px', cursor: 'pointer', fontSize: '12px', fontWeight: 600, marginTop: 'auto' }}
+                                            >
+                                                Delete Background Video
+                                            </button>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
                 </section>
                 {imageSrc && (
                     <div className="crop-modal-overlay">

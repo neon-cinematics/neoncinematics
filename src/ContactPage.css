@@ -99,16 +99,34 @@
     cursor: not-allowed;
 }
 
-/* ─── HERO (CENTERED & COMPACT TOP) ────────────────────────────────────────── */
+/* ─── HERO (CENTERED & CINEMATIC STAGE) ────────────────────────────────────────── */
 .contact-hero {
-    max-width: 1100px;
+    min-height: 80vh;
+    width: 100%;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 2rem 2rem 5rem;
+    padding: 5rem 2rem 5rem;
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     text-align: center;
+    background: radial-gradient(circle at center, rgba(0, 180, 255, 0.06) 0%, transparent 70%);
+}
+
+.contact-bg-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    opacity: 0.75;
+    pointer-events: none;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
 }
 
 .contact-hero__title {

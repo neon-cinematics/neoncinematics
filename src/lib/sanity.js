@@ -49,3 +49,16 @@ export const aboutUsVideoQuery = `*[_type == "aboutUsVideo"] | order(_updatedAt 
     _id,
     "videoUrl": video.asset->url
 }`;
+
+export const contactUsVideoQuery = `*[_type in ["contactUsVideo", "aboutUsVideo"]] | order(_updatedAt desc)[0] {
+    _id,
+    "videoUrl": video.asset->url
+}`;
+
+export const bgVideosQuery = `*[_type in ["aboutUsVideo", "contactUsVideo"]] | order(_updatedAt desc) {
+    _id,
+    _type,
+    _updatedAt,
+    "videoUrl": video.asset->url,
+    "assetId": video.asset._ref
+}`;

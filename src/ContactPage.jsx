@@ -6,7 +6,7 @@ import Navbar from "./Navbar/Navbar";
 import WarpText from "./components/ReactBits/WarpText";
 import CurvedLoop from "./components/ReactBits/CurvedLoop";
 import ScrambledText from "./components/ReactBits/ScrambledText";
-import { sanityClient, galleryPhotosQuery, videoThumbnailsQuery } from "./lib/sanity";
+import { sanityClient, galleryPhotosQuery, videoThumbnailsQuery, contactUsVideoQuery } from "./lib/sanity";
 import { sanityImageUrl } from "./lib/sanityImage";
 import "./ContactPage.css";
 
@@ -57,20 +57,26 @@ export default function ContactPage() {
     const [status, setStatus] = useState("idle");
     const [statusMsg, setStatusMsg] = useState("");
 
-    // Showcase work items from Sanity
+    // Media & Showcase state
     const [showcaseWork, setShowcaseWork] = useState([]);
+    const [bgVideo, setBgVideo] = useState(null);
     const [copiedEmail, setCopiedEmail] = useState(false);
     const [openFaq, setOpenFaq] = useState(null);
 
-    // Fetch work showcase
+    // Fetch work showcase & background video
     useEffect(() => {
-        const fetchWork = async () => {
+        const fetchMedia = async () => {
             if (!sanityClient) return;
             try {
-                const [photos, videos] = await Promise.all([
+                const [photos, videos, videoData] = await Promise.all([
                     sanityClient.fetch(galleryPhotosQuery).catch(() => []),
-                    sanityClient.fetch(videoThumbnailsQuery).catch(() => [])
+                    sanityClient.fetch(videoThumbnailsQuery).catch(() => []),
+                    sanityClient.fetch(contactUsVideoQuery).catch(() => null)
                 ]);
+
+                if (videoData?.videoUrl) {
+                    setBgVideo(videoData.videoUrl);
+                }
 
                 const items = [];
                 if (photos && photos.length > 0) {
@@ -93,10 +99,10 @@ export default function ContactPage() {
                 }
                 setShowcaseWork(items.slice(0, 4));
             } catch (e) {
-                console.warn("Could not fetch showcase work:", e);
+                console.warn("Could not fetch media data:", e);
             }
         };
-        fetchWork();
+        fetchMedia();
     }, []);
 
     // GSAP Page Animations & Route Snap Transitions
@@ -263,7 +269,17 @@ export default function ContactPage() {
 
             {/* HERO SECTION */}
             <section className="contact-hero">
-                <div className="contact-hero__title-wrapper" style={{ width: '100%', maxWidth: '1600px', margin: '0 auto 1.5rem' }}>
+                {bgVideo && (
+                    <video
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="contact-bg-video"
+                        src={bgVideo}
+                    />
+                )}
+                <div className="contact-hero__title-wrapper" style={{ width: '100%', maxWidth: '1350px', margin: '0 auto 1.5rem', position: 'relative', zIndex: 2 }}>
                     <h1 className="sr-only">LET'S MAKE SOMETHING.</h1>
                     <WarpText
                         text="LET'S MAKE SOMETHING."
@@ -275,11 +291,11 @@ export default function ContactPage() {
                         pointerStrength={0.38}
                         refraction={0.018}
                         ripple={true}
-                        fontSize="clamp(10rem, 18.5vw, 12rem)"
+                        fontSize="clamp(3.5rem, 8.5vw, 7.2rem)"
                         fontWeight={800}
                         fontFamily="'Inter', system-ui, -apple-system, sans-serif"
                         letterSpacing="3px"
-                        style={{ height: '260px' }}
+                        style={{ height: '200px' }}
                     />
                 </div>
 
