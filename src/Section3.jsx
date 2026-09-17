@@ -98,11 +98,26 @@ const Section3 = () => {
             });
         };
 
+        const goToContact = () => {
+            if (isSnapping) return;
+            isSnapping = true;
+            gsap.to(container.current, {
+                opacity: 0,
+                duration: 0.5,
+                ease: "power2.inOut",
+                onComplete: () => navigate("/contact")
+            });
+        };
+
         const handleScroll = (e) => {
             if (isSnapping) return;
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
             if (e.deltaY < 0 && window.scrollY <= 4) {
                 e.preventDefault();
                 goToWork();
+            } else if (e.deltaY > 0 && window.scrollY >= maxScroll - 4) {
+                e.preventDefault();
+                goToContact();
             }
         };
 
@@ -112,9 +127,13 @@ const Section3 = () => {
             if (isSnapping) return;
             const currentY = e.touches[0].clientY;
             const delta = currentY - startY;
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
             if (delta > 60 && window.scrollY <= 4) {
                 e.preventDefault();
                 goToWork();
+            } else if (delta < -60 && window.scrollY >= maxScroll - 4) {
+                e.preventDefault();
+                goToContact();
             }
         };
 

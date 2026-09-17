@@ -16,6 +16,8 @@ const BlogLogin = lazy(() => import("./Blog/Portal/BlogLogin"));
 const BlogDashboard = lazy(() => import("./Blog/Portal/BlogDashboard"));
 const BlogEditor = lazy(() => import("./Blog/Portal/BlogEditor"));
 
+const ContactPage = lazy(() => import("./ContactPage"));
+
 // Admin pages
 const AdminDashboard = lazy(() => import("./Blog/Admin/AdminDashboard"));
 const AdminBlogList = lazy(() => import("./Blog/Admin/AdminBlogList"));
@@ -102,6 +104,7 @@ const App = () => {
           <Route path="/" element={<Section1 />} />
           <Route path="/work" element={<Section2 />} />
           <Route path="/aboutUs" element={<Section3 />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="/gallery-admin" element={<GalleryAdmin />} />
           <Route path="/video-admin" element={<VideoAdmin />} />
           <Route path="/team-admin" element={<TeamAdmin />} />
