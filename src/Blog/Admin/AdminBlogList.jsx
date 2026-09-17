@@ -100,8 +100,7 @@ const AdminBlogList = () => {
             // Email notification
             try {
                 const { notifyPosterPublished } = await import("../lib/emailService");
-                const posterEmail = blog.author?.email;
-                if (posterEmail) await notifyPosterPublished(posterEmail, blog);
+                await notifyPosterPublished(blog.author?.email, blog);
             } catch (e) { console.warn("Email failed:", e); }
         } catch (err) {
             showToast("Failed to publish: " + err.message, "error");

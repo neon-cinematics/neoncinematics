@@ -78,7 +78,7 @@ const AdminBlogReview = () => {
                 // Email notification
                 try {
                     const { notifyPosterApproved } = await import("../lib/emailService");
-                    if (blog.author?.email) await notifyPosterApproved(blog.author.email, blog);
+                    await notifyPosterApproved(blog.author?.email, blog);
                 } catch (e) { console.warn("Email failed:", e); }
             } catch (err) {
                 showToast("Approval failed: " + err.message, "error");
@@ -108,7 +108,7 @@ const AdminBlogReview = () => {
                 // Email notification
                 try {
                     const { notifyPosterRejected } = await import("../lib/emailService");
-                    if (blog.author?.email) await notifyPosterRejected(blog.author.email, blog, reviewMessage.trim());
+                    await notifyPosterRejected(blog.author?.email, blog, reviewMessage.trim());
                 } catch (e) { console.warn("Email failed:", e); }
             } catch (err) {
                 showToast("Rejection failed: " + err.message, "error");
@@ -132,7 +132,7 @@ const AdminBlogReview = () => {
 
                 try {
                     const { notifyPosterPublished } = await import("../lib/emailService");
-                    if (blog.author?.email) await notifyPosterPublished(blog.author.email, blog);
+                    await notifyPosterPublished(blog.author?.email, blog);
                 } catch (e) { console.warn("Email failed:", e); }
             } catch (err) {
                 showToast("Publish failed: " + err.message, "error");

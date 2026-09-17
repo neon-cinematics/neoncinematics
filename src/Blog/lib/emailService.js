@@ -134,9 +134,23 @@ export const notifyManagers = async (managerEmails, blog, poster) => {
     return results;
 };
 
+// Helper to resolve poster email from arguments or blog object
+const resolvePosterEmail = (posterEmail, blog) => {
+    if (posterEmail && typeof posterEmail === "string" && posterEmail.includes("@")) {
+        return posterEmail;
+    }
+    if (blog?.author?.email && typeof blog.author.email === "string" && blog.author.email.includes("@")) {
+        return blog.author.email;
+    }
+    // Fallback email for development / testing when blog document lacks author email
+    return "neoncinematic@iiitkota.ac.in";
+};
+
 /** Notify poster that their blog was submitted for review */
 export const notifyPosterSubmitted = async (posterEmail, blog) => {
-    if (!posterEmail) return;
+    const targetEmail = resolvePosterEmail(posterEmail, blog);
+    if (!targetEmail) return;
+
     const subject = `Blog Submitted: "${blog.title}"`;
     const htmlBody = baseTemplate(`
     <h2 style="margin:0 0 8px;font-size:22px;color:${neonBrand.text};font-weight:600;">Blog Submitted for Review</h2>
@@ -155,12 +169,14 @@ export const notifyPosterSubmitted = async (posterEmail, blog) => {
     ${ctaButton("→ Track Status in Dashboard", `${SITE_URL}/blog/dashboard`)}
   `);
 
-    return sendEmail({ to: posterEmail, subject, htmlBody, textBody: `Your blog "${blog.title}" has been submitted for review. Check status at: ${SITE_URL}/blog/dashboard` });
+    return sendEmail({ to: targetEmail, subject, htmlBody, textBody: `Your blog "${blog.title}" has been submitted for review. Check status at: ${SITE_URL}/blog/dashboard` });
 };
 
 /** Notify poster that their blog was approved */
 export const notifyPosterApproved = async (posterEmail, blog) => {
-    if (!posterEmail) return;
+    const targetEmail = resolvePosterEmail(posterEmail, blog);
+    if (!targetEmail) return;
+
     const subject = `🎬 Your Blog Post Has Been Approved: "${blog.title}"`;
     const htmlBody = baseTemplate(`
     <h2 style="margin:0 0 8px;font-size:22px;color:${neonBrand.gold};font-weight:600;">Blog Approved!</h2>
@@ -178,12 +194,14 @@ export const notifyPosterApproved = async (posterEmail, blog) => {
     ${ctaButton("→ View Dashboard", `${SITE_URL}/blog/dashboard`, neonBrand.gold)}
   `);
 
-    return sendEmail({ to: posterEmail, subject, htmlBody, textBody: `Your blog "${blog.title}" has been approved!` });
+    return sendEmail({ to: targetEmail, subject, htmlBody, textBody: `Your blog "${blog.title}" has been approved!` });
 };
 
 /** Notify poster that their blog was rejected with feedback */
 export const notifyPosterRejected = async (posterEmail, blog, reviewMessage) => {
-    if (!posterEmail) return;
+    const targetEmail = resolvePosterEmail(posterEmail, blog);
+    if (!targetEmail) return;
+
     const subject = `Blog Needs Revision: "${blog.title}"`;
     const htmlBody = baseTemplate(`
     <h2 style="margin:0 0 8px;font-size:22px;color:#ef4444;font-weight:600;">Blog Requires Revision</h2>
@@ -203,14 +221,16 @@ export const notifyPosterRejected = async (posterEmail, blog, reviewMessage) => 
   `);
 
     return sendEmail({
-        to: posterEmail, subject, htmlBody,
+        to: targetEmail, subject, htmlBody,
         textBody: `Your blog "${blog.title}" requires revision.\n\nFeedback: ${reviewMessage}\n\nEdit your blog: ${SITE_URL}/blog/dashboard`
     });
 };
 
 /** Notify poster that their blog has been published */
 export const notifyPosterPublished = async (posterEmail, blog) => {
-    if (!posterEmail) return;
+    const targetEmail = resolvePosterEmail(posterEmail, blog);
+    if (!targetEmail) return;
+
     const publicUrl = `${SITE_URL}/blog/${blog.slug?.current || blog._id}`;
     const subject = `🎬 Your Blog is Live: "${blog.title}"`;
     const htmlBody = baseTemplate(`
@@ -227,7 +247,7 @@ export const notifyPosterPublished = async (posterEmail, blog) => {
   `);
 
     return sendEmail({
-        to: posterEmail, subject, htmlBody,
+        to: targetEmail, subject, htmlBody,
         textBody: `Your blog "${blog.title}" is live! Read it at: ${publicUrl}`
     });
 };

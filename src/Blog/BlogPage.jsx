@@ -52,7 +52,7 @@ const BlogPage = () => {
             { y: 0, opacity: 1, duration: 1, delay: 0.3, ease: "power3.out" }
         );
 
-        // Scroll up → navigate back to About Us
+        // Scroll up → navigate back to Contact
         let isSnapping = false;
         const handleScroll = (e) => {
             if (isSnapping) return;
@@ -63,7 +63,7 @@ const BlogPage = () => {
                     opacity: 0,
                     duration: 0.5,
                     ease: "power2.inOut",
-                    onComplete: () => navigate("/aboutUs"),
+                    onComplete: () => navigate("/contact"),
                 });
             }
         };
@@ -77,7 +77,7 @@ const BlogPage = () => {
                 isSnapping = true;
                 gsap.to(containerRef.current, {
                     opacity: 0, duration: 0.5, ease: "power2.inOut",
-                    onComplete: () => navigate("/aboutUs"),
+                    onComplete: () => navigate("/contact"),
                 });
             }
         };
