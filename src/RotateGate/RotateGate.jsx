@@ -32,6 +32,7 @@ const RotateGate = ({ onOrientationChange }) => {
       const nonPC = isNonPCDevice();
       const portrait = isPortraitOrientation();
       const shouldBlock = nonPC && portrait;
+
       setNeedsRotation(shouldBlock);
       if (onOrientationChange) {
         onOrientationChange(shouldBlock);
@@ -70,11 +71,17 @@ const RotateGate = ({ onOrientationChange }) => {
           enableOnHover={false}
           className="rotate-glitch-text"
         >
-          Rotate your device
+          ROTATE YOUR PHONE
         </GlitchText>
+
+        <p className="rotate-gate-desc">
+          You watch cinema in landscape, right?<br />
+          So rotate your phone to continue.
+        </p>
       </div>
     </div>
   );
 };
 
 export default RotateGate;
+

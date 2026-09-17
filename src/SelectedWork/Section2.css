@@ -11,7 +11,7 @@
     transform-origin: center center;
 }
 
-#section2_main_div > #nav { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; }
+#section2_main_div > #nav { position: fixed; top: 0; left: 0; width: 100%; z-index: 10000; }
 
 .selected-work-content { width: min(1400px, 100%); margin: 0 auto; padding: 0 5vw; scroll-snap-type: y mandatory; }
 .video-showcase-placeholder, .selected-work-gallery-section { min-height: 100vh; scroll-snap-align: start; scroll-snap-stop: always; }

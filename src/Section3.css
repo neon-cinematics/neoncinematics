@@ -245,6 +245,21 @@
 
 /* Responsive Overrides */
 @media (max-width: 768px) {
+    .about-intro {
+        padding-top: 10vh;
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+    .about-text-content {
+        margin-top: -15vh;
+    }
+    .about-intro h1 {
+        font-size: clamp(2.2rem, 7vw, 3rem);
+    }
+    .about-intro p {
+        font-size: 1rem;
+        line-height: 1.6;
+    }
     .team-grid {
         gap: 1rem;
     }
@@ -252,7 +267,5 @@
     .team-grid--coordinators .team-member-card-wrapper {
         width: clamp(140px, 42vw, 185px) !important;
     }
-    .about-intro h1 {
-        font-size: 2.5rem;
-    }
 }
+

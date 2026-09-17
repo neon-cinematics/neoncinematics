@@ -8,6 +8,7 @@ import VideoAdmin from "./VideoAdmin/VideoAdmin";
 import TeamAdmin from "./TeamAdmin/TeamAdmin";
 import Section3 from "./Section3";
 import { Routes, Route, useLocation } from "react-router-dom";
+import { preloadMediaAssets } from "./lib/assetPreloader";
 
 // ─── Blog System (lazy-loaded so it doesn't affect initial bundle) ─────────────
 const BlogPage = lazy(() => import("./Blog/BlogPage"));
@@ -53,50 +54,43 @@ const ScrollToTop = () => {
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [assetsLoaded, setAssetsLoaded] = useState(false);
+  const [preloadProgress, setPreloadProgress] = useState(0);
 
   useEffect(() => {
-    const criticalAssets = [
-      { type: 'image', url: '/neon_logo.png' },
-      { type: 'video', url: '/page1animationv2.mp4' }
-    ];
+    let isMounted = true;
 
-    let loadedCount = 0;
-    let timeoutId;
-
-    const checkComplete = () => {
-      loadedCount++;
-      if (loadedCount === criticalAssets.length) {
+    preloadMediaAssets((percent) => {
+      if (!isMounted) return;
+      setPreloadProgress(percent);
+      if (percent >= 100) {
         setAssetsLoaded(true);
-        clearTimeout(timeoutId);
       }
-    };
-
-    // Failsafe: max 10 seconds loading time
-    timeoutId = setTimeout(() => {
-      setAssetsLoaded(true);
-    }, 10000);
-
-    criticalAssets.forEach(asset => {
-      if (asset.type === 'image') {
-        const img = new Image();
-        img.src = asset.url;
-        img.onload = checkComplete;
-        img.onerror = checkComplete;
-      } else if (asset.type === 'video') {
-        const video = document.createElement('video');
-        video.src = asset.url;
-        video.onloadeddata = checkComplete;
-        video.onerror = checkComplete;
-      }
+    }).catch(err => {
+      console.warn("Asset preloader fallback:", err);
+      if (isMounted) setAssetsLoaded(true);
     });
 
-    return () => clearTimeout(timeoutId);
+    // Failsafe 8 second timeout
+    const timeoutId = setTimeout(() => {
+      if (isMounted) setAssetsLoaded(true);
+    }, 8000);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timeoutId);
+    };
   }, []);
   
   return (
     <>
       <RotateGate />
-      {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} assetsLoaded={assetsLoaded} />}
+      {isLoading && (
+        <LoadingScreen 
+          onComplete={() => setIsLoading(false)} 
+          assetsLoaded={assetsLoaded} 
+          preloadProgress={preloadProgress} 
+        />
+      )}
 
       <ScrollToTop />
       <Suspense fallback={<PageFallback />}>

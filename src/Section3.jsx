@@ -353,7 +353,7 @@ const Section3 = () => {
                         marqueeText="Make ✦ Something ✦ Worth ✦ Remembering ✦ "
                         speed={3}
                         curveAmount={160}
-                        direction="right"
+                        direction="left"
                         interactive={true}
                         className="custom-text-style"
                     />

@@ -333,7 +333,7 @@ export default function ContactPage() {
                         marqueeText="COLLABORATE ✦ SHORT FILMS ✦ SCRIPTS ✦ VISUAL STORYTELLING ✦ CREATIVE IDEAS ✦ "
                         speed={3}
                         curveAmount={160}
-                        direction="right"
+                        direction="left"
                         interactive={true}
                         className="custom-text-style"
                     />

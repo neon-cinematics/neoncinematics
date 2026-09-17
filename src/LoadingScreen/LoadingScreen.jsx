@@ -1,62 +1,30 @@
 import { useEffect, useState } from "react";
 import "./LoadingScreen.css";
 
-function LoadingScreen({ onComplete, assetsLoaded = true }) {
-const [progress, setProgress] = useState(0);
-const [isExiting, setIsExiting] = useState(false);
-
-  const [phase, setPhase] = useState(1);
+function LoadingScreen({ onComplete, assetsLoaded = true, preloadProgress = 0 }) {
+  const [progress, setProgress] = useState(0);
+  const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
-    let animationFrame;
-    const firstPhaseDuration = 200;
-    const startTime = performance.now();
-
-    const animateTo90 = (currentTime) => {
-      const elapsed = currentTime - startTime;
-      const percentage = Math.min(85, Math.floor((elapsed / firstPhaseDuration) * 90));
-      setProgress(percentage);
-
-      if (percentage < 85) {
-        animationFrame = requestAnimationFrame(animateTo90);
-      } else {
-        setPhase(2);
-      }
-    };
-
-    animationFrame = requestAnimationFrame(animateTo90);
-
-    return () => cancelAnimationFrame(animationFrame);
-  }, []);
-
-  useEffect(() => {
-    if (phase === 2 && assetsLoaded) {
-      let animationFrame;
-      const secondPhaseDuration = 600;
-      const secondStart = performance.now();
-
-      const animateTo100 = (time) => {
-        const elapsed = time - secondStart;
-        const percentage = Math.min(100, 85 + Math.floor((elapsed / secondPhaseDuration) * 15));
-        setProgress(percentage);
-
-        if (percentage < 100) {
-          animationFrame = requestAnimationFrame(animateTo100);
-        } else {
-          setTimeout(() => {
-            setIsExiting(true);
-            setTimeout(() => {
-              onComplete();
-            }, 900);
-          }, 400);
-        }
-      };
-
-      animationFrame = requestAnimationFrame(animateTo100);
-
-      return () => cancelAnimationFrame(animationFrame);
+    // Driven by real media preloader progress combined with minimum baseline
+    const target = Math.min(100, Math.max(progress, preloadProgress));
+    if (target > progress) {
+      setProgress(target);
     }
-  }, [phase, assetsLoaded, onComplete]);
+  }, [preloadProgress, progress]);
+
+  useEffect(() => {
+    if (assetsLoaded || progress >= 100) {
+      const timer = setTimeout(() => {
+        setIsExiting(true);
+        setTimeout(() => {
+          onComplete();
+        }, 900);
+      }, 400);
+      return () => clearTimeout(timer);
+    }
+  }, [assetsLoaded, progress, onComplete]);
+
 
   const totalBlocks = 32;
 

@@ -90,3 +90,20 @@ body {
         will-change: auto;
     }
 }
+
+@media (max-width: 768px) {
+    #div1 {
+        max-width: 90vw;
+        padding-top: 10px;
+    }
+    #section1_main_text {
+        font-size: clamp(30px, 8vw, 48px);
+        padding-left: 16px;
+        margin-top: 12px;
+        margin-bottom: 12px;
+    }
+    #scroll_text {
+        font-size: clamp(13px, 3.2vw, 16px);
+        padding-left: 16px;
+    }
+}

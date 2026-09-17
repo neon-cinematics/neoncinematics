@@ -152,3 +152,57 @@
 
     opacity: 0.8;
 }
+
+/* Responsive adaptation for mobile screens and portrait orientation */
+@media (max-width: 768px), (max-aspect-ratio: 1/1) {
+    #nav {
+        height: 56px;
+        padding: 0 12px;
+        box-sizing: border-box;
+        align-items: center;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 10000;
+    }
+
+    #logo {
+        padding: 0;
+    }
+
+    #logo img {
+        height: 28px;
+    }
+
+    #neon_text {
+        font-size: 20px;
+    }
+
+    #nav_links {
+        align-items: center;
+    }
+
+    #nav_links ul {
+        font-size: 12px;
+        gap: 12px;
+        padding-top: 0;
+        padding-inline: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    #nav {
+        padding: 0 8px;
+    }
+    #logo img {
+        height: 24px;
+    }
+    #neon_text {
+        font-size: 17px;
+    }
+    #nav_links ul {
+        font-size: 11px;
+        gap: 7px;
+    }
+}
