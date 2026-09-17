@@ -520,13 +520,13 @@
     text-decoration: underline;
 }
 
-.showcase-grid {
+.contact-page .showcase-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 1.5rem;
 }
 
-.showcase-card {
+.contact-page .showcase-card {
     display: flex;
     flex-direction: column;
     background: #121214;
@@ -538,30 +538,30 @@
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
 }
 
-.showcase-card:hover {
+.contact-page .showcase-card:hover {
     transform: translateY(-4px);
     border-color: rgba(4, 144, 233, 0.4);
 }
 
-.showcase-card__image-wrapper {
+.contact-page .showcase-card__image-wrapper {
     height: 180px;
     overflow: hidden;
     background: #18181b;
     position: relative;
 }
 
-.showcase-card__image-wrapper img {
+.contact-page .showcase-card__image-wrapper img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.5s ease;
 }
 
-.showcase-card:hover .showcase-card__image-wrapper img {
+.contact-page .showcase-card:hover .showcase-card__image-wrapper img {
     transform: scale(1.06);
 }
 
-.showcase-card__placeholder {
+.contact-page .showcase-card__placeholder {
     width: 100%;
     height: 100%;
     display: flex;
@@ -573,14 +573,14 @@
     font-family: monospace;
 }
 
-.showcase-card__meta {
+.contact-page .showcase-card__meta {
     padding: 1.25rem;
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
 }
 
-.showcase-card__type {
+.contact-page .showcase-card__type {
     font-size: 10px;
     letter-spacing: 0.15em;
     color: #0490e9;
@@ -588,7 +588,7 @@
     font-weight: 600;
 }
 
-.showcase-card__title {
+.contact-page .showcase-card__title {
     font-size: 15px;
     font-weight: 600;
     color: #f2f1eb;
