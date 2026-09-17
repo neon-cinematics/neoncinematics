@@ -10,7 +10,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 import Youtube from "@tiptap/extension-youtube";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { getPoster, isLoggedIn } from "../lib/blogAuth";
+import { getPoster, isLoggedIn, getSanityWriteToken, setCustomSanityWriteToken } from "../lib/blogAuth";
 import {
     blogReadClient, createBlogWriteClient,
     blogByIdQuery, generateSlug, createBlogDoc
@@ -212,7 +212,8 @@ const BlogEditor = () => {
     const [slashPos, setSlashPos] = useState(null);
     const [activeHeadingPos, setActiveHeadingPos] = useState(null);
 
-    const WRITE_TOKEN = import.meta.env.VITE_SANITY_WRITE_TOKEN;
+    const [writeTokenInput, setWriteTokenInput] = useState(() => getSanityWriteToken());
+    const [showTokenText, setShowTokenText] = useState(false);
 
     useEffect(() => {
         if (!isLoggedIn()) navigate("/blog/login", { replace: true });
@@ -348,8 +349,11 @@ const BlogEditor = () => {
     };
 
     const getWriteClient = () => {
-        if (!WRITE_TOKEN) throw new Error("Write token not configured. Add VITE_SANITY_WRITE_TOKEN to .env");
-        return createBlogWriteClient(WRITE_TOKEN);
+        const token = getSanityWriteToken();
+        if (!token) {
+            throw new Error("Sanity write token not configured. Please enter a valid write token under Settings -> Advanced.");
+        }
+        return createBlogWriteClient(token);
     };
 
     const handleTitleChange = (e) => {
@@ -464,8 +468,15 @@ const BlogEditor = () => {
             setLastSavedAt(Date.now());
             setTimeout(() => setSaveState(prev => prev === "saved" ? "idle" : prev), 3000);
         } catch (err) {
-            console.error(err);
-            showToast("Save failed: " + err.message, "error");
+            console.error("Save error:", err);
+            const msg = err.message || "Unknown error";
+            if (msg.includes("Unauthorized") || msg.includes("Session not found") || msg.includes("401") || msg.includes("token")) {
+                showToast("Save failed: Unauthorized session/token. Enter a valid Sanity Write Token in Settings -> Advanced.", "error");
+                setShowSettings(true);
+                setOpenAdvanced(true);
+            } else {
+                showToast("Save failed: " + msg, "error");
+            }
             setSaveState("error");
         }
     }, [title, description, coverImage, editor, blogId, poster, slugInput]);
@@ -532,7 +543,15 @@ const BlogEditor = () => {
             setHasUnsaved(true);
             showToast("Cover image uploaded.");
         } catch (err) {
-            showToast("Cover upload failed: " + err.message, "error");
+            console.error("Cover upload error:", err);
+            const msg = err.message || "Unknown error";
+            if (msg.includes("Unauthorized") || msg.includes("Session not found") || msg.includes("401") || msg.includes("token")) {
+                showToast("Cover upload failed: Unauthorized. Please check your Sanity token in Settings -> Advanced.", "error");
+                setShowSettings(true);
+                setOpenAdvanced(true);
+            } else {
+                showToast("Cover upload failed: " + msg, "error");
+            }
         } finally {
             setIsUploadingCover(false);
         }
@@ -1003,11 +1022,56 @@ const BlogEditor = () => {
                                     className="accordion-header"
                                     onClick={() => setOpenAdvanced(a => !a)}
                                 >
-                                    <span>{openAdvanced ? "▾" : "▸"} Advanced</span>
+                                    <span>{openAdvanced ? "▾" : "▸"} Advanced & API Security</span>
                                 </button>
                                 {openAdvanced && (
                                     <div className="accordion-content">
                                         <div className="settings-field">
+                                            <label>Sanity Write API Token</label>
+                                            <div style={{ display: "flex", gap: "6px" }}>
+                                                <input
+                                                    type={showTokenText ? "text" : "password"}
+                                                    value={writeTokenInput}
+                                                    onChange={(e) => {
+                                                        const val = e.target.value;
+                                                        setWriteTokenInput(val);
+                                                        setCustomSanityWriteToken(val);
+                                                    }}
+                                                    placeholder="Paste Sanity token (sk...)"
+                                                    style={{
+                                                        fontFamily: "monospace",
+                                                        fontSize: "12px",
+                                                        flex: 1,
+                                                        background: "var(--surface-raised, #18181B)",
+                                                        color: "var(--text-primary, #F4F4F5)",
+                                                        border: "1px solid var(--border-default, rgba(255,255,255,0.14))",
+                                                        borderRadius: "6px",
+                                                        padding: "6px 10px",
+                                                    }}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowTokenText(p => !p)}
+                                                    title="Toggle visibility"
+                                                    style={{
+                                                        background: "var(--surface-hover, #222225)",
+                                                        border: "1px solid var(--border-default, rgba(255,255,255,0.14))",
+                                                        color: "#A1A1AA",
+                                                        borderRadius: "6px",
+                                                        padding: "4px 8px",
+                                                        fontSize: "12px",
+                                                        cursor: "pointer",
+                                                    }}
+                                                >
+                                                    {showTokenText ? "🔒" : "👁️"}
+                                                </button>
+                                            </div>
+                                            <span className="feedback-hint" style={{ color: "rgba(255,255,255,0.45)", fontSize: "11px", display: "block", marginTop: "4px", lineHeight: "1.3" }}>
+                                                Required to save drafts & submit stories. Saved securely in your local session.
+                                            </span>
+                                        </div>
+
+                                        <div className="settings-field" style={{ marginTop: "14px" }}>
                                             <label>Embedded Drawing Studio</label>
                                             <button
                                                 type="button"

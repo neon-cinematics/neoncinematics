@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import {
-    getPoster, clearSession, isLoggedIn, getToken
+    getPoster, clearSession, isLoggedIn, getToken, getSanityWriteToken
 } from "../lib/blogAuth";
 import {
     blogReadClient, createBlogWriteClient, posterBlogsQuery, posterStatsQuery
@@ -114,14 +114,18 @@ const BlogDashboard = () => {
             onConfirm: async () => {
                 setConfirm(null);
                 try {
-                    const token = getToken();
-                    const client = createBlogWriteClient(import.meta.env.VITE_SANITY_WRITE_TOKEN);
+                    const writeToken = getSanityWriteToken();
+                    if (!writeToken) {
+                        showToast("Write token not configured.", "error");
+                        return;
+                    }
+                    const client = createBlogWriteClient(writeToken);
                     // Poster can only delete DRAFTS — the server/Sanity schema enforces this
                     if (blog.status !== STATUS.DRAFT && blog.status !== STATUS.REJECTED) {
                         showToast("Only draft or rejected blogs can be deleted.", "error");
                         return;
                     }
-                    await blogReadClient.delete(blog._id);
+                    await client.delete(blog._id);
                     setBlogs(prev => prev.filter(b => b._id !== blog._id));
                     showToast("Blog deleted.");
                     fetchData();
@@ -135,11 +139,9 @@ const BlogDashboard = () => {
 
     const handleSubmit = async (blog) => {
         try {
-            // We need a write client — for poster submissions, use a limited Sanity token
-            // stored in env. In production, this would be handled server-side.
-            const writeToken = import.meta.env.VITE_SANITY_WRITE_TOKEN;
+            const writeToken = getSanityWriteToken();
             if (!writeToken) {
-                showToast("Write access not configured. Contact admin.", "error");
+                showToast("Write access token not configured.", "error");
                 return;
             }
             const client = createBlogWriteClient(writeToken);

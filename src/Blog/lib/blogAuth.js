@@ -61,6 +61,25 @@ export const getAdminToken = () => getAdminSession()?.token || null;
 export const getAdminSanityToken = () => getAdminSession()?.sanityToken || null;
 export const isAdminLoggedIn = () => !!getAdminToken();
 
+export const getSanityWriteToken = () => {
+    return (
+        sessionStorage.getItem("neon_blog_write_token") ||
+        getAdminSanityToken() ||
+        sessionStorage.getItem("gallery-admin-token") ||
+        sessionStorage.getItem("team-admin-token") ||
+        import.meta.env.VITE_SANITY_WRITE_TOKEN ||
+        ""
+    );
+};
+
+export const setCustomSanityWriteToken = (token) => {
+    if (token && token.trim()) {
+        sessionStorage.setItem("neon_blog_write_token", token.trim());
+    } else {
+        sessionStorage.removeItem("neon_blog_write_token");
+    }
+};
+
 // ─── API Calls ────────────────────────────────────────────────────────────────
 
 export const loginPoster = async (username, password) => {
