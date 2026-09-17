@@ -178,17 +178,17 @@ const AdminPosterManagement = () => {
                                 <>
                                     <label style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--text-secondary)", fontFamily: "'Inter', sans-serif" }}>
                                         Full Name
-                                        <input className="admin-input" style={{ width: "100%", marginTop: "6px" }} type="text" value={formData.name} onChange={e => setFormData(d => ({ ...d, name: e.target.value }))} placeholder="Jane Smith" />
+                                        <input className="admin-input" style={{ width: "100%", marginTop: "6px" }} type="text" value={formData.name} onChange={e => setFormData(d => ({ ...d, name: e.target.value }))} placeholder="Name here" />
                                     </label>
                                     {modal.type === "create" && (
                                         <label style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--text-secondary)", fontFamily: "'Inter', sans-serif" }}>
                                             Username
-                                            <input className="admin-input" style={{ width: "100%", marginTop: "6px" }} type="text" value={formData.username} onChange={e => setFormData(d => ({ ...d, username: e.target.value.toLowerCase().replace(/\s+/g, "_") }))} placeholder="jane_smith" />
+                                            <input className="admin-input" style={{ width: "100%", marginTop: "6px" }} type="text" value={formData.username} onChange={e => setFormData(d => ({ ...d, username: e.target.value.toLowerCase().replace(/\s+/g, "_") }))} placeholder="Username here" />
                                         </label>
                                     )}
                                     <label style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--text-secondary)", fontFamily: "'Inter', sans-serif" }}>
                                         Email
-                                        <input className="admin-input" style={{ width: "100%", marginTop: "6px" }} type="email" value={formData.email} onChange={e => setFormData(d => ({ ...d, email: e.target.value }))} placeholder="jane@example.com" />
+                                        <input className="admin-input" style={{ width: "100%", marginTop: "6px" }} type="email" value={formData.email} onChange={e => setFormData(d => ({ ...d, email: e.target.value }))} placeholder="Email here" />
                                     </label>
                                     <label style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--text-secondary)", fontFamily: "'Inter', sans-serif" }}>
                                         Role

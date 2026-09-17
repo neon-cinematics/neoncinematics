@@ -242,24 +242,7 @@ const VideoAdmin = () => {
         }
     };
 
-    const handleToggleFeaturedContact = async (id, currentVal) => {
-        setIsBusy(true);
-        try {
-            const client = getWriteClient();
-            const newVal = !currentVal;
-            if (newVal) {
-                await client.patch(id).set({ isFeaturedContact: true }).commit();
-            } else {
-                await client.patch(id).unset(["isFeaturedContact"]).commit();
-            }
-            setItems(current => current.map(item => item._id === id ? { ...item, isFeaturedContact: newVal } : item));
-            setStatus("Updated feature status for Contact page.");
-        } catch (error) {
-            setStatus(error.message || "Unable to update feature status for Contact page.");
-        } finally {
-            setIsBusy(false);
-        }
-    };
+
 
     const handleDelete = async (id, assetId) => {
         if (!window.confirm("Remove this video thumbnail?")) return;
@@ -452,25 +435,6 @@ const VideoAdmin = () => {
                                         <button type="button" className="edit-btn" onClick={() => handleEditClick(item)} disabled={isBusy} style={{ flex: 1, padding: '0.5rem', background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '4px', cursor: 'pointer' }}>Edit</button>
                                         <button type="button" className="delete-btn" onClick={() => handleDelete(item._id, item.assetId)} disabled={isBusy} style={{ flex: 1, margin: 0 }}>Delete</button>
                                     </div>
-                                    <button
-                                        type="button"
-                                        onClick={() => handleToggleFeaturedContact(item._id, item.isFeaturedContact)}
-                                        disabled={isBusy}
-                                        style={{
-                                            width: '100%',
-                                            marginTop: '0.5rem',
-                                            padding: '0.45rem',
-                                            background: item.isFeaturedContact ? '#f59e0b' : 'rgba(255,255,255,0.06)',
-                                            color: item.isFeaturedContact ? '#000' : '#fff',
-                                            border: '1px solid rgba(255,255,255,0.2)',
-                                            borderRadius: '4px',
-                                            fontSize: '12px',
-                                            fontWeight: '600',
-                                            cursor: 'pointer'
-                                        }}
-                                    >
-                                        {item.isFeaturedContact ? "★ Contact Featured" : "☆ Feature on Contact"}
-                                    </button>
                                 </div>
                             </div>
                         ))}

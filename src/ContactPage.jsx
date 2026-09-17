@@ -426,7 +426,7 @@ export default function ContactPage() {
                                     id="contact-name"
                                     type="text"
                                     required
-                                    placeholder="e.g. Alex Morgan"
+                                    placeholder="e.g. Neon Cinematics"
                                     value={formData.name}
                                     onChange={e => setFormData({ ...formData, name: e.target.value })}
                                 />

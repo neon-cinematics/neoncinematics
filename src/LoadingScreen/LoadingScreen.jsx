@@ -4,26 +4,75 @@ import "./LoadingScreen.css";
 function LoadingScreen({ onComplete, assetsLoaded = true, preloadProgress = 0 }) {
   const [progress, setProgress] = useState(0);
   const [isExiting, setIsExiting] = useState(false);
+  const [phase, setPhase] = useState("init");
 
+  // Step 1: Initial rapid climb to 30% baseline
   useEffect(() => {
-    // Driven by real media preloader progress combined with minimum baseline
-    const target = Math.min(100, Math.max(progress, preloadProgress));
-    if (target > progress) {
-      setProgress(target);
-    }
-  }, [preloadProgress, progress]);
+    let frame;
+    const startTime = performance.now();
+    const duration = 250;
 
+    const animateTo30 = (time) => {
+      const elapsed = time - startTime;
+      const val = Math.min(30, Math.floor((elapsed / duration) * 30));
+      setProgress(val);
+      if (val < 30) {
+        frame = requestAnimationFrame(animateTo30);
+      } else {
+        setPhase("loading");
+      }
+    };
+    frame = requestAnimationFrame(animateTo30);
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
+  // Step 2: Scale asset loading progress from 30% to 70%
   useEffect(() => {
-    if (assetsLoaded || progress >= 100) {
-      const timer = setTimeout(() => {
-        setIsExiting(true);
-        setTimeout(() => {
-          onComplete();
-        }, 900);
-      }, 400);
-      return () => clearTimeout(timer);
+    if (phase === "loading") {
+      const mapped = 30 + Math.floor((preloadProgress / 100) * 40);
+      const currentTarget = assetsLoaded ? 70 : mapped;
+
+      if (currentTarget > progress && progress < 70) {
+        setProgress(currentTarget);
+      }
+
+      if ((assetsLoaded || preloadProgress >= 100) && currentTarget >= 70) {
+        setProgress(70);
+        setPhase("finaling");
+      }
     }
-  }, [assetsLoaded, progress, onComplete]);
+  }, [phase, preloadProgress, assetsLoaded, progress]);
+
+  // Step 3: Transition from 70% to 80% (and 100%) in 300ms, then load site
+  useEffect(() => {
+    if (phase === "finaling") {
+      let frame;
+      const startTime = performance.now();
+      const duration = 300; // 300ms transition
+
+      const animateFinal = (time) => {
+        const elapsed = time - startTime;
+        const p = Math.min(1, elapsed / duration);
+        const val = Math.min(100, Math.floor(70 + p * 30));
+        setProgress(val);
+
+        if (p < 1) {
+          frame = requestAnimationFrame(animateFinal);
+        } else {
+          setPhase("done");
+          setTimeout(() => {
+            setIsExiting(true);
+            setTimeout(() => {
+              onComplete();
+            }, 600);
+          }, 150);
+        }
+      };
+      frame = requestAnimationFrame(animateFinal);
+      return () => cancelAnimationFrame(frame);
+    }
+  }, [phase, onComplete]);
+
 
 
   const totalBlocks = 32;
