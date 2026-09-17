@@ -5,6 +5,7 @@ import gsap from "gsap";
 import Navbar from "./Navbar/Navbar";
 import WarpText from "./components/ReactBits/WarpText";
 import CurvedLoop from "./components/ReactBits/CurvedLoop";
+import ScrambledText from "./components/ReactBits/ScrambledText";
 import { sanityClient, galleryPhotosQuery, videoThumbnailsQuery } from "./lib/sanity";
 import { sanityImageUrl } from "./lib/sanityImage";
 import "./ContactPage.css";
@@ -262,7 +263,7 @@ export default function ContactPage() {
 
             {/* HERO SECTION */}
             <section className="contact-hero">
-                <div className="contact-hero__title-wrapper" style={{ width: '100%', maxWidth: '1100px', margin: '0 auto 1.5rem' }}>
+                <div className="contact-hero__title-wrapper" style={{ width: '100%', maxWidth: '1600px', margin: '0 auto 1.5rem' }}>
                     <h1 className="sr-only">LET'S MAKE SOMETHING.</h1>
                     <WarpText
                         text="LET'S MAKE SOMETHING."
@@ -274,19 +275,23 @@ export default function ContactPage() {
                         pointerStrength={0.38}
                         refraction={0.018}
                         ripple={true}
-                        fontSize="clamp(2.5rem, 6.5vw, 5.5rem)"
+                        fontSize="clamp(10rem, 18.5vw, 12rem)"
                         fontWeight={800}
                         fontFamily="'Inter', system-ui, -apple-system, sans-serif"
-                        letterSpacing="4px"
-                        style={{ height: '140px' }}
+                        letterSpacing="3px"
+                        style={{ height: '260px' }}
                     />
                 </div>
 
-                <p className="contact-hero__sub">
-                    Neon Cinematics is the official Cinematography & Filmmaking Club of IIIT Kota.
-                    We are a creative collective of student filmmakers, storytellers, and visual artists.
-                    Whether you want to collaborate on a film, pitch a script concept, join a production, or exchange creative ideas, we are always open for creative conversations.
-                </p>
+                <ScrambledText
+                    className="scrambled-text-demo contact-hero__sub"
+                    radius={90}
+                    duration={1}
+                    speed={0.3}
+                    scrambleChars=".:;*^%"
+                >
+                    Neon Cinematics is the official Cinematography & Filmmaking Club of IIIT Kota. We are a creative collective of student filmmakers, storytellers, and visual artists. Whether you want to collaborate on a film, pitch a script concept, join a production, or exchange creative ideas, we are always open for creative conversations.
+                </ScrambledText>
 
                 <div className="contact-hero__actions">
                     <button type="button" className="contact-btn contact-btn--primary" onClick={() => scrollToForm()}>
@@ -342,7 +347,7 @@ export default function ContactPage() {
             {/* CURVED LOOP MARQUEE */}
             <div className="contact-marquee">
                 <CurvedLoop
-                    marqueeText="✦ COLLABORATE ✦ SHORT FILMS ✦ SCRIPT PITCHES ✦ VISUAL STORYTELLING ✦ WORKSHOPS ✦ CREATIVE IDEAS ✦ "
+                    marqueeText="✦ COLLABORATE ✦ SHORT FILMS ✦ SCRIPTS ✦ VISUAL STORYTELLING ✦ CREATIVE IDEAS ✦ "
                     speed={2.5}
                     curveAmount={120}
                     direction="left"
