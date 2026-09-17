@@ -1,3 +1,5 @@
+import { createBlogWriteClient } from "./blogSanity";
+
 // ─── Blog Auth Utilities ─────────────────────────────────────────────────────
 // Manages poster JWT session stored in sessionStorage
 
@@ -73,14 +75,33 @@ export const loginPoster = async (username, password) => {
 };
 
 export const loginAdmin = async (sanityToken) => {
-    const res = await fetch(`${API_BASE}/api/auth/admin-login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sanityToken }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Admin login failed");
-    return data; // { token, admin }
+    try {
+        const res = await fetch(`${API_BASE}/api/auth/admin-login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ sanityToken }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Admin login failed");
+        return data; // { token, admin }
+    } catch (err) {
+        // If server is not reachable, fallback to direct Sanity client verification!
+        if (err.name === "TypeError" || err.message.includes("fetch") || err.message.includes("NetworkError") || err.message.includes("Failed to fetch")) {
+            console.warn("Backend server not reachable at " + API_BASE + ". Verifying Sanity token directly...");
+            const client = createBlogWriteClient(sanityToken);
+            if (!client) throw new Error("Invalid Sanity configuration.");
+            try {
+                await client.fetch(`count(*[_type == "blog"])`);
+                return {
+                    token: "admin_direct_sanity_session_" + Date.now(),
+                    admin: { id: "admin_sanity", name: "Sanity Admin", role: "admin" }
+                };
+            } catch (sanityErr) {
+                throw new Error("Invalid Sanity token: " + sanityErr.message);
+            }
+        }
+        throw err;
+    }
 };
 
 export const verifyToken = async () => {
