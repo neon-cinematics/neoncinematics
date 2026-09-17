@@ -1,13 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Navbar from "./Navbar/Navbar";
 import WarpText from "./components/ReactBits/WarpText";
 import CurvedLoop from "./components/ReactBits/CurvedLoop";
 import ScrambledText from "./components/ReactBits/ScrambledText";
-import { sanityClient, galleryPhotosQuery, videoThumbnailsQuery, contactUsVideoQuery } from "./lib/sanity";
-import { sanityImageUrl } from "./lib/sanityImage";
+import { sanityClient, contactUsVideoQuery } from "./lib/sanity";
 import "./ContactPage.css";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
@@ -58,70 +57,20 @@ export default function ContactPage() {
     const [status, setStatus] = useState("idle");
     const [statusMsg, setStatusMsg] = useState("");
 
-    // Media & Showcase state
-    const [showcaseWork, setShowcaseWork] = useState([]);
+    // Media state
     const [bgVideo, setBgVideo] = useState(null);
     const [copiedEmail, setCopiedEmail] = useState(false);
     const [openFaq, setOpenFaq] = useState(null);
 
-    // Fetch work showcase & background video
+    // Fetch background video
     useEffect(() => {
         const fetchMedia = async () => {
             if (!sanityClient) return;
             try {
-                const [photos, videos, videoData] = await Promise.all([
-                    sanityClient.fetch(galleryPhotosQuery).catch(() => []),
-                    sanityClient.fetch(videoThumbnailsQuery).catch(() => []),
-                    sanityClient.fetch(contactUsVideoQuery).catch(() => null)
-                ]);
-
+                const videoData = await sanityClient.fetch(contactUsVideoQuery).catch(() => null);
                 if (videoData?.videoUrl) {
                     setBgVideo(videoData.videoUrl);
                 }
-
-                // 1. Prioritize Admin-Featured Items (isFeaturedContact === true)
-                const featuredPhotos = (photos || []).filter(p => p.isFeaturedContact).map(p => ({
-                    id: p._id,
-                    title: p.title || "Cinematic Frame",
-                    type: "Photography",
-                    image: p.image,
-                    link: p.href || "/work"
-                }));
-
-                const featuredVideos = (videos || []).filter(v => v.isFeaturedContact).map(v => ({
-                    id: v._id,
-                    title: v.caption || "Showcase Production",
-                    type: "Film",
-                    image: v.image,
-                    link: v.videoLink || "/work"
-                }));
-
-                let combined = [...featuredPhotos, ...featuredVideos];
-
-                // 2. Fallback to recent photos/videos if admin hasn't selected enough featured items
-                if (combined.length < 4) {
-                    const fallbackPhotos = (photos || []).filter(p => !p.isFeaturedContact).map(p => ({
-                        id: p._id,
-                        title: p.title || "Cinematic Frame",
-                        type: "Photography",
-                        image: p.image,
-                        link: p.href || "/work"
-                    }));
-
-                    const fallbackVideos = (videos || []).filter(v => !v.isFeaturedContact).map(v => ({
-                        id: v._id,
-                        title: v.caption || "Showcase Production",
-                        type: "Film",
-                        image: v.image,
-                        link: v.videoLink || "/work"
-                    }));
-
-                    const needed = 4 - combined.length;
-                    const fallbacks = [...fallbackPhotos, ...fallbackVideos].slice(0, needed);
-                    combined = [...combined, ...fallbacks];
-                }
-
-                setShowcaseWork(combined.slice(0, 4));
             } catch (e) {
                 console.warn("Could not fetch media data:", e);
             }
@@ -555,19 +504,6 @@ export default function ContactPage() {
                 </div>
             </section>
 
-            {/* COLLABORATION FEATURE */}
-            <section className="contact-collab">
-                <div className="collab-card">
-                    <h2>SOMETHING WORTH MAKING?</h2>
-                    <p>
-                        Got a bold narrative concept, a script pitch, or want to collaborate with our club on a film project? We love ambitious creative ideas.
-                    </p>
-                    <button type="button" className="contact-btn contact-btn--primary" onClick={() => scrollToForm("collaborate")}>
-                        START A COLLABORATION →
-                    </button>
-                </div>
-            </section>
-
             {/* LOCATION */}
             <section className="contact-location">
                 <div className="location-box">
@@ -580,34 +516,6 @@ export default function ContactPage() {
                     </div>
                 </div>
             </section>
-
-            {/* WORK SHOWCASE MONTAGE */}
-            {showcaseWork.length > 0 && (
-                <section className="contact-showcase">
-                    <div className="showcase-header">
-                        <h2 className="section-heading">SEE WHAT WE MAKE.</h2>
-                        <Link to="/work" className="showcase-all-link">VIEW ALL SELECTED WORK ↗</Link>
-                    </div>
-
-                    <div className="showcase-grid">
-                        {showcaseWork.map((item, idx) => (
-                            <Link key={item.id || idx} to={item.link} className="showcase-card">
-                                <div className="showcase-card__image-wrapper">
-                                    {item.image ? (
-                                        <img src={sanityImageUrl(item.image, 500)} alt={item.title} loading="lazy" />
-                                    ) : (
-                                        <div className="showcase-card__placeholder">NEON CINEMATICS</div>
-                                    )}
-                                </div>
-                                <div className="showcase-card__meta">
-                                    <span className="showcase-card__type">{item.type}</span>
-                                    <h4 className="showcase-card__title">{item.title}</h4>
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
-                </section>
-            )}
 
             {/* FAQ */}
             <section className="contact-faq">
@@ -658,3 +566,4 @@ export default function ContactPage() {
         </div>
     );
 }
+
