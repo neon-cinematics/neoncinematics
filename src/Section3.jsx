@@ -172,14 +172,13 @@ const Section3 = () => {
         const cardListeners = [];
         const cardWrappers = gsap.utils.toArray(".team-member-card-wrapper");
 
-        // Make the info pop out in 3D (only for cards where meta is initially visible)
-        gsap.set(".team-member-card:not(.hide-meta-initially) .team-member-info", { transformStyle: "preserve-3d", transformOrigin: "center center", z: 30 });
+        // Make the info pop out in 3D
+        gsap.set(".team-member-info", { transformStyle: "preserve-3d", transformOrigin: "center center", z: 30 });
         gsap.set(".team-member-card", { transformStyle: "preserve-3d", transformPerspective: 1000 });
 
         cardWrappers.forEach((wrapper, i) => {
             const card = wrapper.querySelector(".team-member-card");
             if (!card) return;
-            const isHideMeta = card.classList.contains("hide-meta-initially");
 
             // Card Scroll Parallax (Subtle 8px offset applied to the wrapper)
             const yOffset = i % 2 === 0 ? 8 : -8;
@@ -221,9 +220,9 @@ const Section3 = () => {
                     ease: "power2.out"
                 });
 
-                // Subtle depth pop for info on hover (only for standard visible meta cards)
+                // Subtle depth pop for info on hover
                 const info = card.querySelector(".team-member-info");
-                if (info && !isHideMeta) gsap.to(info, { z: 15, duration: 0.5, ease: "power2.out" });
+                if (info) gsap.to(info, { z: 15, duration: 0.5, ease: "power2.out" });
             };
 
             const handleMouseLeave = () => {
@@ -236,7 +235,7 @@ const Section3 = () => {
                     ease: "power2.out"
                 });
                 const info = card.querySelector(".team-member-info");
-                if (info && !isHideMeta) gsap.to(info, { z: 0, duration: 0.5, ease: "power2.out" });
+                if (info) gsap.to(info, { z: 0, duration: 0.5, ease: "power2.out" });
             };
 
             wrapper.addEventListener("mousemove", handleMouseMove);
@@ -260,25 +259,31 @@ const Section3 = () => {
         };
     }, { scope: container, dependencies: [members] });
 
-    const renderTeamGrid = (teamList, modifierClass, hideMetaInitially = false) => {
+    const renderTeamGrid = (teamList, modifierClass) => {
         if (!teamList || teamList.length === 0) return null;
 
-        let width = 300;
-        let height = 375; // 4:5 Portrait Ratio
-        if (modifierClass.includes('coordinators')) { width = 500; height = 625; }
-        else if (modifierClass.includes('3rd')) { width = 400; height = 500; }
-        else if (modifierClass.includes('2nd')) { width = 350; height = 438; }
-        else { width = 300; height = 375; }
+        const count = teamList.length;
+        // Dynamically scale card width based on member count (higher count = smaller cards, down to 165px threshold)
+        const isCoordinators = modifierClass.includes('coordinators');
+        const baseCap = isCoordinators ? 250 : 225;
+        const dynamicWidth = Math.max(165, Math.round(baseCap - Math.max(0, count - 2) * 11));
+        const dynamicHeight = Math.round(dynamicWidth * 1.25); // 4:5 Portrait Ratio
 
         return (
-            <div className={`team-grid ${modifierClass}`}>
+            <div 
+                className={`team-grid ${modifierClass}`}
+                style={{ '--dynamic-card-width': `${dynamicWidth}px` }}
+            >
                 {teamList.map(member => (
                     <div key={member._id} className="team-member-card-wrapper">
-                        <div className={`team-member-card showcase-card ${hideMetaInitially ? 'hide-meta-initially' : ''}`}>
+                        <div className="team-member-card showcase-card">
                             <div className="showcase-card__image-wrapper">
                                 <img
-                                    src={sanityImageUrl(member.image, width, height)}
+                                    src={sanityImageUrl(member.image, dynamicWidth, dynamicHeight)}
                                     alt={member.name}
+                                    width={dynamicWidth}
+                                    height={dynamicHeight}
+                                    style={{ aspectRatio: '4 / 5' }}
                                     loading="lazy"
                                 />
                             </div>
@@ -375,7 +380,7 @@ const Section3 = () => {
                         <h2>
                             <FoldText text="The Visionaries" trigger="scroll" fontSize="2.5rem" color="rgb(236, 220, 220)" />
                         </h2>
-                        {renderTeamGrid(members.coordinators, 'team-grid--coordinators', false)}
+                        {renderTeamGrid(members.coordinators, 'team-grid--coordinators')}
                     </section>
                 )}
 
@@ -384,7 +389,7 @@ const Section3 = () => {
                         <h2>
                             <FoldText text="3rd Year Leads" trigger="scroll" fontSize="2.5rem" color="rgb(236, 220, 220)" />
                         </h2>
-                        {renderTeamGrid(members.thirdYear, 'team-grid--3rd-year', false)}
+                        {renderTeamGrid(members.thirdYear, 'team-grid--3rd-year')}
                     </section>
                 )}
 
@@ -393,7 +398,7 @@ const Section3 = () => {
                         <h2>
                             <FoldText text="2nd Year Core" trigger="scroll" fontSize="2.5rem" color="rgb(236, 220, 220)" />
                         </h2>
-                        {renderTeamGrid(members.secondYear, 'team-grid--2nd-year', true)}
+                        {renderTeamGrid(members.secondYear, 'team-grid--2nd-year')}
                     </section>
                 )}
 
@@ -402,7 +407,7 @@ const Section3 = () => {
                         <h2>
                             <FoldText text="1st Year Talent" trigger="scroll" fontSize="2.5rem" color="rgb(236, 220, 220)" />
                         </h2>
-                        {renderTeamGrid(members.firstYear, 'team-grid--1st-year', true)}
+                        {renderTeamGrid(members.firstYear, 'team-grid--1st-year')}
                     </section>
                 )}
             </div>

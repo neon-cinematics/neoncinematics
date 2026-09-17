@@ -130,9 +130,10 @@
 
 /* Base Team Member Card — Showcase Card Format */
 .team-member-card-wrapper {
-    width: clamp(210px, 20vw, 260px);
+    width: var(--dynamic-card-width, clamp(165px, 18vw, 250px));
     position: relative;
     flex: 0 0 auto;
+    transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .team-member-card.showcase-card {
@@ -157,7 +158,8 @@
 /* 4:5 Portrait Aspect Ratio Image Wrapper */
 .showcase-card__image-wrapper {
     width: 100%;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 4 / 5 !important;
+    flex-shrink: 0;
     overflow: hidden;
     background: #18181b;
     position: relative;
@@ -167,6 +169,7 @@
     display: block;
     width: 100%;
     height: 100%;
+    aspect-ratio: 4 / 5 !important;
     object-fit: cover;
     object-position: center 20%;
     transition: transform 0.5s ease;
@@ -178,12 +181,12 @@
 
 /* Meta text section below the 4:5 image */
 .showcase-card__meta {
-    padding: 1rem 1.25rem;
+    padding: clamp(0.75rem, 1vw, 1rem) clamp(0.85rem, 1.2vw, 1.25rem);
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.2rem;
     background: #121214;
-    min-height: 72px;
+    min-height: clamp(56px, 6.5vw, 72px);
     justify-content: center;
     position: relative;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -191,51 +194,27 @@
 }
 
 .showcase-card__type {
-    font-size: 11px;
-    letter-spacing: 0.15em;
+    font-size: clamp(9px, 0.85vw, 11px);
+    letter-spacing: 0.12em;
     color: #0490e9;
     text-transform: uppercase;
     font-weight: 700;
 }
 
 .showcase-card__title {
-    font-size: 1.15rem;
+    font-size: clamp(0.95rem, 1.15vw, 1.18rem);
     font-weight: 700;
     color: #f2f1eb;
     margin: 0;
-    letter-spacing: 0.02em;
-    line-height: 1.25;
-}
-
-/* For 2nd & 1st Year Cards (hide-meta-initially): identical 4:5 card dimensions, text slides up smoothly on hover */
-.team-member-card.hide-meta-initially {
-    position: relative;
-    overflow: hidden;
-}
-
-.team-member-card.hide-meta-initially .showcase-card__meta > * {
-    opacity: 0 !important;
-    transform: translateY(12px) !important;
-    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-
-.team-member-card.hide-meta-initially:hover .showcase-card__meta,
-.team-member-card-wrapper:hover .team-member-card.hide-meta-initially .showcase-card__meta {
-    background: #18181c;
-    border-top-color: rgba(4, 144, 233, 0.35);
-}
-
-.team-member-card.hide-meta-initially:hover .showcase-card__meta > *,
-.team-member-card-wrapper:hover .team-member-card.hide-meta-initially .showcase-card__meta > * {
-    opacity: 1 !important;
-    transform: translateY(0) !important;
+    letter-spacing: 0.01em;
+    line-height: 1.2;
 }
 
 .team-grid {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 2rem;
+    gap: clamp(1.25rem, 2.5vw, 2rem);
     width: 100%;
     max-width: 1300px;
     margin: 0 auto;
@@ -243,20 +222,15 @@
 
 /* Coordinators Level Accent & Custom Sizing */
 .team-grid--coordinators {
-    gap: 2.5rem;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
 }
 
 .team-grid--coordinators .team-member-card-wrapper {
-    width: clamp(240px, 22vw, 290px);
+    width: var(--dynamic-card-width, clamp(180px, 20vw, 260px));
 }
 
 .team-grid--coordinators .showcase-card__type {
     color: #ee074c;
-    font-size: 12px;
-}
-
-.team-grid--coordinators .showcase-card__title {
-    font-size: 1.35rem;
 }
 
 .team-grid--coordinators .team-member-card.showcase-card:hover {
@@ -264,33 +238,19 @@
     box-shadow: 0 16px 40px rgba(238, 7, 76, 0.25);
 }
 
-/* 3rd Year Level */
-.team-grid--3rd-year {
-    gap: 2rem;
-}
-
-/* 2nd Year Level (Hover Meta) */
-.team-grid--2nd-year {
-    gap: 1.75rem;
-}
-
+/* 2nd Year Level Accent */
 .team-grid--2nd-year .showcase-card__type {
     color: #ee074c;
-}
-
-/* 1st Year Level (Hover Meta) */
-.team-grid--1st-year {
-    gap: 1.5rem;
 }
 
 /* Responsive Overrides */
 @media (max-width: 768px) {
     .team-grid {
-        gap: 1.25rem;
+        gap: 1rem;
     }
     .team-member-card-wrapper,
     .team-grid--coordinators .team-member-card-wrapper {
-        width: clamp(150px, 42vw, 220px);
+        width: clamp(140px, 42vw, 185px) !important;
     }
     .about-intro h1 {
         font-size: 2.5rem;
