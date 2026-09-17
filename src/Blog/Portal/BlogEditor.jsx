@@ -16,8 +16,7 @@ import {
     blogByIdQuery, generateSlug, createBlogDoc
 } from "../lib/blogSanity";
 import {
-    STATUS, STATUS_LABELS, STATUS_COLORS, canPosterEdit,
-    MAX_FILE_SIZE, getFileIcon, formatFileSize
+    STATUS, STATUS_LABELS, canPosterEdit
 } from "../lib/blogHelpers";
 import { PortableTextRenderer } from "../PortableTextRenderer";
 import SlashMenu from "../components/SlashMenu";
@@ -157,12 +156,13 @@ const portableTextToTiptap = (blocks) => {
     return { type: "doc", content: content.length ? content : [{ type: "paragraph" }] };
 };
 
-// ─── Main Editorial Editor Component ──────────────────────────────────────────
+// ─── Main Editorial CMS Editor Component ──────────────────────────────────────
 
 const BlogEditor = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const containerRef = useRef();
+    const titleRef = useRef(null);
     const poster = getPoster();
     const isEditing = !!id;
 
@@ -171,8 +171,10 @@ const BlogEditor = () => {
     const [description, setDescription] = useState("");
     const [coverImage, setCoverImage] = useState(null);
     const [coverImagePreview, setCoverImagePreview] = useState(null);
+    const [coverAltText, setCoverAltText] = useState("");
+    const [isUploadingCover, setIsUploadingCover] = useState(false);
     const [attachments, setAttachments] = useState([]);
-    const [drawings, setDrawings] = useState([]); // List of embedded drawings
+    const [drawings, setDrawings] = useState([]);
     const [blogStatus, setBlogStatus] = useState(STATUS.DRAFT);
     const [blogId, setBlogId] = useState(id || null);
 
@@ -180,17 +182,27 @@ const BlogEditor = () => {
     const [showOutline, setShowOutline] = useState(true);
     const [showSettings, setShowSettings] = useState(false);
     const [showDrawingStudio, setShowDrawingStudio] = useState(false);
-    const [showShortcuts, setShowShortcuts] = useState(false);
+    const [isFocusMode, setIsFocusMode] = useState(false);
+    const [showAddBlockMenu, setShowAddBlockMenu] = useState(false);
+
+    // Settings Accordion states
+    const [openPublishing, setOpenPublishing] = useState(true);
+    const [openSeo, setOpenSeo] = useState(true);
+    const [openAdvanced, setOpenAdvanced] = useState(false);
 
     // Settings Panel Fields
     const [seoTitle, setSeoTitle] = useState("");
     const [metaDescription, setMetaDescription] = useState("");
     const [slugInput, setSlugInput] = useState("");
+    const [slugIsCustomized, setSlugIsCustomized] = useState(false);
     const [category, setCategory] = useState("Filmmaking");
-    const [tags, setTags] = useState("Cinematography, Production");
+    const [tagList, setTagList] = useState(["Cinematography", "Production"]);
+    const [newTagInput, setNewTagInput] = useState("");
 
-    // UI Feedback states
-    const [saveState, setSaveState] = useState("idle");
+    // UI Feedback & Save states
+    const [saveState, setSaveState] = useState("idle"); // idle, saving, saved, error
+    const [lastSavedAt, setLastSavedAt] = useState(null);
+    const [timeAgoStr, setTimeAgoStr] = useState("");
     const [isLoading, setIsLoading] = useState(isEditing);
     const [isPreview, setIsPreview] = useState(false);
     const [toast, setToast] = useState(null);
@@ -198,12 +210,38 @@ const BlogEditor = () => {
 
     // Slash menu trigger state
     const [slashPos, setSlashPos] = useState(null);
+    const [activeHeadingPos, setActiveHeadingPos] = useState(null);
 
     const WRITE_TOKEN = import.meta.env.VITE_SANITY_WRITE_TOKEN;
 
     useEffect(() => {
         if (!isLoggedIn()) navigate("/blog/login", { replace: true });
     }, [navigate]);
+
+    // Auto-resize title textarea to prevent scrollbars
+    useEffect(() => {
+        if (titleRef.current) {
+            titleRef.current.style.height = "auto";
+            titleRef.current.style.height = `${titleRef.current.scrollHeight}px`;
+        }
+    }, [title]);
+
+    // Live counter for "Saved X ago"
+    useEffect(() => {
+        if (!lastSavedAt) return;
+        const updateTimeStr = () => {
+            const diffSec = Math.floor((Date.now() - lastSavedAt) / 1000);
+            if (diffSec < 10) setTimeAgoStr("Saved just now");
+            else if (diffSec < 60) setTimeAgoStr(`Saved ${diffSec}s ago`);
+            else {
+                const min = Math.floor(diffSec / 60);
+                setTimeAgoStr(`Saved ${min}m ago`);
+            }
+        };
+        updateTimeStr();
+        const interval = setInterval(updateTimeStr, 5000);
+        return () => clearInterval(interval);
+    }, [lastSavedAt]);
 
     // TipTap Editor Configuration
     const editor = useEditor({
@@ -222,6 +260,15 @@ const BlogEditor = () => {
             const { selection } = editor.state;
             const { $from } = selection;
             const textBefore = $from.parent.textBetween(0, $from.parentOffset, null, " ");
+
+            // Track active heading
+            let currentHeadingPos = null;
+            editor.state.doc.descendants((node, pos) => {
+                if (node.type.name === "heading" && pos <= $from.pos) {
+                    currentHeadingPos = pos;
+                }
+            });
+            setActiveHeadingPos(currentHeadingPos);
 
             if (textBefore === "/") {
                 const domSelection = window.getSelection();
@@ -278,6 +325,7 @@ const BlogEditor = () => {
                 setBlogStatus(blog.status);
                 setBlogId(blog._id);
                 setSlugInput(blog.slug?.current || generateSlug(blog.title || ""));
+                if (blog.slug?.current) setSlugIsCustomized(true);
                 setSeoTitle(blog.title || "");
                 setMetaDescription(blog.description || "");
 
@@ -304,6 +352,37 @@ const BlogEditor = () => {
         return createBlogWriteClient(WRITE_TOKEN);
     };
 
+    const handleTitleChange = (e) => {
+        const val = e.target.value;
+        setTitle(val);
+        setHasUnsaved(true);
+        if (!slugIsCustomized) {
+            setSlugInput(generateSlug(val));
+        }
+        if (!seoTitle || seoTitle === title) setSeoTitle(val);
+    };
+
+    const handleSlugChange = (e) => {
+        setSlugInput(e.target.value);
+        setSlugIsCustomized(true);
+        setHasUnsaved(true);
+    };
+
+    const handleAddTag = (e) => {
+        if (e) e.preventDefault();
+        const val = newTagInput.trim();
+        if (val && !tagList.includes(val)) {
+            setTagList(prev => [...prev, val]);
+            setNewTagInput("");
+            setHasUnsaved(true);
+        }
+    };
+
+    const handleRemoveTag = (tagToRemove) => {
+        setTagList(prev => prev.filter(t => t !== tagToRemove));
+        setHasUnsaved(true);
+    };
+
     const handleSave = useCallback(async (submitAfter = false) => {
         if (!title.trim()) { showToast("Please add a title before saving.", "error"); return; }
 
@@ -311,11 +390,12 @@ const BlogEditor = () => {
         try {
             const client = getWriteClient();
             const portableContent = editor ? tiptapToPortableText(editor.getJSON()) : [];
+            const finalSlug = slugInput || generateSlug(title);
 
             if (!blogId) {
                 const doc = createBlogDoc({ title, description }, poster?.id);
                 doc.content = portableContent;
-                doc.slug = { _type: "slug", current: slugInput || generateSlug(title) };
+                doc.slug = { _type: "slug", current: finalSlug };
                 if (coverImage) doc.coverImage = { _type: "image", asset: { _type: "reference", _ref: coverImage } };
                 if (submitAfter) {
                     doc.status = STATUS.SUBMITTED;
@@ -326,6 +406,7 @@ const BlogEditor = () => {
                 setBlogId(created._id);
                 setHasUnsaved(false);
                 setSaveState("saved");
+                setLastSavedAt(Date.now());
 
                 if (submitAfter) {
                     showToast("Blog submitted for review! An admin will review and publish your story.");
@@ -349,7 +430,7 @@ const BlogEditor = () => {
                     title,
                     description,
                     content: portableContent,
-                    "slug.current": slugInput || generateSlug(title),
+                    "slug.current": finalSlug,
                 };
                 if (coverImage) patch.coverImage = { _type: "image", asset: { _type: "reference", _ref: coverImage } };
 
@@ -380,30 +461,49 @@ const BlogEditor = () => {
 
             setHasUnsaved(false);
             setSaveState("saved");
-            setTimeout(() => setSaveState("idle"), 3000);
+            setLastSavedAt(Date.now());
+            setTimeout(() => setSaveState(prev => prev === "saved" ? "idle" : prev), 3000);
         } catch (err) {
             console.error(err);
             showToast("Save failed: " + err.message, "error");
             setSaveState("error");
-            setTimeout(() => setSaveState("idle"), 3000);
         }
     }, [title, description, coverImage, editor, blogId, poster, slugInput]);
 
+    // Keyboard Shortcuts
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+                e.preventDefault();
+                handleSave(false);
+            } else if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+                e.preventDefault();
+                handleSave(true);
+            } else if (e.key === "Escape") {
+                if (isFocusMode) setIsFocusMode(false);
+                if (showDrawingStudio) setShowDrawingStudio(false);
+                if (showAddBlockMenu) setShowAddBlockMenu(false);
+            }
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [handleSave, isFocusMode, showDrawingStudio, showAddBlockMenu]);
+
     // Headings Outline Extraction
-    const getHeadings = () => {
+    const getHeadings = useCallback(() => {
         if (!editor) return [];
         const headings = [];
         editor.state.doc.descendants((node, pos) => {
             if (node.type.name === "heading") {
                 headings.push({
-                    text: node.textContent,
-                    level: node.attrs.level,
+                    text: node.textContent || "Untitled Section",
+                    level: node.attrs.level || 2,
                     pos,
                 });
             }
         });
         return headings;
-    };
+    }, [editor]);
 
     const scrollToHeading = (pos) => {
         if (!editor) return;
@@ -415,10 +515,28 @@ const BlogEditor = () => {
         }
     };
 
-    // Calculate word count & reading time
+    // Word count & reading time
     const textContent = editor ? editor.getText() : "";
     const wordCount = textContent.trim() ? textContent.trim().split(/\s+/).length : 0;
     const readingTime = Math.max(1, Math.ceil(wordCount / 200));
+
+    // Cover Image Upload Handler
+    const handleCoverFileUpload = async (file) => {
+        if (!file) return;
+        setCoverImagePreview(URL.createObjectURL(file));
+        setIsUploadingCover(true);
+        try {
+            const client = getWriteClient();
+            const asset = await client.assets.upload("image", file, { filename: file.name });
+            setCoverImage(asset._id);
+            setHasUnsaved(true);
+            showToast("Cover image uploaded.");
+        } catch (err) {
+            showToast("Cover upload failed: " + err.message, "error");
+        } finally {
+            setIsUploadingCover(false);
+        }
+    };
 
     const handleSaveDrawingBlock = ({ dataUrl }) => {
         setDrawings(prev => [...prev, { id: Date.now(), dataUrl, caption: "" }]);
@@ -426,42 +544,92 @@ const BlogEditor = () => {
         showToast("Drawing added to story.");
     };
 
+    // Insert Block options for + Add Block button
+    const insertBlock = (type) => {
+        if (!editor) return;
+        setShowAddBlockMenu(false);
+
+        switch (type) {
+            case "h1": editor.chain().focus().toggleHeading({ level: 1 }).run(); break;
+            case "h2": editor.chain().focus().toggleHeading({ level: 2 }).run(); break;
+            case "h3": editor.chain().focus().toggleHeading({ level: 3 }).run(); break;
+            case "quote": editor.chain().focus().toggleBlockquote().run(); break;
+            case "code": editor.chain().focus().toggleCodeBlock().run(); break;
+            case "bullet": editor.chain().focus().toggleBulletList().run(); break;
+            case "ordered": editor.chain().focus().toggleOrderedList().run(); break;
+            case "hr": editor.chain().focus().setHorizontalRule().run(); break;
+            case "drawing": setShowDrawingStudio(true); break;
+            case "image": {
+                const url = prompt("Enter image URL:");
+                if (url) editor.chain().focus().setImage({ src: url }).run();
+                break;
+            }
+            case "youtube": {
+                const url = prompt("Enter YouTube video URL:");
+                if (url) editor.chain().focus().setYoutubeVideo({ src: url }).run();
+                break;
+            }
+            default: break;
+        }
+    };
+
     return (
-        <div ref={containerRef} className="editorial-editor-page">
+        <div ref={containerRef} className={`editorial-editor-page ${isFocusMode ? "is-focus-mode" : ""}`}>
             {toast && <div className={`editor-toast editor-toast--${toast.type}`}>{toast.msg}</div>}
 
             {/* Top Navigation Bar */}
             <header className="editorial-navbar">
                 <div className="editorial-navbar__left">
                     <button type="button" className="editorial-btn editorial-btn--ghost" onClick={() => navigate("/blog/dashboard")}>
-                        ← Back to Blogs
+                        ← Blogs
                     </button>
                     <div className="editorial-status-pill" data-state={saveState}>
                         <span className="editorial-status-dot" />
-                        <span>{saveState === "saving" ? "Saving..." : saveState === "saved" ? "Saved ✓" : hasUnsaved ? "Unsaved changes" : "Draft"}</span>
+                        <span>
+                            {saveState === "saving"
+                                ? "Saving..."
+                                : saveState === "error"
+                                ? "Save failed"
+                                : hasUnsaved
+                                ? "Unsaved changes"
+                                : timeAgoStr || "Draft"}
+                        </span>
                     </div>
                 </div>
 
                 <div className="editorial-navbar__center">
                     <button
                         type="button"
-                        className={`editorial-nav-tab ${showOutline ? "active" : ""}`}
-                        onClick={() => setShowOutline(o => !o)}
-                        title="Toggle Outline Panel"
+                        className={`editorial-nav-tab ${isFocusMode ? "active" : ""}`}
+                        onClick={() => setIsFocusMode(f => !f)}
+                        title="Toggle Focus Mode (Esc to exit)"
                     >
-                        ☰ Outline
-                    </button>
-                    <button
-                        type="button"
-                        className={`editorial-nav-tab ${showSettings ? "active" : ""}`}
-                        onClick={() => setShowSettings(s => !s)}
-                        title="Toggle Article Settings"
-                    >
-                        ⚙ Settings
+                        {isFocusMode ? "👁 Exit Focus Mode" : "👁 Focus Mode"}
                     </button>
                 </div>
 
                 <div className="editorial-navbar__right">
+                    {!isFocusMode && (
+                        <>
+                            <button
+                                type="button"
+                                className={`editorial-nav-tab ${showOutline ? "active" : ""}`}
+                                onClick={() => setShowOutline(o => !o)}
+                                title="Toggle Article Outline"
+                            >
+                                ☰ Outline
+                            </button>
+                            <button
+                                type="button"
+                                className={`editorial-nav-tab ${showSettings ? "active" : ""}`}
+                                onClick={() => setShowSettings(s => !s)}
+                                title="Toggle Settings Drawer"
+                            >
+                                ⚙ Settings
+                            </button>
+                        </>
+                    )}
+
                     <button
                         type="button"
                         className={`editorial-btn ${isPreview ? "editorial-btn--active" : "editorial-btn--ghost"}`}
@@ -475,7 +643,7 @@ const BlogEditor = () => {
                         onClick={() => handleSave(false)}
                         disabled={saveState === "saving"}
                     >
-                        Save Draft
+                        {saveState === "saving" ? "Saving..." : "Save"}
                     </button>
                     <button
                         type="button"
@@ -490,29 +658,41 @@ const BlogEditor = () => {
                 </div>
             </header>
 
-            {/* Main Editorial Layout */}
+            {/* Main Editorial Workspace */}
             <div className="editorial-workspace">
                 {/* Left Headings Outline Drawer */}
-                {showOutline && (
+                {!isFocusMode && showOutline && (
                     <aside className="editorial-outline-panel">
                         <div className="editorial-panel-header">
-                            <h4>Article Outline</h4>
-                            <span className="editorial-count-badge">{getHeadings().length} sections</span>
+                            <div>
+                                <h4>ARTICLE OUTLINE</h4>
+                                <span className="editorial-count-badge">{getHeadings().length} {getHeadings().length === 1 ? "SECTION" : "SECTIONS"}</span>
+                            </div>
+                            <button type="button" onClick={() => setShowOutline(false)} className="panel-close-btn">✕</button>
                         </div>
 
                         <div className="editorial-outline-list">
                             {getHeadings().length === 0 ? (
-                                <p className="editorial-outline-empty">Add H1, H2, or H3 headings to populate table of contents.</p>
+                                <div className="editorial-outline-empty">
+                                    <p>Your outline will appear here as you structure the article.</p>
+                                    <button
+                                        type="button"
+                                        className="outline-add-heading-btn"
+                                        onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
+                                    >
+                                        + Add heading
+                                    </button>
+                                </div>
                             ) : (
                                 getHeadings().map((h, i) => (
                                     <button
                                         key={i}
                                         type="button"
-                                        className={`outline-item level-${h.level}`}
+                                        className={`outline-item level-${h.level} ${activeHeadingPos === h.pos ? "is-active" : ""}`}
                                         onClick={() => scrollToHeading(h.pos)}
                                     >
                                         <span className="outline-item__tag">H{h.level}</span>
-                                        <span className="outline-item__text">{h.text || "Untitled Section"}</span>
+                                        <span className="outline-item__text">{String(i + 1).padStart(2, "0")} {h.text}</span>
                                     </button>
                                 ))
                             )}
@@ -535,7 +715,7 @@ const BlogEditor = () => {
 
                             {coverImagePreview && (
                                 <div className="editorial-preview-cover">
-                                    <img src={coverImagePreview} alt="Cover" />
+                                    <img src={coverImagePreview} alt={coverAltText || "Cover"} />
                                 </div>
                             )}
 
@@ -550,10 +730,11 @@ const BlogEditor = () => {
                         <div className="editorial-canvas">
                             {/* Title Field */}
                             <textarea
+                                ref={titleRef}
                                 className="editorial-title-input"
-                                placeholder="Title..."
+                                placeholder="Give your article a title..."
                                 value={title}
-                                onChange={e => { setTitle(e.target.value); setHasUnsaved(true); }}
+                                onChange={handleTitleChange}
                                 rows={1}
                             />
 
@@ -561,7 +742,7 @@ const BlogEditor = () => {
                             <input
                                 type="text"
                                 className="editorial-subtitle-input"
-                                placeholder="Add a subtitle or excerpt..."
+                                placeholder="Add a short subtitle or excerpt..."
                                 value={description}
                                 onChange={e => { setDescription(e.target.value); setHasUnsaved(true); }}
                             />
@@ -570,51 +751,55 @@ const BlogEditor = () => {
                             <div className="editorial-cover-zone">
                                 {coverImagePreview ? (
                                     <div className="editorial-cover-preview">
-                                        <img src={coverImagePreview} alt="Cover" />
-                                        <button
-                                            type="button"
-                                            onClick={() => { setCoverImage(null); setCoverImagePreview(null); setHasUnsaved(true); }}
-                                            className="editorial-cover-remove"
-                                        >
-                                            ✕ Remove Cover
-                                        </button>
+                                        <img src={coverImagePreview} alt={coverAltText || "Cover"} />
+                                        <div className="editorial-cover-actions">
+                                            <input
+                                                type="text"
+                                                className="cover-alt-input"
+                                                placeholder="Alt text for screen readers..."
+                                                value={coverAltText}
+                                                onChange={e => setCoverAltText(e.target.value)}
+                                            />
+                                            <label className="cover-action-btn">
+                                                Replace
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    style={{ display: "none" }}
+                                                    onChange={e => handleCoverFileUpload(e.target.files?.[0])}
+                                                />
+                                            </label>
+                                            <button
+                                                type="button"
+                                                onClick={() => { setCoverImage(null); setCoverImagePreview(null); setHasUnsaved(true); }}
+                                                className="cover-action-btn cover-action-btn--danger"
+                                            >
+                                                Remove
+                                            </button>
+                                        </div>
                                     </div>
                                 ) : (
-                                    <label className="editorial-cover-dropzone">
+                                    <label
+                                        className="editorial-cover-dropzone"
+                                        onDragOver={e => e.preventDefault()}
+                                        onDrop={e => {
+                                            e.preventDefault();
+                                            handleCoverFileUpload(e.dataTransfer.files?.[0]);
+                                        }}
+                                    >
                                         <input
                                             type="file"
                                             accept="image/*"
-                                            onChange={async (e) => {
-                                                const file = e.target.files?.[0];
-                                                if (!file) return;
-                                                setCoverImagePreview(URL.createObjectURL(file));
-                                                try {
-                                                    const client = getWriteClient();
-                                                    const asset = await client.assets.upload("image", file, { filename: file.name });
-                                                    setCoverImage(asset._id);
-                                                    setHasUnsaved(true);
-                                                } catch (err) {
-                                                    showToast("Cover upload failed: " + err.message, "error");
-                                                }
-                                            }}
+                                            onChange={e => handleCoverFileUpload(e.target.files?.[0])}
                                         />
-                                        <span>📷 Add Cover Image</span>
+                                        <span className="dropzone-icon">+</span>
+                                        <strong>Add cover image</strong>
+                                        <span className="dropzone-sub">{isUploadingCover ? "Uploading image..." : "Drag & drop or choose from device"}</span>
                                     </label>
                                 )}
                             </div>
 
-                            {/* Canvas Toolbar Quick Access */}
-                            <div className="editorial-quick-tools">
-                                <button type="button" onClick={() => setShowDrawingStudio(true)} className="quick-tool-btn">
-                                    🎨 Open Drawing Studio
-                                </button>
-                                <button type="button" onClick={() => editor?.chain().focus().toggleBlockquote().run()} className="quick-tool-btn">
-                                    ❝ Quote
-                                </button>
-                                <button type="button" onClick={() => editor?.chain().focus().toggleCodeBlock().run()} className="quick-tool-btn">
-                                    {"</> Code"}
-                                </button>
-                            </div>
+                            <hr className="editorial-divider" />
 
                             {/* Contextual Floating Selection Toolbar */}
                             <BubbleToolbar editor={editor} />
@@ -632,6 +817,32 @@ const BlogEditor = () => {
                             {/* TipTap Editor Body */}
                             <div className="editorial-editor-body">
                                 <EditorContent editor={editor} className="editorial-tiptap-content" />
+                            </div>
+
+                            {/* Add Block Inserter Menu Trigger */}
+                            <div className="add-block-container">
+                                <button
+                                    type="button"
+                                    className="add-block-trigger"
+                                    onClick={() => setShowAddBlockMenu(b => !b)}
+                                >
+                                    + Add block
+                                </button>
+                                {showAddBlockMenu && (
+                                    <div className="add-block-menu">
+                                        <button type="button" onClick={() => insertBlock("h1")}>H1 Heading 1</button>
+                                        <button type="button" onClick={() => insertBlock("h2")}>H2 Heading 2</button>
+                                        <button type="button" onClick={() => insertBlock("h3")}>H3 Heading 3</button>
+                                        <button type="button" onClick={() => insertBlock("quote")}>❝ Quote</button>
+                                        <button type="button" onClick={() => insertBlock("code")}>{"</> Code Block"}</button>
+                                        <button type="button" onClick={() => insertBlock("bullet")}>• Bullet List</button>
+                                        <button type="button" onClick={() => insertBlock("ordered")}>1. Numbered List</button>
+                                        <button type="button" onClick={() => insertBlock("drawing")}>🎨 Drawing Studio</button>
+                                        <button type="button" onClick={() => insertBlock("image")}>🖼️ Image</button>
+                                        <button type="button" onClick={() => insertBlock("youtube")}>🎥 YouTube Video</button>
+                                        <button type="button" onClick={() => insertBlock("hr")}>─ Divider</button>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Inline Drawing Blocks Rendered inside Story Canvas */}
@@ -653,80 +864,187 @@ const BlogEditor = () => {
                 </main>
 
                 {/* Right Settings & Metadata Drawer */}
-                {showSettings && (
+                {!isFocusMode && showSettings && (
                     <aside className="editorial-settings-panel">
                         <div className="editorial-panel-header">
-                            <h4>Article Settings & SEO</h4>
+                            <h4>ARTICLE SETTINGS</h4>
                             <button type="button" onClick={() => setShowSettings(false)} className="panel-close-btn">✕</button>
                         </div>
 
                         <div className="editorial-settings-form">
-                            <div className="settings-field">
-                                <label>SEO Title ({seoTitle.length}/60)</label>
-                                <input
-                                    type="text"
-                                    value={seoTitle}
-                                    onChange={e => setSeoTitle(e.target.value)}
-                                    placeholder="Meta title..."
-                                />
-                            </div>
+                            {/* Publishing Accordion */}
+                            <div className="settings-accordion">
+                                <button
+                                    type="button"
+                                    className="accordion-header"
+                                    onClick={() => setOpenPublishing(p => !p)}
+                                >
+                                    <span>{openPublishing ? "▾" : "▸"} Publishing</span>
+                                </button>
+                                {openPublishing && (
+                                    <div className="accordion-content">
+                                        <div className="settings-field">
+                                            <label>Category</label>
+                                            <select value={category} onChange={e => { setCategory(e.target.value); setHasUnsaved(true); }}>
+                                                <option value="Filmmaking">Filmmaking</option>
+                                                <option value="Cinematography">Cinematography</option>
+                                                <option value="Color Grading">Color Grading</option>
+                                                <option value="Directing">Directing</option>
+                                                <option value="Behind The Scenes">Behind The Scenes</option>
+                                            </select>
+                                        </div>
 
-                            <div className="settings-field">
-                                <label>Meta Description ({metaDescription.length}/160)</label>
-                                <textarea
-                                    rows={3}
-                                    value={metaDescription}
-                                    onChange={e => setMetaDescription(e.target.value)}
-                                    placeholder="Search engine excerpt..."
-                                />
-                            </div>
+                                        <div className="settings-field">
+                                            <label>Tags</label>
+                                            <div className="tag-chips-wrapper">
+                                                {tagList.map(tag => (
+                                                    <span key={tag} className="tag-chip">
+                                                        {tag}
+                                                        <button type="button" onClick={() => handleRemoveTag(tag)} className="tag-chip__remove">×</button>
+                                                    </span>
+                                                ))}
+                                            </div>
+                                            <form onSubmit={handleAddTag} className="add-tag-row">
+                                                <input
+                                                    type="text"
+                                                    value={newTagInput}
+                                                    onChange={e => setNewTagInput(e.target.value)}
+                                                    placeholder="Add a tag..."
+                                                />
+                                                <button type="submit" className="add-tag-btn">+ Add</button>
+                                            </form>
+                                        </div>
 
-                            <div className="settings-field">
-                                <label>URL Slug</label>
-                                <input
-                                    type="text"
-                                    value={slugInput}
-                                    onChange={e => setSlugInput(e.target.value)}
-                                    placeholder="url-slug..."
-                                />
-                                <span className="slug-preview-path">/blog/{slugInput || generateSlug(title)}</span>
-                            </div>
-
-                            <div className="settings-field">
-                                <label>Category</label>
-                                <select value={category} onChange={e => setCategory(e.target.value)}>
-                                    <option value="Filmmaking">Filmmaking</option>
-                                    <option value="Cinematography">Cinematography</option>
-                                    <option value="Color Grading">Color Grading</option>
-                                    <option value="Directing">Directing</option>
-                                    <option value="Behind The Scenes">Behind The Scenes</option>
-                                </select>
-                            </div>
-
-                            <div className="settings-field">
-                                <label>Tags (comma separated)</label>
-                                <input
-                                    type="text"
-                                    value={tags}
-                                    onChange={e => setTags(e.target.value)}
-                                    placeholder="Lighting, Lenses, RAW..."
-                                />
-                            </div>
-
-                            <div className="settings-field">
-                                <label>Author</label>
-                                <div className="author-card">
-                                    <div className="author-avatar">{poster?.name?.[0] || "?"}</div>
-                                    <div>
-                                        <strong>{poster?.name}</strong>
-                                        <span>@{poster?.username}</span>
+                                        <div className="settings-field">
+                                            <label>Author</label>
+                                            <div className="author-card">
+                                                <div className="author-avatar">{poster?.name?.[0] || "?"}</div>
+                                                <div className="author-details">
+                                                    <strong>{poster?.name}</strong>
+                                                    <span>@{poster?.username}</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
+                                )}
+                            </div>
+
+                            {/* SEO Accordion */}
+                            <div className="settings-accordion">
+                                <button
+                                    type="button"
+                                    className="accordion-header"
+                                    onClick={() => setOpenSeo(s => !s)}
+                                >
+                                    <span>{openSeo ? "▾" : "▸"} SEO</span>
+                                </button>
+                                {openSeo && (
+                                    <div className="accordion-content">
+                                        <div className="settings-field">
+                                            <div className="field-label-row">
+                                                <label>SEO Title</label>
+                                                <span className={`char-counter ${seoTitle.length > 60 ? "counter-over" : ""}`}>
+                                                    {seoTitle.length} / 60
+                                                </span>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                value={seoTitle}
+                                                onChange={e => { setSeoTitle(e.target.value); setHasUnsaved(true); }}
+                                                placeholder="Meta title..."
+                                            />
+                                            {seoTitle.length > 0 && (
+                                                <span className={`feedback-hint ${seoTitle.length > 60 ? "hint-error" : "hint-good"}`}>
+                                                    {seoTitle.length <= 60 ? "Good length" : "Too long"}
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        <div className="settings-field">
+                                            <div className="field-label-row">
+                                                <label>Meta Description</label>
+                                                <span className={`char-counter ${metaDescription.length > 160 ? "counter-over" : ""}`}>
+                                                    {metaDescription.length} / 160
+                                                </span>
+                                            </div>
+                                            <textarea
+                                                rows={3}
+                                                value={metaDescription}
+                                                onChange={e => { setMetaDescription(e.target.value); setHasUnsaved(true); }}
+                                                placeholder="Search engine excerpt..."
+                                            />
+                                            {metaDescription.length > 0 && (
+                                                <span className={`feedback-hint ${metaDescription.length > 160 ? "hint-error" : "hint-good"}`}>
+                                                    {metaDescription.length <= 160 ? "Good length" : "Too long"}
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        <div className="settings-field">
+                                            <label>URL Slug</label>
+                                            <div className="slug-input-wrapper">
+                                                <span className="slug-prefix">/blog/</span>
+                                                <input
+                                                    type="text"
+                                                    value={slugInput}
+                                                    onChange={handleSlugChange}
+                                                    placeholder="your-slug"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Advanced Accordion */}
+                            <div className="settings-accordion">
+                                <button
+                                    type="button"
+                                    className="accordion-header"
+                                    onClick={() => setOpenAdvanced(a => !a)}
+                                >
+                                    <span>{openAdvanced ? "▾" : "▸"} Advanced</span>
+                                </button>
+                                {openAdvanced && (
+                                    <div className="accordion-content">
+                                        <div className="settings-field">
+                                            <label>Embedded Drawing Studio</label>
+                                            <button
+                                                type="button"
+                                                className="editorial-btn editorial-btn--secondary"
+                                                onClick={() => setShowDrawingStudio(true)}
+                                                style={{ width: "100%" }}
+                                            >
+                                                🎨 Launch Studio
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </aside>
                 )}
             </div>
+
+            {/* Bottom Article Status & Metrics Bar */}
+            <footer className="editorial-status-bar">
+                <div className="status-bar__metrics">
+                    <span><strong>{wordCount}</strong> words</span>
+                    <span className="status-bar__dot">•</span>
+                    <span><strong>{readingTime}</strong> min read</span>
+                </div>
+                <div className="status-bar__save">
+                    <span>
+                        {saveState === "saving"
+                            ? "Saving..."
+                            : saveState === "error"
+                            ? "Save failed"
+                            : hasUnsaved
+                            ? "Unsaved changes"
+                            : timeAgoStr || "Saved"}
+                    </span>
+                </div>
+            </footer>
 
             {/* Embedded Canvas Drawing Modal */}
             {showDrawingStudio && (
