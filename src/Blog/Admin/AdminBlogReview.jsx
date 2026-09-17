@@ -229,33 +229,33 @@ const AdminBlogReview = () => {
 
                     {/* Review Panel */}
                     <aside style={{ position: "sticky", top: "2rem" }}>
-                        <div style={{ background: "#0a0d12", border: "1px solid rgba(242,241,235,0.1)", padding: "1.5rem" }}>
-                            <h2 style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "11px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "#526168", margin: "0 0 1.25rem" }}>
+                        <div style={{ background: "#141414", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "6px", padding: "1.5rem" }}>
+                            <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: "11px", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#a1a1aa", margin: "0 0 1.25rem" }}>
                                 Review Panel
                             </h2>
 
                             {/* Blog Info */}
-                            <div style={{ marginBottom: "1.25rem", paddingBottom: "1.25rem", borderBottom: "1px solid rgba(242,241,235,0.07)" }}>
-                                <table style={{ width: "100%", fontSize: "12px", borderCollapse: "collapse" }}>
+                            <div style={{ marginBottom: "1.25rem", paddingBottom: "1.25rem", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+                                <table style={{ width: "100%", fontSize: "12px", borderCollapse: "collapse", fontFamily: "'Inter', sans-serif" }}>
                                     <tbody>
                                         <tr>
-                                            <td style={{ color: "#526168", paddingBottom: "8px", width: "100px" }}>Status</td>
+                                            <td style={{ color: "#a1a1aa", paddingBottom: "8px", width: "100px" }}>Status</td>
                                             <td><StatusBadge status={blog.status} /></td>
                                         </tr>
                                         <tr>
-                                            <td style={{ color: "#526168", paddingBottom: "8px" }}>Author</td>
-                                            <td style={{ color: "#f2f1eb" }}>{blog.author?.name}</td>
+                                            <td style={{ color: "#a1a1aa", paddingBottom: "8px" }}>Author</td>
+                                            <td style={{ color: "#ededed", fontWeight: 500 }}>{blog.author?.name}</td>
                                         </tr>
                                         {blog.submittedAt && (
                                             <tr>
-                                                <td style={{ color: "#526168", paddingBottom: "8px" }}>Submitted</td>
-                                                <td style={{ color: "#d4cfc9" }}>{formatDateTime(blog.submittedAt)}</td>
+                                                <td style={{ color: "#a1a1aa", paddingBottom: "8px" }}>Submitted</td>
+                                                <td style={{ color: "#a1a1aa" }}>{formatDateTime(blog.submittedAt)}</td>
                                             </tr>
                                         )}
                                         {blog.approvedAt && (
                                             <tr>
-                                                <td style={{ color: "#526168", paddingBottom: "8px" }}>Approved</td>
-                                                <td style={{ color: "#d4cfc9" }}>{formatDateTime(blog.approvedAt)}</td>
+                                                <td style={{ color: "#a1a1aa", paddingBottom: "8px" }}>Approved</td>
+                                                <td style={{ color: "#a1a1aa" }}>{formatDateTime(blog.approvedAt)}</td>
                                             </tr>
                                         )}
                                     </tbody>
@@ -264,15 +264,15 @@ const AdminBlogReview = () => {
 
                             {/* Rejection Message */}
                             {(blog.status === "submitted" || blog.status === "under_review" || blog.status === "approved" || blog.status === "rejected") && (
-                                <div style={{ marginBottom: "1.25rem", paddingBottom: "1.25rem", borderBottom: "1px solid rgba(242,241,235,0.07)" }}>
-                                    <label style={{ display: "block", fontSize: "11px", fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "#9ba4a7", marginBottom: "8px" }}>
+                                <div style={{ marginBottom: "1.25rem", paddingBottom: "1.25rem", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+                                    <label style={{ display: "block", fontSize: "11px", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#a1a1aa", marginBottom: "8px", fontFamily: "'Inter', sans-serif" }}>
                                         {blog.status === "rejected" ? "Previous Rejection Reason" : "Rejection Reason (if rejecting)"}
                                     </label>
                                     <textarea
                                         style={{
-                                            width: "100%", background: "#080a0d",
-                                            border: reviewError ? "1px solid #e05c6a" : "1px solid rgba(242,241,235,0.12)",
-                                            color: "#f2f1eb", fontFamily: "'DM Sans', sans-serif",
+                                            width: "100%", background: "#09090b",
+                                            border: reviewError ? "1px solid #f87171" : "1px solid rgba(255,255,255,0.12)",
+                                            color: "#ffffff", fontFamily: "'Inter', sans-serif", borderRadius: "6px",
                                             fontSize: "13px", padding: "10px 12px", outline: "none",
                                             resize: "vertical", minHeight: "80px", boxSizing: "border-box", lineHeight: 1.6
                                         }}
@@ -281,7 +281,7 @@ const AdminBlogReview = () => {
                                         onChange={e => { setReviewMessage(e.target.value); setReviewError(""); }}
                                     />
                                     {reviewError && (
-                                        <p style={{ color: "#e05c6a", fontSize: "12px", margin: "4px 0 0" }}>{reviewError}</p>
+                                        <p style={{ color: "#f87171", fontSize: "12px", margin: "4px 0 0", fontFamily: "'Inter', sans-serif" }}>{reviewError}</p>
                                     )}
                                 </div>
                             )}
@@ -311,7 +311,7 @@ const AdminBlogReview = () => {
                                 {blog.status === STATUS.APPROVED && (
                                     <button
                                         className="admin-btn admin-btn--primary"
-                                        style={{ width: "100%", padding: "10px", justifyContent: "center", background: "rgba(255,120,0,0.1)" }}
+                                        style={{ width: "100%", padding: "10px", justifyContent: "center" }}
                                         onClick={handlePublish}
                                         disabled={isSubmitting}
                                     >

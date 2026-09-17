@@ -31,6 +31,12 @@ const VideoAdmin = () => {
     const [bgVideoFile, setBgVideoFile] = useState(null);
     const [bgStatus, setBgStatus] = useState("");
 
+    const handleSignOut = () => {
+        sessionStorage.removeItem("gallery-admin-token");
+        setToken("");
+        setStatus("Signed out.");
+    };
+
     const handleBgFile = (e) => {
         if (e.target.files && e.target.files.length > 0) {
             setBgVideoFile(e.target.files[0]);
@@ -41,7 +47,7 @@ const VideoAdmin = () => {
         e.preventDefault();
         if (!bgVideoFile) { setBgStatus("Choose an MP4 file first."); return; }
         setIsBusy(true);
-        setBgStatus("Uploading background video to Sanity...");
+        setBgStatus("Uploading background video...");
         try {
             const client = getWriteClient();
             const asset = await client.assets.upload("file", bgVideoFile, { filename: bgVideoFile.name });
@@ -77,7 +83,7 @@ const VideoAdmin = () => {
 
     const getWriteClient = () => {
         const client = createSanityWriteClient(token.trim());
-        if (!client) throw new Error("Enter a valid Sanity write token.");
+        if (!client) throw new Error("Enter a valid write token.");
         return client;
     };
 
@@ -230,10 +236,17 @@ const VideoAdmin = () => {
         <div className="video-admin-container">
             <header className="admin-header">
                 <h2>Video Thumbnails Admin</h2>
-                <form onSubmit={handleToken} className="token-form">
-                    <input type="password" value={token} onChange={(e) => setToken(e.target.value)} placeholder="Sanity Write Token" />
-                    <button type="submit">Save Token</button>
-                </form>
+                <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                    <form onSubmit={handleToken} className="token-form">
+                        <input type="password" value={token} onChange={(e) => setToken(e.target.value)} placeholder="Token" />
+                        <button type="submit">Save Token</button>
+                    </form>
+                    {token && (
+                        <button type="button" className="signout-btn" onClick={handleSignOut} style={{ padding: "8px 14px", background: "var(--surface-raised)", color: "var(--error)", border: "1px solid var(--error-subtle)", borderRadius: "8px", cursor: "pointer" }}>
+                            Sign Out
+                        </button>
+                    )}
+                </div>
             </header>
 
             <main className="admin-main">

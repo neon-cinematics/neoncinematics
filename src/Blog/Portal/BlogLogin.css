@@ -2,11 +2,11 @@
 
 .blog-login-page {
     min-height: 100vh;
-    background: #080a0d;
+    background: var(--background);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     padding: 2rem;
     position: relative;
     overflow: hidden;
@@ -16,21 +16,22 @@
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(ellipse 60% 50% at 50% -10%, rgba(0, 180, 255, 0.06) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 30% at 80% 100%, rgba(125, 229, 210, 0.04) 0%, transparent 70%);
+        radial-gradient(ellipse 60% 50% at 50% -10%, rgba(165, 180, 252, 0.05) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 80% 100%, rgba(255, 255, 255, 0.02) 0%, transparent 70%);
     pointer-events: none;
 }
 
 /* ─── Login Card ────────────────────────────────────────────────────────────── */
 
 .blog-login__card {
-    background: #0a0d12;
-    border: 1px solid rgba(242, 241, 235, 0.1);
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
     padding: 3rem 3.5rem;
     width: 100%;
     max-width: 440px;
     position: relative;
     z-index: 1;
+    border-radius: 12px;
 }
 
 /* ─── Brand ─────────────────────────────────────────────────────────────────── */
@@ -42,24 +43,23 @@
 
 .blog-login__brand-mark {
     font-size: 1.8rem;
-    font-style: italic;
-    font-weight: 700;
-    color: #f2f1eb;
-    letter-spacing: 2px;
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.15));
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
 }
 
 .blog-login__brand-sub {
     font-size: 10px;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    color: #7de5d2;
+    color: var(--text-secondary);
     margin-top: 4px;
+    font-weight: 600;
 }
 
 .blog-login__divider {
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(242, 241, 235, 0.15), transparent);
+    background: var(--border-subtle);
     margin-bottom: 2rem;
 }
 
@@ -67,10 +67,10 @@
 
 .blog-login__title {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    font-size: 2.2rem;
+    font-size: 2rem;
     font-weight: 800;
     letter-spacing: -0.02em;
-    color: #f2f1eb;
+    color: var(--text-primary);
     margin: 0 0 0.5rem;
     line-height: 1.1;
 }
@@ -78,7 +78,7 @@
 .blog-login__subtitle {
     font-family: 'Merriweather', Georgia, serif;
     font-size: 13px;
-    color: #9ba4a7;
+    color: var(--text-secondary);
     margin: 0 0 2rem;
     line-height: 1.6;
 }
@@ -102,28 +102,42 @@
     font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: #9ba4a7;
+    color: var(--text-secondary);
+    font-family: 'Inter', system-ui, sans-serif;
 }
 
 .blog-login__field input {
-    background: #080a0d;
-    border: 1px solid rgba(242, 241, 235, 0.15);
-    color: #f2f1eb;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
+    background: var(--surface-raised);
+    border: 1px solid var(--border-default);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 13px;
     padding: 12px 14px;
+    border-radius: 8px;
     outline: none;
-    transition: border-color 0.25s ease;
+    transition: all 0.18s ease;
     width: 100%;
     box-sizing: border-box;
 }
 
+.blog-login__field input[type="password"] {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    letter-spacing: 1px;
+}
+
 .blog-login__field input::placeholder {
-    color: #3a4550;
+    color: var(--text-disabled);
+}
+
+.blog-login__field input:hover {
+    background: var(--surface-hover);
+    border-color: var(--border-strong);
 }
 
 .blog-login__field input:focus {
-    border-color: rgba(125, 229, 210, 0.5);
+    background: var(--surface-raised);
+    border-color: var(--border-strong);
+    box-shadow: 0 0 0 3px var(--accent-subtle), 0 0 0 1px var(--accent);
 }
 
 .blog-login__field input:disabled {
@@ -146,19 +160,19 @@
     transform: translateY(-50%);
     background: transparent;
     border: none;
-    color: #526168;
-    font-family: 'DM Sans', sans-serif;
+    color: var(--text-muted);
+    font-family: 'Inter', system-ui, sans-serif;
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
     cursor: pointer;
     padding: 4px;
-    transition: color 0.2s;
+    transition: color 0.18s ease;
 }
 
 .blog-login__toggle-pw:hover {
-    color: #7de5d2;
+    color: var(--text-primary);
 }
 
 /* ─── Error ─────────────────────────────────────────────────────────────────── */
@@ -168,11 +182,13 @@
     align-items: flex-start;
     gap: 0.5rem;
     padding: 10px 14px;
-    background: rgba(224, 92, 106, 0.08);
-    border: 1px solid rgba(224, 92, 106, 0.3);
-    color: #e05c6a;
+    background: var(--surface);
+    border: 1px solid var(--error);
+    color: var(--error);
     font-size: 13px;
     line-height: 1.4;
+    border-radius: 8px;
+    font-family: 'Inter', system-ui, sans-serif;
 }
 
 .blog-login__error span:first-child {
@@ -183,31 +199,35 @@
 /* ─── Submit Button ──────────────────────────────────────────────────────────── */
 
 .blog-login__submit {
-    padding: 14px;
-    background: #7de5d2;
-    color: #080a0d;
-    border: none;
-    font-family: 'DM Sans', sans-serif;
+    padding: 12px;
+    height: 46px;
+    background: var(--text-primary);
+    border: 1px solid var(--text-primary);
+    color: var(--background);
+    font-family: 'Inter', system-ui, sans-serif;
     font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    transition: background 0.25s, opacity 0.25s;
+    border-radius: 8px;
+    transition: all 0.18s ease;
     margin-top: 0.5rem;
 }
 
 .blog-login__submit:hover:not(:disabled) {
-    background: #a8ede3;
+    background: #ffffff;
+    border-color: #ffffff;
+    color: var(--background);
 }
 
 .blog-login__submit:disabled {
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: 0.5;
 }
 
 /* ─── Spinner ─────────────────────────────────────────────────────────────── */
@@ -220,8 +240,8 @@
     display: block;
     width: 16px;
     height: 16px;
-    border: 2px solid rgba(8, 10, 13, 0.3);
-    border-top-color: #080a0d;
+    border: 2px solid var(--border-default);
+    border-top-color: var(--background);
     border-radius: 50%;
     animation: spin 0.7s linear infinite;
 }
@@ -231,7 +251,7 @@
 .blog-login__help {
     font-family: 'Merriweather', Georgia, serif;
     font-size: 12px;
-    color: #526168;
+    color: var(--text-muted);
     text-align: center;
     margin: 1.5rem 0 0;
     line-height: 1.6;
@@ -247,15 +267,16 @@
 
 .blog-login__admin-link a {
     font-size: 11px;
-    color: #3a4550;
+    color: var(--text-secondary);
     text-decoration: none;
     letter-spacing: 1px;
     text-transform: uppercase;
-    transition: color 0.2s;
+    transition: color 0.18s ease;
+    font-family: 'Inter', system-ui, sans-serif;
 }
 
 .blog-login__admin-link a:hover {
-    color: #526168;
+    color: var(--accent-hover);
 }
 
 /* ─── Responsive ────────────────────────────────────────────────────────────── */

@@ -26,6 +26,12 @@ const TeamAdmin = () => {
     const [status, setStatus] = useState("");
     const [isBusy, setIsBusy] = useState(false);
 
+    const handleSignOut = () => {
+        sessionStorage.removeItem("team-admin-token");
+        setToken("");
+        setStatus("Signed out.");
+    };
+
     const loadItems = async () => {
         if (!sanityClient) return;
         try {
@@ -41,7 +47,7 @@ const TeamAdmin = () => {
 
     const getWriteClient = () => {
         const client = createSanityWriteClient(token.trim());
-        if (!client) throw new Error("Enter a valid Sanity write token.");
+        if (!client) throw new Error("Enter a valid write token.");
         return client;
     };
 
@@ -195,10 +201,17 @@ const TeamAdmin = () => {
         <div className="team-admin">
             <header className="team-admin__header">
                 <h1>Team Management</h1>
-                <form className="team-admin__auth" onSubmit={handleToken}>
-                    <input type="password" value={token} onChange={(e) => setToken(e.target.value)} placeholder="Enter Sanity write token" />
-                    <button type="submit">Unlock Access</button>
-                </form>
+                <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                    <form className="team-admin__auth" onSubmit={handleToken}>
+                        <input type="password" value={token} onChange={(e) => setToken(e.target.value)} placeholder="Token" />
+                        <button type="submit">Unlock Access</button>
+                    </form>
+                    {token && (
+                        <button type="button" onClick={handleSignOut} style={{ padding: "8px 14px", background: "var(--surface-raised)", color: "var(--error)", border: "1px solid var(--error-subtle)", borderRadius: "8px", cursor: "pointer", fontWeight: 600, fontSize: "12px", textTransform: "uppercase" }}>
+                            Sign Out
+                        </button>
+                    )}
+                </div>
             </header>
             
             <div className="team-admin-content">

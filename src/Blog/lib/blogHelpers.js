@@ -19,12 +19,12 @@ export const STATUS_LABELS = {
 };
 
 export const STATUS_COLORS = {
-    draft: { bg: "rgba(82, 97, 104, 0.15)", color: "#9ba4a7", border: "rgba(82, 97, 104, 0.4)" },
-    submitted: { bg: "rgba(0, 180, 255, 0.1)", color: "#00b4ff", border: "rgba(0, 180, 255, 0.35)" },
-    under_review: { bg: "rgba(155, 107, 206, 0.1)", color: "#9b6bce", border: "rgba(155, 107, 206, 0.35)" },
-    approved: { bg: "rgba(125, 229, 210, 0.1)", color: "#7de5d2", border: "rgba(125, 229, 210, 0.35)" },
-    rejected: { bg: "rgba(224, 92, 106, 0.1)", color: "#e05c6a", border: "rgba(224, 92, 106, 0.35)" },
-    published: { bg: "rgba(255, 120, 0, 0.1)", color: "#ff7800", border: "rgba(255, 120, 0, 0.35)" },
+    draft: { bg: "var(--surface-raised)", color: "var(--text-secondary)", border: "var(--border-default)" },
+    submitted: { bg: "var(--accent-subtle)", color: "var(--accent)", border: "var(--border-strong)" },
+    under_review: { bg: "var(--warning-subtle)", color: "var(--warning)", border: "var(--border-default)" },
+    approved: { bg: "var(--success-subtle)", color: "var(--success)", border: "var(--border-default)" },
+    rejected: { bg: "var(--error-subtle)", color: "var(--error)", border: "var(--border-default)" },
+    published: { bg: "var(--success-subtle)", color: "var(--success)", border: "var(--border-default)" },
 };
 
 /** Get available poster actions for a blog's status */

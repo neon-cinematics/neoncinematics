@@ -278,7 +278,7 @@ const AdminSetupDashboard = () => {
                         <form className="admin-setup__form" onSubmit={handleSaveResend}>
                             <h4>⚡ Option A: Resend.com (Recommended)</h4>
                             <p className="admin-setup__help">
-                                Get your free API key from <a href="https://resend.com" target="_blank" rel="noreferrer" style={{ color: '#FCEDB6' }}>resend.com</a> (takes 1 minute). Resend delivers instant emails with high inbox deliverability.
+                                Get your free API key from <a href="https://resend.com" target="_blank" rel="noreferrer" style={{ color: '#ededed', textDecoration: 'underline' }}>resend.com</a> (takes 1 minute). Resend delivers instant emails with high inbox deliverability.
                             </p>
 
                             <div className="admin-setup__field">

@@ -104,10 +104,10 @@ const AdminManagerConfig = () => {
             </p>
 
             {/* Info box */}
-            <div style={{ background: "rgba(0, 180, 255, 0.05)", border: "1px solid rgba(0, 180, 255, 0.15)", padding: "1rem 1.25rem", marginBottom: "2rem", fontSize: "13px", color: "#9ba4a7", lineHeight: 1.6 }}>
-                <strong style={{ color: "#00b4ff", display: "block", marginBottom: "4px", fontSize: "11px", letterSpacing: "1px", textTransform: "uppercase" }}>📧 Email Notifications</strong>
-                When a poster submits a blog, all <strong style={{ color: "#f2f1eb" }}>active</strong> managers below receive an email notification.
-                Currently using the <strong style={{ color: "#f2f1eb" }}>stub email service</strong> (logs to console). Configure a real provider in <code style={{ color: "#7de5d2", fontSize: "12px" }}>emailService.js</code>.
+            <div style={{ background: "var(--surface)", border: "1px solid var(--border-subtle)", borderRadius: "8px", padding: "1rem 1.25rem", marginBottom: "2rem", fontSize: "13px", color: "var(--text-secondary)", lineHeight: 1.6, fontFamily: "'Inter', system-ui, sans-serif" }}>
+                <strong style={{ color: "var(--text-primary)", display: "block", marginBottom: "4px", fontSize: "11px", letterSpacing: "0.08em", textTransform: "uppercase" }}>📧 Email Notifications</strong>
+                When a poster submits a blog, all <strong style={{ color: "var(--text-primary)" }}>active</strong> managers below receive an email notification.
+                Configure provider settings in <code style={{ color: "var(--text-primary)", fontSize: "12px", fontFamily: "monospace", background: "var(--surface-raised)", padding: "2px 6px", borderRadius: "6px" }}>emailService.js</code>.
             </div>
 
             {/* Add form */}
@@ -121,7 +121,7 @@ const AdminManagerConfig = () => {
                         onChange={e => { setNewEmail(e.target.value); setEmailError(""); }}
                         style={{ width: "100%", boxSizing: "border-box" }}
                     />
-                    {emailError && <p style={{ color: "#e05c6a", fontSize: "12px", margin: "4px 0 0" }}>{emailError}</p>}
+                    {emailError && <p style={{ color: "var(--error)", fontSize: "12px", margin: "4px 0 0" }}>{emailError}</p>}
                 </div>
                 <button
                     type="submit"
@@ -154,19 +154,19 @@ const AdminManagerConfig = () => {
                     <tbody>
                         {managers.map(manager => (
                             <tr key={manager._id}>
-                                <td style={{ color: "#f2f1eb", fontWeight: 500 }}>{manager.email}</td>
+                                <td style={{ color: "var(--text-primary)", fontWeight: 500 }}>{manager.email}</td>
                                 <td>
                                     <span style={{
-                                        display: "inline-block", padding: "3px 10px",
-                                        fontSize: "9px", fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase",
-                                        background: manager.isActive ? "rgba(125,229,210,0.1)" : "rgba(82,97,104,0.15)",
-                                        color: manager.isActive ? "#7de5d2" : "#9ba4a7",
-                                        border: manager.isActive ? "1px solid rgba(125,229,210,0.3)" : "1px solid rgba(82,97,104,0.3)",
+                                        display: "inline-block", padding: "3px 8px",
+                                        fontSize: "10px", fontWeight: 600, letterSpacing: "0.05em", borderRadius: "6px",
+                                        background: manager.isActive ? "var(--success-subtle)" : "var(--surface-raised)",
+                                        color: manager.isActive ? "var(--success)" : "var(--text-secondary)",
+                                        border: manager.isActive ? "1px solid var(--success)" : "1px solid var(--border-default)",
                                     }}>
                                         {manager.isActive ? "Receiving" : "Paused"}
                                     </span>
                                 </td>
-                                <td style={{ fontSize: "12px", color: "#526168" }}>{formatDate(manager._createdAt)}</td>
+                                <td style={{ fontSize: "12px", color: "var(--text-muted)" }}>{formatDate(manager._createdAt)}</td>
                                 <td>
                                     <div style={{ display: "flex", gap: "5px" }}>
                                         <button

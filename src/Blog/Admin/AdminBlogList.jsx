@@ -152,9 +152,9 @@ const AdminBlogList = () => {
             {toast && <div className={`admin-toast admin-toast--${toast.type}`}>{toast.message}</div>}
 
             {confirm && (
-                <div className="confirm-overlay" style={{ position: "fixed", inset: 0, background: "rgba(8,10,13,0.9)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
-                    <div className="confirm-dialog" style={{ background: "#0a0d12", border: "1px solid rgba(242,241,235,0.15)", padding: "2rem 2.5rem", maxWidth: "400px", width: "90%" }}>
-                        <p style={{ margin: "0 0 1.5rem", color: "#f2f1eb", fontSize: "15px" }}>{confirm.message}</p>
+                <div className="confirm-overlay" style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.8)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
+                    <div className="confirm-dialog" style={{ background: "#141414", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "8px", padding: "1.75rem 2rem", maxWidth: "400px", width: "90%" }}>
+                        <p style={{ margin: "0 0 1.5rem", color: "#ededed", fontSize: "14px", fontFamily: "'Inter', sans-serif" }}>{confirm.message}</p>
                         <div style={{ display: "flex", gap: "0.75rem", justifyContent: "flex-end" }}>
                             <button className="admin-btn admin-btn--secondary" onClick={confirm.onCancel}>Cancel</button>
                             <button className="admin-btn admin-btn--danger" onClick={confirm.onConfirm}>Delete</button>
@@ -168,7 +168,7 @@ const AdminBlogList = () => {
                     <h1 className="admin-page-title">All Blogs</h1>
                     <p className="admin-page-sub">Search, filter, and manage every blog post.</p>
                 </div>
-                <span style={{ fontSize: "13px", color: "#526168" }}>{filtered.length} blogs</span>
+                <span style={{ fontSize: "13px", color: "#71717a", fontFamily: "'Inter', sans-serif" }}>{filtered.length} blogs</span>
             </div>
 
             {/* Search + Sort */}
@@ -235,17 +235,17 @@ const AdminBlogList = () => {
                         {filtered.map(blog => (
                             <tr key={blog._id}>
                                 <td style={{ maxWidth: "220px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                                    <span style={{ color: "#f2f1eb", fontWeight: 500 }}>{blog.title}</span>
+                                    <span style={{ color: "#ededed", fontWeight: 500 }}>{blog.title}</span>
                                 </td>
                                 <td>
-                                    <span style={{ color: "#d4cfc9" }}>{blog.author?.name || "—"}</span>
+                                    <span style={{ color: "#a1a1aa" }}>{blog.author?.name || "—"}</span>
                                     {blog.author?.email && (
-                                        <span style={{ display: "block", fontSize: "11px", color: "#526168" }}>{blog.author.email}</span>
+                                        <span style={{ display: "block", fontSize: "11px", color: "#71717a" }}>{blog.author.email}</span>
                                     )}
                                 </td>
                                 <td><StatusBadge status={blog.status} /></td>
-                                <td style={{ fontSize: "12px", color: "#526168" }}>{formatDate(blog.createdAt)}</td>
-                                <td style={{ fontSize: "12px", color: "#526168" }}>{timeAgo(blog._updatedAt)}</td>
+                                <td style={{ fontSize: "12px", color: "#71717a" }}>{formatDate(blog.createdAt)}</td>
+                                <td style={{ fontSize: "12px", color: "#71717a" }}>{timeAgo(blog._updatedAt)}</td>
                                 <td>
                                     <div style={{ display: "flex", gap: "5px", flexWrap: "wrap" }}>
                                         <Link to={`/admin/blogs/${blog._id}/review`} className="admin-btn admin-btn--primary">

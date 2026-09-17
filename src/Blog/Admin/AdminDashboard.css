@@ -1,22 +1,24 @@
-/* ─── Admin Dashboard specific styles ──────────────────────────────────────── */
+/* ─── Admin Dashboard Styles (Monochrome Technical Dark Mode) ─────────────── */
 
 /* Login page */
 .admin-login-page {
     min-height: 100vh;
-    background: #080a0d;
+    background: var(--background);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 2rem;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 .admin-login-card {
-    background: #0a0d12;
-    border: 1px solid rgba(242, 241, 235, 0.1);
-    padding: 3rem;
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 2.75rem 2.5rem;
     width: 100%;
-    max-width: 440px;
+    max-width: 420px;
+    box-sizing: border-box;
 }
 
 .admin-login-brand {
@@ -24,88 +26,102 @@
     flex-direction: column;
     gap: 4px;
     margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid rgba(242, 241, 235, 0.08);
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 .admin-login-brand span:first-child {
-    font-size: 1.6rem;
-    font-style: italic;
-    font-weight: 700;
-    color: #f2f1eb;
-    letter-spacing: 2px;
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
 }
 
 .admin-login-sub {
-    font-size: 9px !important;
-    letter-spacing: 2.5px !important;
+    font-size: 10px !important;
+    letter-spacing: 1.5px !important;
     text-transform: uppercase;
-    color: #ff7800 !important;
-    font-style: normal !important;
+    color: var(--text-secondary) !important;
+    font-weight: 600;
 }
 
 .admin-login-card h1 {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    font-size: 2rem;
+    font-size: 1.75rem;
     font-weight: 800;
-    letter-spacing: -0.02em;
-    color: #f2f1eb;
+    letter-spacing: -0.015em;
+    color: var(--text-primary);
     margin: 0 0 0.5rem;
 }
 
 .admin-login-card > p {
-    font-family: 'Merriweather', Georgia, serif;
+    font-family: 'Inter', system-ui, sans-serif;
     font-size: 13px;
-    color: #9ba4a7;
-    margin: 0 0 1.5rem;
+    color: var(--text-secondary);
+    margin: 0 0 1.75rem;
     line-height: 1.6;
 }
 
 .admin-login-card form {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.25rem;
 }
 
 .admin-login-card label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: 1.5px;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    color: #9ba4a7;
+    color: var(--text-secondary);
 }
 
 .admin-login-error {
     padding: 10px 14px;
-    background: rgba(224, 92, 106, 0.08);
-    border: 1px solid rgba(224, 92, 106, 0.3);
-    color: #e05c6a;
+    background: var(--surface);
+    border: 1px solid var(--error);
+    color: var(--error);
     font-size: 13px;
+    border-radius: 8px;
+    line-height: 1.5;
 }
 
 .admin-login-submit {
-    padding: 14px;
-    background: #ff7800;
-    border: none;
-    color: #fff;
-    font-family: 'DM Sans', sans-serif;
+    padding: 12px;
+    height: 46px;
+    background: var(--text-primary);
+    border: 1px solid var(--text-primary);
+    color: var(--background);
+    font-family: 'Inter', system-ui, sans-serif;
     font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.25px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.18s ease;
     margin-top: 0.5rem;
 }
-.admin-login-submit:hover:not(:disabled) { background: #ff8f27; }
-.admin-login-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.admin-login-submit:hover:not(:disabled) {
+    background: #ffffff;
+    border-color: #ffffff;
+    color: var(--background);
+}
+
+.admin-login-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
 
 .admin-login-help {
-    font-family: 'Merriweather', Georgia, serif !important;
-    font-size: 11px !important;
-    color: #526168 !important;
+    font-family: 'Inter', system-ui, sans-serif !important;
+    font-size: 12px !important;
+    color: var(--text-muted) !important;
     text-align: center;
-    margin: 1rem 0 0 !important;
+    margin: 1.5rem 0 0 !important;
     line-height: 1.6;
 }
 
@@ -115,13 +131,15 @@
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     gap: 1px;
-    background: rgba(242, 241, 235, 0.06);
-    border: 1px solid rgba(242, 241, 235, 0.06);
-    margin-bottom: 3rem;
+    background: var(--border-subtle);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 2.5rem;
 }
 
 .admin-stat-card {
-    background: #0a0d12;
+    background: var(--surface);
     padding: 1.25rem 1rem;
     text-align: center;
 }
@@ -129,11 +147,12 @@
 .admin-stat-value {
     display: block;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    font-size: 2.5rem;
-    font-weight: 900;
+    font-size: 2.2rem;
+    font-weight: 800;
     letter-spacing: -0.02em;
     line-height: 1;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
 }
 
 .admin-stat-label {
@@ -142,30 +161,30 @@
     font-weight: 600;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: #526168;
+    color: var(--text-muted);
 }
 
 /* ─── Sections ──────────────────────────────────────────────────────────────── */
 
 .admin-section {
-    margin-bottom: 3rem;
+    margin-bottom: 2.5rem;
 }
 
 .admin-section-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 1.25rem;
+    margin-bottom: 1rem;
     gap: 1rem;
 }
 
 .admin-section-title {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    font-size: 13px;
-    font-weight: 800;
-    letter-spacing: -0.02em;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: #9ba4a7;
+    color: var(--text-secondary);
     margin: 0;
 }
 
@@ -175,8 +194,10 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1px;
-    background: rgba(242, 241, 235, 0.06);
-    border: 1px solid rgba(242, 241, 235, 0.06);
+    background: var(--border-subtle);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    overflow: hidden;
 }
 
 .admin-quick-link {
@@ -184,16 +205,16 @@
     align-items: flex-start;
     gap: 1rem;
     padding: 1.5rem;
-    background: #0a0d12;
+    background: var(--surface);
     text-decoration: none;
-    transition: background 0.2s;
+    transition: background 0.18s ease;
 }
 
-.admin-quick-link:hover { background: #0d1118; }
+.admin-quick-link:hover { background: var(--surface-hover); }
 
 .admin-quick-link > span {
     font-size: 1.2rem;
-    color: #ff7800;
+    color: var(--text-secondary);
     flex-shrink: 0;
     margin-top: 2px;
 }
@@ -207,16 +228,16 @@
 .admin-quick-link strong {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-size: 14px;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    color: #f2f1eb;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
 }
 
 .admin-quick-link span:last-child {
-    font-family: 'Merriweather', Georgia, serif;
+    font-family: 'Inter', system-ui, sans-serif;
     font-size: 12px;
-    color: #9ba4a7;
-    line-height: 1.6;
+    color: var(--text-secondary);
+    line-height: 1.5;
 }
 
 /* ─── Responsive ────────────────────────────────────────────────────────────── */

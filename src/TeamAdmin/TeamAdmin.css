@@ -1,9 +1,27 @@
 .team-admin {
     padding: 2rem;
     min-height: 100vh;
-    background: #080a0d;
-    color: white;
-    font-family: system-ui, -apple-system, sans-serif;
+    background: var(--background);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.team-admin h1,
+.team-admin h2,
+.team-admin h3,
+.team-admin h4,
+.team-admin__item-info strong {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+}
+
+.team-admin p,
+.team-admin__status,
+.crop-hint {
+    font-family: 'Merriweather', Georgia, serif;
+    line-height: 1.6;
 }
 
 .team-admin__header {
@@ -12,16 +30,15 @@
     align-items: center;
     margin-bottom: 3rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 .team-admin__header h1 {
     margin: 0;
     font-size: 2rem;
-    background: linear-gradient(135deg, #7de5d2, #68b8e3);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
 }
 
 .team-admin__auth {
@@ -31,40 +48,63 @@
 
 .team-admin__auth input {
     padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-    color: white;
+    background: var(--surface-raised);
+    border: 1px solid var(--border-default);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.85rem;
+    outline: none;
+    transition: all 0.18s ease;
 }
 
-.team-admin__auth button, .upload-button, .delete-button {
+.team-admin__auth input:hover {
+    background: var(--surface-hover);
+    border-color: var(--border-strong);
+}
+
+.team-admin__auth input:focus {
+    background: var(--surface-raised);
+    border-color: var(--border-strong);
+    box-shadow: 0 0 0 3px var(--accent-subtle), 0 0 0 1px var(--accent);
+}
+
+.team-admin__auth button, .upload-button, .save-btn {
     padding: 0.5rem 1rem;
-    background: #7de5d2;
-    color: #080a0d;
-    border: none;
-    border-radius: 4px;
-    font-weight: bold;
+    background: var(--text-primary);
+    border: 1px solid var(--text-primary);
+    color: var(--background);
+    border-radius: 8px;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    font-family: 'Inter', system-ui, sans-serif;
+    transition: all 0.18s ease;
 }
 
-.team-admin__auth button:hover, .upload-button:hover {
-    background: #9ffceb;
-    box-shadow: 0 0 10px rgba(125, 229, 210, 0.5);
+.team-admin__auth button:hover, .upload-button:hover, .save-btn:hover {
+    background: #ffffff;
+    border-color: #ffffff;
+    color: var(--background);
 }
 
 .delete-button {
-    background: rgba(255, 50, 50, 0.2);
-    color: #ff8888;
-    border: 1px solid rgba(255, 50, 50, 0.4);
+    background: var(--surface-raised);
+    color: var(--error);
+    border: 1px solid rgba(252, 165, 165, 0.3);
     margin-top: 1rem;
     width: 100%;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-family: 'Inter', system-ui, sans-serif;
+    cursor: pointer;
+    transition: all 0.18s ease;
 }
 
 .delete-button:hover {
-    background: rgba(255, 50, 50, 0.4);
-    color: white;
-    box-shadow: 0 0 10px rgba(255, 50, 50, 0.5);
+    background: var(--error-subtle);
+    border-color: var(--error);
+    color: var(--error);
 }
 
 .team-admin__content {
@@ -74,9 +114,9 @@
 }
 
 .team-admin__upload-section {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
     padding: 2rem;
     height: fit-content;
 }
@@ -96,39 +136,57 @@
 
 .form-group label {
     font-size: 0.9rem;
-    color: #aaa;
+    color: var(--text-secondary);
     font-weight: 600;
+    font-family: 'Inter', system-ui, sans-serif;
 }
 
 .form-group input[type="text"], .form-group select {
     padding: 0.8rem;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 4px;
-    color: white;
+    background: var(--surface-raised);
+    border: 1px solid var(--border-default);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, sans-serif;
+    outline: none;
+    transition: all 0.18s ease;
+}
+
+.form-group input[type="text"]:hover, .form-group select:hover {
+    background: var(--surface-hover);
+    border-color: var(--border-strong);
 }
 
 .form-group input[type="text"]:focus, .form-group select:focus {
-    outline: none;
-    border-color: #7de5d2;
+    background: var(--surface-raised);
+    border-color: var(--border-strong);
+    box-shadow: 0 0 0 3px var(--accent-subtle), 0 0 0 1px var(--accent);
 }
 
 .form-group input[type="file"] {
     font-size: 0.9rem;
-    color: #ccc;
+    color: var(--text-secondary);
+    font-family: 'Inter', system-ui, sans-serif;
 }
 
 .team-admin__status {
     margin-top: 1rem;
     padding: 1rem;
-    background: rgba(125, 229, 210, 0.1);
-    border-left: 4px solid #7de5d2;
-    border-radius: 4px;
+    background: var(--success-subtle);
+    border-left: 4px solid var(--success);
+    border-radius: 8px;
     font-size: 0.9rem;
+    color: var(--success);
+    font-family: 'Merriweather', Georgia, serif;
+    line-height: 1.6;
 }
 
 .team-admin__preview-section h2 {
     margin-bottom: 2rem;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
 }
 
 .team-admin__grid {
@@ -140,8 +198,11 @@
 .team-admin__category-group h3 {
     margin-bottom: 1.5rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    color: #7de5d2;
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.02em;
 }
 
 .team-admin__items {
@@ -151,9 +212,9 @@
 }
 
 .team-admin__item {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
     padding: 1rem;
     display: flex;
     flex-direction: column;
@@ -167,7 +228,7 @@
     object-fit: cover;
     border-radius: 50%;
     margin-bottom: 1rem;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid var(--border-default);
 }
 
 .team-admin__item-info {
@@ -178,11 +239,16 @@
 
 .team-admin__item-info strong {
     font-size: 1.1rem;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
 }
 
 .team-admin__item-info span {
     font-size: 0.85rem;
-    color: #999;
+    color: var(--text-secondary);
+    font-family: 'Inter', system-ui, sans-serif;
 }
 
 /* --- Cropping Modal --- */
@@ -192,9 +258,9 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(4, 6, 10, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -202,24 +268,25 @@
 }
 
 .crop-modal-content {
-    background: rgba(10, 14, 23, 0.95);
-    border: 1px solid rgba(0, 180, 255, 0.3);
-    border-radius: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
     padding: 2.5rem;
     width: 90%;
     max-width: 600px;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    box-shadow: 0 0 40px rgba(0, 180, 255, 0.15), inset 0 0 20px rgba(0, 180, 255, 0.05);
 }
 
 .crop-modal-content h3 {
     margin: 0;
-    color: #fff;
+    color: var(--text-primary);
     font-size: 1.5rem;
     text-align: center;
-    letter-spacing: 1px;
+    letter-spacing: -0.02em;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 800;
 }
 
 .crop-container {
@@ -229,14 +296,16 @@
     background: #000;
     border-radius: 8px;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-subtle);
 }
 
 .crop-hint {
     text-align: center;
     font-size: 0.85rem;
-    color: #888;
+    color: var(--text-muted);
     margin: -0.5rem 0 0.5rem 0;
+    font-family: 'Merriweather', Georgia, serif;
+    line-height: 1.6;
 }
 
 .crop-controls {
@@ -253,10 +322,11 @@
 }
 
 .crop-control-group label {
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--text-secondary);
     font-weight: 600;
     width: 60px;
     font-size: 0.9rem;
+    font-family: 'Inter', system-ui, sans-serif;
 }
 
 /* Custom Range Slider */
@@ -266,7 +336,7 @@
     appearance: none;
     width: 100%;
     height: 6px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--surface-raised);
     border-radius: 4px;
     outline: none;
 }
@@ -277,9 +347,9 @@
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: #00b4ff;
+    background: var(--accent);
     cursor: pointer;
-    box-shadow: 0 0 10px rgba(0, 180, 255, 0.5);
+    box-shadow: 0 0 10px rgba(165, 180, 252, 0.4);
     transition: transform 0.1s;
 }
 
@@ -291,9 +361,9 @@
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: #00b4ff;
+    background: var(--accent);
     cursor: pointer;
-    box-shadow: 0 0 10px rgba(0, 180, 255, 0.5);
+    box-shadow: 0 0 10px rgba(165, 180, 252, 0.4);
     border: none;
 }
 
@@ -306,34 +376,37 @@
 .cancel-btn {
     flex: 1;
     padding: 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #fff;
+    background: var(--surface-raised);
+    border: 1px solid var(--border-default);
+    color: var(--text-primary);
     border-radius: 8px;
     cursor: pointer;
     font-weight: 600;
+    font-family: 'Inter', system-ui, sans-serif;
     transition: all 0.2s;
 }
 
 .cancel-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--surface-hover);
+    border-color: var(--border-strong);
 }
 
 .save-btn {
     flex: 1;
     padding: 1rem;
-    background: #00b4ff;
-    border: none;
-    color: #000;
+    background: var(--text-primary);
+    border: 1px solid var(--text-primary);
+    color: var(--background);
     border-radius: 8px;
     cursor: pointer;
     font-weight: 700;
+    font-family: 'Inter', system-ui, sans-serif;
     transition: all 0.2s;
-    box-shadow: 0 0 15px rgba(0, 180, 255, 0.3);
 }
 
 .save-btn:hover {
-    background: #33c3ff;
-    box-shadow: 0 0 25px rgba(0, 180, 255, 0.6);
+    background: #ffffff;
+    border-color: #ffffff;
+    color: var(--background);
     transform: translateY(-2px);
 }

@@ -16,8 +16,8 @@ const StatusBadge = ({ status }) => {
     return (
         <span className="status-badge" style={{
             background: style.bg, color: style.color, border: `1px solid ${style.border}`,
-            padding: "3px 10px", fontSize: "9px", fontWeight: 700, letterSpacing: "2px",
-            textTransform: "uppercase", display: "inline-block", whiteSpace: "nowrap"
+            padding: "3px 8px", fontSize: "10px", fontWeight: 600, letterSpacing: "0.05em",
+            borderRadius: "6px", textTransform: "uppercase", display: "inline-block", whiteSpace: "nowrap"
         }}>
             {STATUS_LABELS[status] || status}
         </span>
@@ -151,12 +151,12 @@ const AdminDashboard = () => {
                         {stats && (
                             <div className="admin-stats-grid">
                                 {[
-                                    { label: "Total Blogs", value: stats.total, color: "#f2f1eb" },
-                                    { label: "Drafts", value: stats.draft, color: "#9ba4a7" },
-                                    { label: "Pending Review", value: stats.submitted + stats.under_review, color: "#00b4ff" },
-                                    { label: "Published", value: stats.published, color: "#ff7800" },
-                                    { label: "Rejected", value: stats.rejected, color: "#e05c6a" },
-                                    { label: "Active Posters", value: stats.activePosters, color: "#7de5d2" },
+                                    { label: "Total Blogs", value: stats.total, color: "var(--text-primary)" },
+                                    { label: "Drafts", value: stats.draft, color: "var(--text-secondary)" },
+                                    { label: "Pending Review", value: stats.submitted + stats.under_review, color: "var(--warning)" },
+                                    { label: "Published", value: stats.published, color: "var(--success)" },
+                                    { label: "Rejected", value: stats.rejected, color: "var(--error)" },
+                                    { label: "Active Posters", value: stats.activePosters, color: "var(--accent)" },
                                 ].map(s => (
                                     <div key={s.label} className="admin-stat-card">
                                         <span className="admin-stat-value" style={{ color: s.color }}>{s.value}</span>
@@ -194,12 +194,12 @@ const AdminDashboard = () => {
                                     <tbody>
                                         {recentBlogs.map(blog => (
                                             <tr key={blog._id}>
-                                                <td style={{ maxWidth: "240px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: "#f2f1eb", fontWeight: 500 }}>
+                                                <td style={{ maxWidth: "240px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: "var(--text-primary)", fontWeight: 500 }}>
                                                     {blog.title}
                                                 </td>
                                                 <td>{blog.author?.name || "—"}</td>
                                                 <td><StatusBadge status={blog.status} /></td>
-                                                <td style={{ color: "#526168", fontSize: "12px" }}>{formatDate(blog._updatedAt)}</td>
+                                                <td style={{ color: "var(--text-muted)", fontSize: "12px" }}>{formatDate(blog._updatedAt)}</td>
                                                 <td>
                                                     <div style={{ display: "flex", gap: "6px" }}>
                                                         {(blog.status === "submitted" || blog.status === "under_review") && (

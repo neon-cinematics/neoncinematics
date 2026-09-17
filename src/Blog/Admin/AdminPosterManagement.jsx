@@ -167,52 +167,52 @@ const AdminPosterManagement = () => {
 
             {/* Modal */}
             {modal && (
-                <div style={{ position: "fixed", inset: 0, background: "rgba(8,10,13,0.9)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
-                    <div style={{ background: "#0a0d12", border: "1px solid rgba(242,241,235,0.15)", padding: "2rem 2.5rem", maxWidth: "480px", width: "90%", maxHeight: "90vh", overflowY: "auto" }}>
-                        <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: "1.8rem", fontWeight: 800, letterSpacing: "-0.02em", color: "#f2f1eb", margin: "0 0 1.5rem" }}>
+                <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.8)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
+                    <div style={{ background: "var(--surface)", border: "1px solid var(--border-default)", padding: "2rem 2.25rem", borderRadius: "12px", maxWidth: "480px", width: "90%", maxHeight: "90vh", overflowY: "auto" }}>
+                        <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: "1.5rem", fontWeight: 700, letterSpacing: "-0.02em", color: "var(--text-primary)", margin: "0 0 1.25rem" }}>
                             {modal.type === "create" ? "Add Poster" : modal.type === "edit" ? "Edit Poster" : "Reset Password"}
                         </h2>
 
                         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                             {modal.type !== "reset" && (
                                 <>
-                                    <label style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", color: "#9ba4a7" }}>
+                                    <label style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--text-secondary)", fontFamily: "'Inter', sans-serif" }}>
                                         Full Name
                                         <input className="admin-input" style={{ width: "100%", marginTop: "6px" }} type="text" value={formData.name} onChange={e => setFormData(d => ({ ...d, name: e.target.value }))} placeholder="Jane Smith" />
                                     </label>
                                     {modal.type === "create" && (
-                                        <label style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", color: "#9ba4a7" }}>
+                                        <label style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--text-secondary)", fontFamily: "'Inter', sans-serif" }}>
                                             Username
                                             <input className="admin-input" style={{ width: "100%", marginTop: "6px" }} type="text" value={formData.username} onChange={e => setFormData(d => ({ ...d, username: e.target.value.toLowerCase().replace(/\s+/g, "_") }))} placeholder="jane_smith" />
                                         </label>
                                     )}
-                                    <label style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", color: "#9ba4a7" }}>
+                                    <label style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--text-secondary)", fontFamily: "'Inter', sans-serif" }}>
                                         Email
                                         <input className="admin-input" style={{ width: "100%", marginTop: "6px" }} type="email" value={formData.email} onChange={e => setFormData(d => ({ ...d, email: e.target.value }))} placeholder="jane@example.com" />
                                     </label>
-                                    <label style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", color: "#9ba4a7" }}>
+                                    <label style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--text-secondary)", fontFamily: "'Inter', sans-serif" }}>
                                         Role
                                         <select className="admin-input" style={{ width: "100%", marginTop: "6px" }} value={formData.role} onChange={e => setFormData(d => ({ ...d, role: e.target.value }))}>
                                             <option value="poster">Poster</option>
                                         </select>
                                     </label>
                                     {modal.type === "edit" && (
-                                        <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", cursor: "pointer", fontSize: "13px", color: "#9ba4a7" }}>
-                                            <input type="checkbox" checked={formData.isActive} onChange={e => setFormData(d => ({ ...d, isActive: e.target.checked }))} style={{ accentColor: "#7de5d2" }} />
+                                        <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", cursor: "pointer", fontSize: "13px", color: "var(--text-secondary)", fontFamily: "'Inter', sans-serif" }}>
+                                            <input type="checkbox" checked={formData.isActive} onChange={e => setFormData(d => ({ ...d, isActive: e.target.checked }))} style={{ accentColor: "var(--accent)" }} />
                                             Account Active
                                         </label>
                                     )}
                                 </>
                             )}
                             {(modal.type === "create" || modal.type === "reset") && (
-                                <label style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", color: "#9ba4a7" }}>
+                                <label style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--text-secondary)", fontFamily: "'Inter', sans-serif" }}>
                                     {modal.type === "reset" ? "New Password" : "Password"} (min 8 chars)
                                     <input className="admin-input" style={{ width: "100%", marginTop: "6px" }} type="password" value={formData.password} onChange={e => setFormData(d => ({ ...d, password: e.target.value }))} placeholder="••••••••" />
                                 </label>
                             )}
 
                             {formError && (
-                                <div style={{ padding: "10px 14px", background: "rgba(224,92,106,0.08)", border: "1px solid rgba(224,92,106,0.3)", color: "#e05c6a", fontSize: "13px" }}>
+                                <div style={{ padding: "10px 14px", background: "var(--error-subtle)", border: "1px solid var(--error)", color: "var(--error)", borderRadius: "8px", fontSize: "13px", fontFamily: "'Inter', sans-serif" }}>
                                     {formError}
                                 </div>
                             )}
@@ -265,21 +265,21 @@ const AdminPosterManagement = () => {
                     <tbody>
                         {posters.map(poster => (
                             <tr key={poster._id}>
-                                <td style={{ color: "#f2f1eb", fontWeight: 500 }}>{poster.name}</td>
-                                <td style={{ fontFamily: "monospace", fontSize: "12px", color: "#9ba4a7" }}>@{poster.username}</td>
-                                <td style={{ color: "#9ba4a7", fontSize: "13px" }}>{poster.email}</td>
+                                <td style={{ color: "var(--text-primary)", fontWeight: 500 }}>{poster.name}</td>
+                                <td style={{ fontFamily: "monospace", fontSize: "12px", color: "var(--text-secondary)" }}>@{poster.username}</td>
+                                <td style={{ color: "var(--text-secondary)", fontSize: "13px" }}>{poster.email}</td>
                                 <td>
                                     <span style={{
-                                        display: "inline-block", padding: "3px 10px", fontSize: "9px",
-                                        fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase",
-                                        background: poster.isActive ? "rgba(125,229,210,0.1)" : "rgba(82,97,104,0.15)",
-                                        color: poster.isActive ? "#7de5d2" : "#9ba4a7",
-                                        border: poster.isActive ? "1px solid rgba(125,229,210,0.3)" : "1px solid rgba(82,97,104,0.3)",
+                                        display: "inline-block", padding: "3px 8px", fontSize: "10px",
+                                        fontWeight: 600, letterSpacing: "0.05em", borderRadius: "6px",
+                                        background: poster.isActive ? "var(--success-subtle)" : "var(--surface-raised)",
+                                        color: poster.isActive ? "var(--success)" : "var(--text-secondary)",
+                                        border: poster.isActive ? "1px solid rgba(134, 239, 172, 0.3)" : "1px solid var(--border-subtle)",
                                     }}>
                                         {poster.isActive ? "Active" : "Disabled"}
                                     </span>
                                 </td>
-                                <td style={{ fontSize: "12px", color: "#526168" }}>{formatDate(poster.createdAt)}</td>
+                                <td style={{ fontSize: "12px", color: "var(--text-muted)" }}>{formatDate(poster.createdAt)}</td>
                                 <td>
                                     <div style={{ display: "flex", gap: "5px", flexWrap: "wrap" }}>
                                         <button className="admin-btn admin-btn--secondary" onClick={() => openEdit(poster)}>Edit</button>
