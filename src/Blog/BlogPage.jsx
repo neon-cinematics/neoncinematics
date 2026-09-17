@@ -125,7 +125,7 @@ const BlogPage = () => {
                         color="#f8fafc"
                     />
                     <p className="blog-page__hero-sub">
-                        Stories from behind the lens — filmmaking insights, project breakdowns, and creative perspectives.
+                        Stories from behind the lens, filmmaking insights, project breakdowns, and creative perspectives.
                     </p>
                 </div>
             </section>
