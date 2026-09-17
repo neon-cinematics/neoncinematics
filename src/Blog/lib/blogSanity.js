@@ -5,7 +5,7 @@ const dataset = import.meta.env.VITE_SANITY_DATASET;
 
 // Read-only client (same as the global sanityClient)
 export const blogReadClient = projectId && dataset
-    ? createClient({ projectId, dataset, apiVersion: "2025-01-01", useCdn: true })
+    ? createClient({ projectId, dataset, apiVersion: "2025-01-01", useCdn: false })
     : null;
 
 // Write client (requires token — stored in localStorage for admin, or retrieved from server JWT for posters)
