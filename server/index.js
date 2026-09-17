@@ -102,6 +102,15 @@ const getTransporter = () => {
     return null;
 };
 
+// Root & Health Check Endpoints
+app.get("/", (req, res) => {
+    res.json({ message: "Neon Cinematics Backend API is running", status: "online" });
+});
+
+app.get("/api/health", (req, res) => {
+    res.json({ status: "ok" });
+});
+
 // POST /api/auth/login — Poster login
 app.post("/api/auth/login", async (req, res) => {
     const { username, password } = req.body;
