@@ -83,14 +83,21 @@ export const setCustomSanityWriteToken = (token) => {
 // ─── API Calls ────────────────────────────────────────────────────────────────
 
 export const loginPoster = async (username, password) => {
-    const res = await fetch(`${API_BASE}/api/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Login failed");
-    return data; // { token, poster }
+    try {
+        const res = await fetch(`${API_BASE}/api/auth/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Login failed");
+        return data; // { token, poster }
+    } catch (err) {
+        if (err.name === "TypeError" || err.message.includes("fetch") || err.message.includes("Failed to fetch")) {
+            throw new Error("Unable to connect to backend server at " + API_BASE + ". Please ensure server is running.");
+        }
+        throw err;
+    }
 };
 
 export const loginAdmin = async (sanityToken) => {
@@ -139,29 +146,43 @@ export const verifyToken = async () => {
 };
 
 export const resetPosterPassword = async (posterId, newPassword, adminJwt) => {
-    const res = await fetch(`${API_BASE}/api/posters/reset-password`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${adminJwt}`,
-        },
-        body: JSON.stringify({ posterId, newPassword }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to reset password");
-    return data;
+    try {
+        const res = await fetch(`${API_BASE}/api/posters/reset-password`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${adminJwt}`,
+            },
+            body: JSON.stringify({ posterId, newPassword }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to reset password");
+        return data;
+    } catch (err) {
+        if (err.name === "TypeError" || err.message.includes("fetch") || err.message.includes("Failed to fetch")) {
+            throw new Error("Backend server not reachable at " + API_BASE + ". Check server logs.");
+        }
+        throw err;
+    }
 };
 
 export const createPosterViaApi = async (posterData, adminJwt) => {
-    const res = await fetch(`${API_BASE}/api/posters/create`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${adminJwt}`,
-        },
-        body: JSON.stringify(posterData),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to create poster");
-    return data;
+    try {
+        const res = await fetch(`${API_BASE}/api/posters/create`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${adminJwt}`,
+            },
+            body: JSON.stringify(posterData),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to create poster");
+        return data;
+    } catch (err) {
+        if (err.name === "TypeError" || err.message.includes("fetch") || err.message.includes("Failed to fetch")) {
+            throw new Error("Backend server not reachable at " + API_BASE + ". Check server logs.");
+        }
+        throw err;
+    }
 };

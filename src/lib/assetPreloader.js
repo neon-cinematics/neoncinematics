@@ -99,7 +99,7 @@ export async function preloadMediaAssets(onProgress = () => { }) {
                 if (hasCacheApi && mediaCache && responseObj) {
                     try {
                         await mediaCache.put(url, responseObj);
-                    } catch (e) {
+                    } catch {
                         // ignore cache put errors
                     }
                 }

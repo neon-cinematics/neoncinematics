@@ -83,7 +83,7 @@ const TeamAdmin = () => {
             setFile(croppedFile);
             setImageSrc(null);
             setStatus("Image cropped and ready to save.");
-        } catch (error) {
+        } catch {
             setStatus("Failed to crop image.");
         }
     };

@@ -4,18 +4,6 @@ import gsap from "gsap";
 import "./DriftWall.css";
 import AuroraBackground from "./AuroraBackground";
 
-const getCardPosition = (index) => {
-    if (index === 0) return [0, 0, 0, 0];
-    const angle = index * 2.39996;
-    const radius = Math.sqrt(index) * 15;
-    const x = Math.sin(angle) * radius;
-    const y = Math.cos(angle) * radius;
-    const layerIndex = Math.floor(index / 4);
-    const z = (layerIndex - 1) * 500 + (index % 4) * 100;
-    const rotate = ((index % 5) - 2) * 2;
-    return [x, y, z, rotate];
-};
-
 const clamp = (value, minimum, maximum) => Math.min(maximum, Math.max(minimum, value));
 
 const DriftWall = ({
@@ -127,7 +115,6 @@ const DriftWall = ({
             const selectedCard = selected >= 0 ? cardRefs.current[selected] : null;
             if (selectedCard) {
                 const selectedRect = selectedCard.getBoundingClientRect();
-                const wallBounds = wallRef.current?.getBoundingClientRect();
                 cardRefs.current.forEach((card, index) => {
                     if (!card || index === selected) return;
                     const rect = card.getBoundingClientRect();
