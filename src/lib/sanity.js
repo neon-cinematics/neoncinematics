@@ -20,6 +20,7 @@ export const galleryPhotosQuery = `*[_type == "galleryPhoto"] | order(_createdAt
     title,
     href,
     isCenter,
+    isFeaturedContact,
     image,
     "width": image.asset->metadata.dimensions.width,
     "height": image.asset->metadata.dimensions.height,
@@ -30,6 +31,7 @@ export const videoThumbnailsQuery = `*[_type == "videoThumbnail"] | order(_creat
     _id,
     videoLink,
     caption,
+    isFeaturedContact,
     image,
     "assetId": image.asset._ref
 }`;

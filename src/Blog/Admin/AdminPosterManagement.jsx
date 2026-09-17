@@ -17,7 +17,7 @@ const AdminPosterManagement = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
-        if (!isAdminLoggedIn()) navigate("/admin/blogs", { replace: true });
+        if (!isAdminLoggedIn()) navigate("/neoncinematicsadminhere/blogs", { replace: true });
     }, [navigate]);
 
     const showToast = (message, type = "success") => {

@@ -149,7 +149,7 @@ const BlogLogin = () => {
 
             {/* Admin link */}
             <div className="blog-login__admin-link">
-                <a href="/admin/blogs">Admin Panel →</a>
+                <a href="/neoncinematicsadminhere/blogs">Admin Panel →</a>
             </div>
         </div>
     );

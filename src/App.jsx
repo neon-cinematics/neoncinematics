@@ -19,6 +19,7 @@ const BlogEditor = lazy(() => import("./Blog/Portal/BlogEditor"));
 const ContactPage = lazy(() => import("./ContactPage"));
 
 // Admin pages
+const MasterAdminDashboard = lazy(() => import("./Blog/Admin/MasterAdminDashboard"));
 const AdminDashboard = lazy(() => import("./Blog/Admin/AdminDashboard"));
 const AdminBlogList = lazy(() => import("./Blog/Admin/AdminBlogList"));
 const AdminBlogReview = lazy(() => import("./Blog/Admin/AdminBlogReview"));
@@ -121,12 +122,13 @@ const App = () => {
           <Route path="/blog/preview/:id" element={<BlogDetail />} />
 
           {/* ─── Admin Routes ─────────────────────────────────────────── */}
-          <Route path="/admin/blogs" element={<AdminDashboard />} />
-          <Route path="/admin/blogs/list" element={<AdminBlogList />} />
-          <Route path="/admin/blogs/:id/review" element={<AdminBlogReview />} />
-          <Route path="/admin/blog-posters" element={<AdminPosterManagement />} />
-          <Route path="/admin/blog-managers" element={<AdminManagerConfig />} />
-          <Route path="/admin/setup" element={<AdminSetupDashboard />} />
+          <Route path="/neoncinematicsadminhere" element={<MasterAdminDashboard />} />
+          <Route path="/neoncinematicsadminhere/blogs" element={<AdminDashboard />} />
+          <Route path="/neoncinematicsadminhere/blogs/list" element={<AdminBlogList />} />
+          <Route path="/neoncinematicsadminhere/blogs/:id/review" element={<AdminBlogReview />} />
+          <Route path="/neoncinematicsadminhere/blog-posters" element={<AdminPosterManagement />} />
+          <Route path="/neoncinematicsadminhere/blog-managers" element={<AdminManagerConfig />} />
+          <Route path="/neoncinematicsadminhere/setup" element={<AdminSetupDashboard />} />
         </Routes>
       </Suspense>
     </>

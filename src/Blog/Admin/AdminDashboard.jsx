@@ -170,7 +170,7 @@ const AdminDashboard = () => {
                         <div className="admin-section">
                             <div className="admin-section-header">
                                 <h2 className="admin-section-title">Recent Blogs</h2>
-                                <Link to="/admin/blogs/list" className="admin-btn admin-btn--secondary">
+                                <Link to="/neoncinematicsadminhere/blogs/list" className="admin-btn admin-btn--secondary">
                                     View All →
                                 </Link>
                             </div>
@@ -204,7 +204,7 @@ const AdminDashboard = () => {
                                                     <div style={{ display: "flex", gap: "6px" }}>
                                                         {(blog.status === "submitted" || blog.status === "under_review") && (
                                                             <Link
-                                                                to={`/admin/blogs/${blog._id}/review`}
+                                                                to={`/neoncinematicsadminhere/blogs/${blog._id}/review`}
                                                                 className="admin-btn admin-btn--primary"
                                                             >
                                                                 Review
@@ -212,7 +212,7 @@ const AdminDashboard = () => {
                                                         )}
                                                         {blog.status === "approved" && (
                                                             <Link
-                                                                to={`/admin/blogs/${blog._id}/review`}
+                                                                to={`/neoncinematicsadminhere/blogs/${blog._id}/review`}
                                                                 className="admin-btn admin-btn--success"
                                                             >
                                                                 Publish
@@ -238,21 +238,21 @@ const AdminDashboard = () => {
 
                         {/* Quick links */}
                         <div className="admin-quick-links">
-                            <Link to="/admin/blogs/list" className="admin-quick-link">
+                            <Link to="/neoncinematicsadminhere/blogs/list" className="admin-quick-link">
                                 <span>≡</span>
                                 <div>
                                     <strong>All Blogs</strong>
                                     <span>View, search, filter and manage every blog</span>
                                 </div>
                             </Link>
-                            <Link to="/admin/blog-posters" className="admin-quick-link">
+                            <Link to="/neoncinematicsadminhere/blog-posters" className="admin-quick-link">
                                 <span>◉</span>
                                 <div>
                                     <strong>Blog Posters</strong>
                                     <span>Create and manage poster accounts</span>
                                 </div>
                             </Link>
-                            <Link to="/admin/blog-managers" className="admin-quick-link">
+                            <Link to="/neoncinematicsadminhere/blog-managers" className="admin-quick-link">
                                 <span>✉</span>
                                 <div>
                                     <strong>Blog Managers</strong>

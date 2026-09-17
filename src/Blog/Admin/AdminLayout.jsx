@@ -8,29 +8,33 @@ const AdminLayout = ({ children }) => {
 
     const handleLogout = () => {
         clearAdminSession();
-        navigate("/admin/blogs");
+        navigate("/neoncinematicsadminhere/blogs");
     };
 
     const navLinks = [
-        { to: "/admin/blogs", label: "Dashboard", icon: "◈" },
-        { to: "/admin/blogs/list", label: "All Blogs", icon: "≡" },
-        { to: "/admin/blog-posters", label: "Blog Posters", icon: "◉" },
-        { to: "/admin/blog-managers", label: "Blog Managers", icon: "✉" },
-        { to: "/admin/setup", label: "Setup & Health", icon: "⚙" },
+        { to: "/neoncinematicsadminhere", label: "Master Dashboard", icon: "❖", exact: true },
+        { to: "/neoncinematicsadminhere/blogs", label: "Blog Queue", icon: "◈" },
+        { to: "/neoncinematicsadminhere/blogs/list", label: "All Articles", icon: "≡" },
+        { to: "/neoncinematicsadminhere/blog-posters", label: "Blog Posters", icon: "◉" },
+        { to: "/neoncinematicsadminhere/blog-managers", label: "Blog Managers", icon: "✉" },
+        { to: "/video-admin", label: "Background Videos", icon: "🎥" },
+        { to: "/gallery-admin", label: "Photo Gallery", icon: "🖼️" },
+        { to: "/team-admin", label: "Team Roster", icon: "👥" },
+        { to: "/neoncinematicsadminhere/setup", label: "System & Health", icon: "⚙" },
     ];
 
     return (
         <div className="admin-layout">
             <aside className="admin-sidebar">
                 <div className="admin-sidebar__brand">
-                    <Link to="/" className="admin-sidebar__logo">NEON</Link>
-                    <span className="admin-sidebar__sub">Admin Panel</span>
+                    <Link to="/neoncinematicsadminhere" className="admin-sidebar__logo">NEON</Link>
+                    <span className="admin-sidebar__sub">Master Control</span>
                 </div>
 
                 <nav className="admin-sidebar__nav">
                     {navLinks.map(link => {
-                        const isActive = link.to === "/admin/blogs"
-                            ? location.pathname === "/admin/blogs"
+                        const isActive = link.exact
+                            ? location.pathname === link.to
                             : location.pathname.startsWith(link.to);
                         return (
                             <Link

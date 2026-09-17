@@ -111,6 +111,22 @@ const GalleryAdmin = () => {
         finally { setIsBusy(false); }
     };
 
+    const handleToggleFeaturedContact = async (id, currentVal) => {
+        setIsBusy(true);
+        try {
+            const client = getWriteClient();
+            const newVal = !currentVal;
+            if (newVal) {
+                await client.patch(id).set({ isFeaturedContact: true }).commit();
+            } else {
+                await client.patch(id).unset(["isFeaturedContact"]).commit();
+            }
+            setItems(current => current.map(item => item._id === id ? { ...item, isFeaturedContact: newVal } : item));
+            setStatus(`Updated item feature status for Contact page.`);
+        } catch (error) { setStatus(error.message || "Unable to update feature status for Contact page."); }
+        finally { setIsBusy(false); }
+    };
+
     return (
         <main className="gallery-admin">
             <header className="gallery-admin__header">
@@ -179,10 +195,40 @@ const GalleryAdmin = () => {
                 ) : (
                     <div className="gallery-admin__grid">
                         {items.map((item) => (
-                            <label className={`gallery-admin__item${selectedIds.includes(item._id) ? " is-selected" : ""}${item.isCenter ? " is-center" : ""}`} key={item._id}>
+                            <label className={`gallery-admin__item${selectedIds.includes(item._id) ? " is-selected" : ""}${item.isCenter ? " is-center" : ""}`} key={item._id} style={{ position: 'relative' }}>
                                 <input type="checkbox" checked={selectedIds.includes(item._id)} onChange={() => toggleSelection(item._id)} />
                                 <img src={item.preview} alt="" />
                                 {item.isCenter && <span className="gallery-admin__badge">Center</span>}
+                                {item.isFeaturedContact && (
+                                    <span className="gallery-admin__badge" style={{ background: '#f59e0b', color: '#000', left: item.isCenter ? '75px' : '10px' }}>
+                                        ★ Contact Featured
+                                    </span>
+                                )}
+                                <button
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        handleToggleFeaturedContact(item._id, item.isFeaturedContact);
+                                    }}
+                                    disabled={isBusy}
+                                    style={{
+                                        position: 'absolute',
+                                        bottom: '8px',
+                                        right: '8px',
+                                        background: item.isFeaturedContact ? '#f59e0b' : 'rgba(0,0,0,0.75)',
+                                        color: item.isFeaturedContact ? '#000' : '#fff',
+                                        border: '1px solid rgba(255,255,255,0.25)',
+                                        padding: '4px 8px',
+                                        borderRadius: '4px',
+                                        fontSize: '11px',
+                                        fontWeight: '600',
+                                        cursor: 'pointer',
+                                        zIndex: 10
+                                    }}
+                                >
+                                    {item.isFeaturedContact ? "★ Contact Featured" : "☆ Feature on Contact"}
+                                </button>
                             </label>
                         ))}
                     </div>
