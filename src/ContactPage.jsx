@@ -45,6 +45,7 @@ export default function ContactPage() {
     const containerRef = useRef(null);
     const formRef = useRef(null);
     const nameInputRef = useRef(null);
+    const magneticRef = useRef(null);
 
     // Form state
     const [selectedType, setSelectedType] = useState("collaborate");
@@ -78,26 +79,49 @@ export default function ContactPage() {
                     setBgVideo(videoData.videoUrl);
                 }
 
-                const items = [];
-                if (photos && photos.length > 0) {
-                    items.push(...photos.slice(0, 3).map(p => ({
+                // 1. Prioritize Admin-Featured Items (isFeaturedContact === true)
+                const featuredPhotos = (photos || []).filter(p => p.isFeaturedContact).map(p => ({
+                    id: p._id,
+                    title: p.title || "Cinematic Frame",
+                    type: "Photography",
+                    image: p.image,
+                    link: p.href || "/work"
+                }));
+
+                const featuredVideos = (videos || []).filter(v => v.isFeaturedContact).map(v => ({
+                    id: v._id,
+                    title: v.caption || "Showcase Production",
+                    type: "Film",
+                    image: v.image,
+                    link: v.videoLink || "/work"
+                }));
+
+                let combined = [...featuredPhotos, ...featuredVideos];
+
+                // 2. Fallback to recent photos/videos if admin hasn't selected enough featured items
+                if (combined.length < 4) {
+                    const fallbackPhotos = (photos || []).filter(p => !p.isFeaturedContact).map(p => ({
                         id: p._id,
                         title: p.title || "Cinematic Frame",
                         type: "Photography",
                         image: p.image,
-                        link: "/work"
-                    })));
-                }
-                if (videos && videos.length > 0) {
-                    items.push(...videos.slice(0, 3).map(v => ({
+                        link: p.href || "/work"
+                    }));
+
+                    const fallbackVideos = (videos || []).filter(v => !v.isFeaturedContact).map(v => ({
                         id: v._id,
                         title: v.caption || "Showcase Production",
                         type: "Film",
                         image: v.image,
-                        link: "/work"
-                    })));
+                        link: v.videoLink || "/work"
+                    }));
+
+                    const needed = 4 - combined.length;
+                    const fallbacks = [...fallbackPhotos, ...fallbackVideos].slice(0, needed);
+                    combined = [...combined, ...fallbacks];
                 }
-                setShowcaseWork(items.slice(0, 4));
+
+                setShowcaseWork(combined.slice(0, 4));
             } catch (e) {
                 console.warn("Could not fetch media data:", e);
             }
@@ -183,6 +207,34 @@ export default function ContactPage() {
             }
         };
 
+        // Magnetic effect matching About Us intro
+        const magneticEl = magneticRef.current;
+        const handleMouseMoveMag = (e) => {
+            if (!magneticEl) return;
+            const rect = magneticEl.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            gsap.to(magneticEl, {
+                x: x * 0.1,
+                y: y * 0.1,
+                duration: 1,
+                ease: "power3.out"
+            });
+        };
+        const handleMouseLeaveMag = () => {
+            if (!magneticEl) return;
+            gsap.to(magneticEl, {
+                x: 0,
+                y: 0,
+                duration: 1.5,
+                ease: "elastic.out(1, 0.3)"
+            });
+        };
+        if (magneticEl) {
+            magneticEl.addEventListener("mousemove", handleMouseMoveMag);
+            magneticEl.addEventListener("mouseleave", handleMouseLeaveMag);
+        }
+
         window.addEventListener("wheel", handleScroll, { passive: false });
         window.addEventListener("touchstart", handleTouchStart, { passive: true });
         window.addEventListener("touchmove", handleTouchMove, { passive: false });
@@ -191,6 +243,10 @@ export default function ContactPage() {
             window.removeEventListener("wheel", handleScroll);
             window.removeEventListener("touchstart", handleTouchStart);
             window.removeEventListener("touchmove", handleTouchMove);
+            if (magneticEl) {
+                magneticEl.removeEventListener("mousemove", handleMouseMoveMag);
+                magneticEl.removeEventListener("mouseleave", handleMouseLeaveMag);
+            }
         };
     }, { scope: containerRef });
 
@@ -279,35 +335,37 @@ export default function ContactPage() {
                         src={bgVideo}
                     />
                 )}
-                <div className="contact-hero__title-wrapper" style={{ width: '100%', maxWidth: '1350px', margin: '0 auto 1.5rem', position: 'relative', zIndex: 2 }}>
-                    <h1 className="sr-only">LET'S MAKE SOMETHING.</h1>
-                    <WarpText
-                        text="LET'S MAKE SOMETHING."
-                        color="rgb(236, 220, 220)"
-                        warpStrength={0.08}
-                        warpScale={1.7}
-                        speed={0.55}
-                        pointerInfluence={0.42}
-                        pointerStrength={0.38}
-                        refraction={0.018}
-                        ripple={true}
-                        fontSize="clamp(3.5rem, 8.5vw, 7.2rem)"
-                        fontWeight={800}
-                        fontFamily="'Inter', system-ui, -apple-system, sans-serif"
-                        letterSpacing="3px"
-                        style={{ height: '200px' }}
-                    />
-                </div>
+                <div ref={magneticRef} className="contact-text-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'default' }}>
+                    <div className="contact-hero__title-wrapper" style={{ width: '100%', maxWidth: '850px', marginBottom: '1rem' }}>
+                        <h1 className="sr-only">Contact Us</h1>
+                        <WarpText
+                            text="Contact Us"
+                            color="rgb(236, 220, 220)"
+                            warpStrength={0.08}
+                            warpScale={1.7}
+                            speed={0.55}
+                            pointerInfluence={0.42}
+                            pointerStrength={0.38}
+                            refraction={0.018}
+                            ripple={true}
+                            fontSize="clamp(4.5rem, 11vw, 8rem)"
+                            fontWeight={800}
+                            fontFamily="'Inter', system-ui, -apple-system, sans-serif"
+                            letterSpacing="4px"
+                            style={{ height: '150px' }}
+                        />
+                    </div>
 
-                <ScrambledText
-                    className="scrambled-text-demo contact-hero__sub"
-                    radius={90}
-                    duration={1}
-                    speed={0.3}
-                    scrambleChars=".:;*^%"
-                >
-                    Neon Cinematics is the official Cinematography & Filmmaking Club of IIIT Kota. We are a creative collective of student filmmakers, storytellers, and visual artists. Whether you want to collaborate on a film, pitch a script concept, join a production, or exchange creative ideas, we are always open for creative conversations.
-                </ScrambledText>
+                    <ScrambledText
+                        className="scrambled-text-demo contact-hero__sub"
+                        radius={90}
+                        duration={1}
+                        speed={0.3}
+                        scrambleChars=".:;*^%"
+                    >
+                        Neon Cinematics is the official Cinematography & Filmmaking Club of IIIT Kota. We are a creative collective of student filmmakers, storytellers, and visual artists. Whether you want to collaborate on a film, pitch a script concept, join a production, or exchange creative ideas, we are always open for creative conversations.
+                    </ScrambledText>
+                </div>
 
                 <div className="contact-hero__actions">
                     <button type="button" className="contact-btn contact-btn--primary" onClick={() => scrollToForm()}>
@@ -318,6 +376,20 @@ export default function ContactPage() {
                     </a>
                 </div>
             </section>
+
+            {/* CURVED MARQUEE AFTER HERO VIDEO */}
+            <div style={{ marginTop: '-40vh', position: 'relative', zIndex: 1 }}>
+                <div style={{ width: '100vw', marginLeft: 'calc(-50vw + 50%)', marginTop: '2rem', marginBottom: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem', overflow: 'hidden' }}>
+                    <CurvedLoop
+                        marqueeText="COLLABORATE ✦ SHORT FILMS ✦ SCRIPTS ✦ VISUAL STORYTELLING ✦ CREATIVE IDEAS ✦ "
+                        speed={3}
+                        curveAmount={160}
+                        direction="right"
+                        interactive={true}
+                        className="custom-text-style"
+                    />
+                </div>
+            </div>
 
             {/* DIRECT CONTACT METHODS */}
             <section className="contact-methods">
@@ -359,17 +431,6 @@ export default function ContactPage() {
                     </div>
                 </div>
             </section>
-
-            {/* CURVED LOOP MARQUEE */}
-            <div className="contact-marquee">
-                <CurvedLoop
-                    marqueeText="✦ COLLABORATE ✦ SHORT FILMS ✦ SCRIPTS ✦ VISUAL STORYTELLING ✦ CREATIVE IDEAS ✦ "
-                    speed={2.5}
-                    curveAmount={120}
-                    direction="left"
-                    interactive={true}
-                />
-            </div>
 
             {/* INQUIRY SELECTION */}
             <section className="contact-inquiry">

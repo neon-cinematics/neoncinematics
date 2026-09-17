@@ -2,12 +2,12 @@
 
 .contact-page {
     min-height: 100vh;
-    background: #080a0d;
+    background: transparent;
     color: #F4F4F5;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     padding-top: 0;
     padding-bottom: 60px;
-    overflow-x: hidden;
+    overflow-x: clip;
     position: relative;
 }
 
@@ -99,20 +99,20 @@
     cursor: not-allowed;
 }
 
-/* ─── HERO (CENTERED & CINEMATIC STAGE) ────────────────────────────────────────── */
+/* ─── HERO (CENTERED & CINEMATIC STAGE - IDENTICAL TO ABOUT US) ───────────── */
 .contact-hero {
-    min-height: 80vh;
-    width: 100%;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 5rem 2rem 5rem;
-    position: relative;
+    min-height: 100vh;
+    padding-top: 15vh;
+    padding-bottom: 2rem;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    padding-left: 10%;
+    padding-right: 10%;
     text-align: center;
-    background: radial-gradient(circle at center, rgba(0, 180, 255, 0.06) 0%, transparent 70%);
+    position: relative;
+    background: radial-gradient(circle at center, rgba(0, 180, 255, 0.05) 0%, transparent 70%);
 }
 
 .contact-bg-video {
@@ -122,32 +122,28 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    z-index: 0;
-    opacity: 0.75;
+    z-index: -1;
+    opacity: 0.8;
     pointer-events: none;
     mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
 }
 
-.contact-hero__title {
-    font-size: clamp(3rem, 7.5vw, 6.2rem);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    color: #f2f1eb;
-    line-height: 1.08;
-    text-align: center;
-    margin: 0 auto 1.5rem;
-    background: linear-gradient(180deg, #FFFFFF 0%, #D4D4D8 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 50px rgba(252, 237, 182, 0.15);
+.contact-text-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    filter: drop-shadow(0 4px 15px rgba(0,0,0,0.8));
+    z-index: 2;
+    width: 100%;
+    margin-top: -40vh;
 }
 
 .contact-hero__sub {
-    font-size: clamp(1.05rem, 2vw, 1.35rem);
-    line-height: 1.65;
-    color: #a1a1aa;
-    max-width: 780px;
+    font-size: 1.3rem;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.8);
+    max-width: 800px;
     margin: 0 auto 2.5rem;
     font-weight: 400;
     text-align: center;

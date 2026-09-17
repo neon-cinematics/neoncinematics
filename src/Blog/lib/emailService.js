@@ -86,7 +86,7 @@ const ctaButton = (label, url, color = neonBrand.gold) => `
 // ─── Notification Functions ───────────────────────────────────────────────────
 
 const SITE_URL = import.meta.env.VITE_SITE_URL || "http://localhost:5174";
-const ADMIN_URL = `${SITE_URL}/admin/blogs`;
+const ADMIN_URL = `${SITE_URL}/neoncinematicsadminhere/blogs`;
 
 /** Notify Neon team & all blog managers when a poster submits a blog for review */
 export const notifyManagers = async (managerEmails, blog, poster) => {

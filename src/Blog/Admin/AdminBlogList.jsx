@@ -38,7 +38,7 @@ const AdminBlogList = () => {
 
     useEffect(() => {
         if (!isAdminLoggedIn()) {
-            navigate("/admin/blogs", { replace: true });
+            navigate("/neoncinematicsadminhere/blogs", { replace: true });
         }
     }, [navigate]);
 
@@ -247,7 +247,7 @@ const AdminBlogList = () => {
                                 <td style={{ fontSize: "12px", color: "#71717a" }}>{timeAgo(blog._updatedAt)}</td>
                                 <td>
                                     <div style={{ display: "flex", gap: "5px", flexWrap: "wrap" }}>
-                                        <Link to={`/admin/blogs/${blog._id}/review`} className="admin-btn admin-btn--primary">
+                                        <Link to={`/neoncinematicsadminhere/blogs/${blog._id}/review`} className="admin-btn admin-btn--primary">
                                             Review
                                         </Link>
                                         <Link to={`/blog/preview/${blog._id}`} className="admin-btn admin-btn--secondary" target="_blank">

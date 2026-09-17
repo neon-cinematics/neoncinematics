@@ -37,7 +37,7 @@ const AdminBlogReview = () => {
     };
 
     useEffect(() => {
-        if (!isAdminLoggedIn()) navigate("/admin/blogs", { replace: true });
+        if (!isAdminLoggedIn()) navigate("/neoncinematicsadminhere/blogs", { replace: true });
     }, [navigate]);
 
     useEffect(() => {
@@ -167,7 +167,7 @@ const AdminBlogReview = () => {
                 const client = getWriteClient();
                 await client.delete(blog._id);
                 showToast("Blog deleted permanently.");
-                setTimeout(() => navigate("/admin/blogs/list"), 1200);
+                setTimeout(() => navigate("/neoncinematicsadminhere/blogs/list"), 1200);
             } catch (err) {
                 showToast("Delete failed: " + err.message, "error");
                 setIsSubmitting(false);
@@ -180,7 +180,7 @@ const AdminBlogReview = () => {
             {toast && <div className={`admin-toast admin-toast--${toast.type}`}>{toast.message}</div>}
 
             <div style={{ marginBottom: "1.5rem" }}>
-                <Link to="/admin/blogs/list" className="admin-btn admin-btn--secondary" style={{ textDecoration: "none" }}>
+                <Link to="/neoncinematicsadminhere/blogs/list" className="admin-btn admin-btn--secondary" style={{ textDecoration: "none" }}>
                     ← Back to Blog List
                 </Link>
             </div>
