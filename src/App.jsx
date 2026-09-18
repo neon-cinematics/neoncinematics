@@ -9,6 +9,7 @@ import TeamAdmin from "./TeamAdmin/TeamAdmin";
 import Section3 from "./Section3";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { preloadMediaAssets } from "./lib/assetPreloader";
+import VisitorTracker from "./components/VisitorTracker";
 
 // Lazy-loaded blog components
 const BlogPage = lazy(() => import("./Blog/BlogPage"));
@@ -90,6 +91,7 @@ const App = () => {
       )}
 
       <ScrollToTop />
+      <VisitorTracker />
       <Suspense fallback={<PageFallback />}>
         <Routes>
           {/* Main Site */}

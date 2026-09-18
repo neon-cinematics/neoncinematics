@@ -111,6 +111,119 @@ app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });
 });
 
+// ─── Visitor Analytics & Counter System ─────────────────────────────────────
+const STATS_FILE = path.join(__dirname, "visitor-stats.json");
+
+const getVisitorStatsData = () => {
+    try {
+        if (fs.existsSync(STATS_FILE)) {
+            const raw = fs.readFileSync(STATS_FILE, "utf8");
+            return JSON.parse(raw);
+        }
+    } catch (e) {
+        console.warn("Failed to read visitor stats file:", e.message);
+    }
+    return {
+        totalVisits: 0,
+        uniqueVisitors: 0,
+        dailyStats: {},
+        pageVisits: {},
+        recentLogs: []
+    };
+};
+
+const saveVisitorStatsData = (data) => {
+    try {
+        fs.writeFileSync(STATS_FILE, JSON.stringify(data, null, 2), "utf8");
+    } catch (e) {
+        console.error("Failed to save visitor stats file:", e.message);
+    }
+};
+
+// POST /api/analytics/visit — Record page visit
+app.post("/api/analytics/visit", (req, res) => {
+    try {
+        const { path: pagePath = "/", isNewSession = false, referrer = null } = req.body;
+        const stats = getVisitorStatsData();
+        const dateKey = new Date().toISOString().split("T")[0];
+
+        stats.totalVisits = (stats.totalVisits || 0) + 1;
+        if (isNewSession) {
+            stats.uniqueVisitors = (stats.uniqueVisitors || 0) + 1;
+        }
+
+        if (!stats.dailyStats) stats.dailyStats = {};
+        if (!stats.dailyStats[dateKey]) {
+            stats.dailyStats[dateKey] = { visits: 0, uniques: 0 };
+        }
+        stats.dailyStats[dateKey].visits += 1;
+        if (isNewSession) {
+            stats.dailyStats[dateKey].uniques += 1;
+        }
+
+        if (!stats.pageVisits) stats.pageVisits = {};
+        const cleanPath = pagePath || "/";
+        stats.pageVisits[cleanPath] = (stats.pageVisits[cleanPath] || 0) + 1;
+
+        if (!stats.recentLogs) stats.recentLogs = [];
+        stats.recentLogs.unshift({
+            path: cleanPath,
+            isNewSession,
+            referrer: referrer ? referrer.slice(0, 100) : null,
+            timestamp: new Date().toISOString()
+        });
+        if (stats.recentLogs.length > 50) {
+            stats.recentLogs = stats.recentLogs.slice(0, 50);
+        }
+
+        saveVisitorStatsData(stats);
+
+        res.json({
+            success: true,
+            totalVisits: stats.totalVisits,
+            uniqueVisitors: stats.uniqueVisitors
+        });
+    } catch (err) {
+        res.status(500).json({ error: "Failed to record visit: " + err.message });
+    }
+});
+
+// GET /api/analytics/stats — Get visitor metrics for admin panel
+app.get("/api/analytics/stats", (req, res) => {
+    try {
+        const stats = getVisitorStatsData();
+        const dateKey = new Date().toISOString().split("T")[0];
+        const todayData = stats.dailyStats?.[dateKey] || { visits: 0, uniques: 0 };
+
+        const days = [];
+        for (let i = 6; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            const key = d.toISOString().split("T")[0];
+            const dayName = d.toLocaleDateString("en-US", { weekday: "short" });
+            const dayInfo = stats.dailyStats?.[key] || { visits: 0, uniques: 0 };
+            days.push({
+                date: key,
+                label: dayName,
+                visits: dayInfo.visits,
+                uniques: dayInfo.uniques
+            });
+        }
+
+        res.json({
+            totalVisits: stats.totalVisits || 0,
+            uniqueVisitors: stats.uniqueVisitors || 0,
+            todayVisits: todayData.visits || 0,
+            todayUniques: todayData.uniques || 0,
+            pageVisits: stats.pageVisits || {},
+            recentLogs: (stats.recentLogs || []).slice(0, 10),
+            weeklyTrend: days
+        });
+    } catch (err) {
+        res.status(500).json({ error: "Failed to fetch visitor stats: " + err.message });
+    }
+});
+
 // POST /api/auth/login — Poster login
 app.post("/api/auth/login", async (req, res) => {
     const { username, password } = req.body;

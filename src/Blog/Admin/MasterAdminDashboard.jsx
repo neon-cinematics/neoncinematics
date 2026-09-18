@@ -16,6 +16,7 @@ const MasterAdminDashboard = () => {
     const navigate = useNavigate();
     const containerRef = useRef();
     const [stats, setStats] = useState(null);
+    const [visitorStats, setVisitorStats] = useState(null);
     const [serverHealth, setServerHealth] = useState("checking");
     const [isLoading, setIsLoading] = useState(true);
     const [sanityToken, setSanityToken] = useState("");
@@ -44,6 +45,13 @@ const MasterAdminDashboard = () => {
                 setServerHealth("healthy");
             } else {
                 setServerHealth("offline");
+            }
+
+            // Fetch visitor analytics from server API
+            const visitorRes = await fetch(`${API_BASE}/api/analytics/stats`).catch(() => null);
+            if (visitorRes && visitorRes.ok) {
+                const visitorData = await visitorRes.json().catch(() => null);
+                setVisitorStats(visitorData);
             }
         } catch (err) {
             console.error("Master dashboard data fetch error:", err);
@@ -255,6 +263,124 @@ const MasterAdminDashboard = () => {
                         </div>
                     </div>
                 )}
+
+                {/* Website Visitor Counter & Traffic Analytics Section */}
+                <div style={{
+                    background: "linear-gradient(135deg, rgba(16, 24, 38, 0.95), rgba(12, 18, 28, 0.98))",
+                    border: "1px solid rgba(125, 229, 210, 0.25)",
+                    borderRadius: "12px",
+                    padding: "1.75rem",
+                    marginBottom: "2.5rem",
+                    boxShadow: "0 8px 32px rgba(0, 0, 0, 0.4)"
+                }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem", flexWrap: "wrap", gap: "1rem" }}>
+                        <div>
+                            <h2 style={{ fontSize: "16px", letterSpacing: "1.5px", textTransform: "uppercase", color: "#7de5d2", margin: "0 0 0.25rem", fontWeight: 800, display: "flex", alignItems: "center", gap: "8px" }}>
+                                <span>👁️</span> Website Visitor Counter & Traffic Analytics
+                            </h2>
+                            <p style={{ fontSize: "12px", color: "var(--text-secondary)", margin: 0 }}>
+                                Real-time tracking of pageviews, unique sessions, and top visited routes across neoncinematics website.
+                            </p>
+                        </div>
+                        <button
+                            onClick={fetchData}
+                            className="admin-btn admin-btn--secondary"
+                            style={{ fontSize: "11px", padding: "6px 14px" }}
+                        >
+                            🔄 Refresh Metrics
+                        </button>
+                    </div>
+
+                    {/* 4 Counter Cards Grid */}
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "1rem", marginBottom: "1.5rem" }}>
+                        <div style={{ background: "rgba(255, 255, 255, 0.03)", border: "1px solid rgba(125, 229, 210, 0.2)", borderRadius: "8px", padding: "1.1rem 1.25rem" }}>
+                            <span style={{ fontSize: "11px", letterSpacing: "1px", textTransform: "uppercase", color: "#9ba4a7", display: "block", marginBottom: "6px" }}>Total Pageviews</span>
+                            <span style={{ fontSize: "2rem", fontWeight: 800, color: "#7de5d2", textShadow: "0 0 12px rgba(125, 229, 210, 0.3)" }}>
+                                {visitorStats ? (visitorStats.totalVisits || 0).toLocaleString() : "—"}
+                            </span>
+                        </div>
+                        <div style={{ background: "rgba(255, 255, 255, 0.03)", border: "1px solid rgba(16, 185, 129, 0.2)", borderRadius: "8px", padding: "1.1rem 1.25rem" }}>
+                            <span style={{ fontSize: "11px", letterSpacing: "1px", textTransform: "uppercase", color: "#9ba4a7", display: "block", marginBottom: "6px" }}>Unique Visitors</span>
+                            <span style={{ fontSize: "2rem", fontWeight: 800, color: "#10b981", textShadow: "0 0 12px rgba(16, 185, 129, 0.3)" }}>
+                                {visitorStats ? (visitorStats.uniqueVisitors || 0).toLocaleString() : "—"}
+                            </span>
+                        </div>
+                        <div style={{ background: "rgba(255, 255, 255, 0.03)", border: "1px solid rgba(245, 158, 11, 0.2)", borderRadius: "8px", padding: "1.1rem 1.25rem" }}>
+                            <span style={{ fontSize: "11px", letterSpacing: "1px", textTransform: "uppercase", color: "#9ba4a7", display: "block", marginBottom: "6px" }}>Pageviews Today</span>
+                            <span style={{ fontSize: "2rem", fontWeight: 800, color: "#f59e0b", textShadow: "0 0 12px rgba(245, 158, 11, 0.3)" }}>
+                                {visitorStats ? (visitorStats.todayVisits || 0).toLocaleString() : "—"}
+                            </span>
+                        </div>
+                        <div style={{ background: "rgba(255, 255, 255, 0.03)", border: "1px solid rgba(139, 92, 246, 0.2)", borderRadius: "8px", padding: "1.1rem 1.25rem" }}>
+                            <span style={{ fontSize: "11px", letterSpacing: "1px", textTransform: "uppercase", color: "#9ba4a7", display: "block", marginBottom: "6px" }}>Today's Uniques</span>
+                            <span style={{ fontSize: "2rem", fontWeight: 800, color: "#8b5cf6", textShadow: "0 0 12px rgba(139, 92, 246, 0.3)" }}>
+                                {visitorStats ? (visitorStats.todayUniques || 0).toLocaleString() : "—"}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Breakdown Grid: Weekly Trend & Popular Pages */}
+                    {visitorStats && (
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.25rem", marginTop: "1rem" }}>
+                            {/* Weekly Trend Bar Chart */}
+                            {visitorStats.weeklyTrend && visitorStats.weeklyTrend.length > 0 && (
+                                <div style={{ background: "rgba(0,0,0,0.25)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "8px", padding: "1rem" }}>
+                                    <h3 style={{ fontSize: "12px", letterSpacing: "1px", textTransform: "uppercase", color: "#e2e8f0", margin: "0 0 1rem", fontWeight: 700 }}>
+                                        📊 7-Day Traffic Trend
+                                    </h3>
+                                    <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", height: "90px", padding: "0 8px" }}>
+                                        {visitorStats.weeklyTrend.map((day) => {
+                                            const maxVisits = Math.max(...visitorStats.weeklyTrend.map(d => d.visits), 1);
+                                            const heightPercent = Math.max(15, Math.min(100, Math.round((day.visits / maxVisits) * 100)));
+                                            return (
+                                                <div key={day.date} style={{ display: "flex", flexDirection: "column", alignItems: "center", flex: 1 }}>
+                                                    <span style={{ fontSize: "10px", color: "#94a3b8", marginBottom: "4px" }}>{day.visits}</span>
+                                                    <div style={{
+                                                        width: "14px",
+                                                        height: `${heightPercent}%`,
+                                                        background: "linear-gradient(to top, #7de5d2, #3b82f6)",
+                                                        borderRadius: "4px 4px 0 0",
+                                                        transition: "height 0.4s ease"
+                                                    }} title={`${day.date}: ${day.visits} visits, ${day.uniques} uniques`} />
+                                                    <span style={{ fontSize: "10px", color: "#cbd5e1", marginTop: "6px", fontWeight: 600 }}>{day.label}</span>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Popular Visited Pages */}
+                            {visitorStats.pageVisits && Object.keys(visitorStats.pageVisits).length > 0 && (
+                                <div style={{ background: "rgba(0,0,0,0.25)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "8px", padding: "1rem" }}>
+                                    <h3 style={{ fontSize: "12px", letterSpacing: "1px", textTransform: "uppercase", color: "#e2e8f0", margin: "0 0 1rem", fontWeight: 700 }}>
+                                        🔥 Top Visited Page Routes
+                                    </h3>
+                                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                                        {Object.entries(visitorStats.pageVisits)
+                                            .sort((a, b) => b[1] - a[1])
+                                            .slice(0, 5)
+                                            .map(([pagePath, count]) => {
+                                                const maxCount = Math.max(...Object.values(visitorStats.pageVisits), 1);
+                                                const barPercent = Math.round((count / maxCount) * 100);
+                                                return (
+                                                    <div key={pagePath}>
+                                                        <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", marginBottom: "3px" }}>
+                                                            <span style={{ color: "#7de5d2", fontFamily: "monospace", fontWeight: 600 }}>{pagePath}</span>
+                                                            <span style={{ color: "#94a3b8" }}>{count} visits</span>
+                                                        </div>
+                                                        <div style={{ width: "100%", height: "5px", background: "rgba(255,255,255,0.08)", borderRadius: "3px", overflow: "hidden" }}>
+                                                            <div style={{ width: `${barPercent}%`, height: "100%", background: "#7de5d2", borderRadius: "3px" }} />
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
 
                 {/* Module Categories Grid */}
                 {ADMIN_MODULES.map(group => (
