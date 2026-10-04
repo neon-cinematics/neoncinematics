@@ -14,7 +14,7 @@ const VERSION_KEY = "neon_media_manifest_ver";
 export async function preloadMediaAssets(onProgress = () => { }) {
     const staticAssets = [
         "/neon_logo.png",
-        "/page1animationv2.mp4"
+        "/page1animationv2.webm"
     ];
 
     let sanityAssets = [];

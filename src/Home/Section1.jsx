@@ -237,7 +237,7 @@ const Section1 = () => {
 
                 <div id="section1_video_div" style={{ minHeight: "150vh" }}>
                     <div ref={videoLayerRef} className="section1-video-layer">
-                        <video ref={videoRef} src="/page1animationv2.mp4" autoPlay loop muted></video>
+                        <video ref={videoRef} src="/page1animationv2.webm" autoPlay loop muted></video>
                     </div>
                 </div>
             </div>
